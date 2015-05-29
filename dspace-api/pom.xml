@@ -19,6 +19,8 @@
     <properties>
         <!-- This is the path to the root [dspace-src] directory. -->
         <root.basedir>${basedir}/..</root.basedir>
+        <xoai.version>3.2.9</xoai.version>
+        <spring.version>3.2.5.RELEASE</spring.version>
     </properties>
 
     <!--
@@ -667,6 +669,17 @@
 		<artifactId>jfreechart</artifactId>
 		<version>1.0.19</version>
 	</dependency>
+        <!-- OAI Data Provider Framework -->
+        <dependency>
+            <groupId>com.lyncode</groupId>
+            <artifactId>xoai</artifactId>
+            <version>${xoai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
