@@ -15,8 +15,6 @@ import org.dspace.embargo.EmbargoManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lyncode.xoai.dataprovider.xml.xoaiconfig.parse.conditions.AddConditionParser;
-
 public class ControlPanelEmbargo extends AbstractControlPanelTab {
 
     private static Logger log = LoggerFactory.getLogger(ControlPanelEmbargo.class);
