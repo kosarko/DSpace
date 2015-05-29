@@ -3,9 +3,9 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:doc="http://www.lyncode.com/xoai" 
-    xmlns:logUtil="cz.cuni.mff.ufal.utils.XslLogUtil"
+    xmlns:logUtil="cz.cuni.mff.ufal.xoai.utils.XslLogUtil"
     xmlns:isocodes="cz.cuni.mff.ufal.IsoLangCodes"
-    xmlns:license="cz.cuni.mff.ufal.utils.LicenseUtil"
+    xmlns:license="cz.cuni.mff.ufal.xoai.utils.LicenseUtil"
     xmlns:xalan="http://xml.apache.org/xslt"
     xmlns:str="http://exslt.org/strings"
     xmlns:ms="http://www.ilsp.gr/META-XMLSchema"

@@ -1,5 +1,5 @@
 /* Created for LINDAT/CLARIN */
-package cz.cuni.mff.ufal.utils;
+package cz.cuni.mff.ufal.xoai.utils;
 
 import java.util.StringTokenizer;
 

@@ -24,7 +24,7 @@
     -->
 
 
-    <bean class="cz.cuni.mff.ufal.services.OAIIndexingServiceImpl" id="cz.cuni.mff.ufal.services.OAIIndexingService"/>
+    <bean class="cz.cuni.mff.ufal.xoai.services.OAIIndexingServiceImpl" id="cz.cuni.mff.ufal.xoai.services.OAIIndexingService"/>
 
 
 </beans>

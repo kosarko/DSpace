@@ -17,7 +17,7 @@ import org.dspace.event.Consumer;
 import org.dspace.event.Event;
 import org.dspace.utils.DSpace;
 
-import cz.cuni.mff.ufal.services.OAIIndexingService;
+import cz.cuni.mff.ufal.xoai.services.OAIIndexingService;
 
 import java.sql.SQLException;
 import java.util.Arrays;

@@ -1,7 +1,7 @@
 /* Created for LINDAT/CLARIN */
 /* THE LINDAT/CLARIN PROJECT (LM2010013) IS FULLY SUPPORTED BY THE MINISTRY OF EDUCATION, SPORTS 
 AND YOUTH OF THE CZECH REPUBLIC UNDER THE PROGRAMME LM OF "LARGE INFRASTRUCTURES".*/
-package cz.cuni.mff.ufal.services;
+package cz.cuni.mff.ufal.xoai.services;
 
 import java.util.Set;
 

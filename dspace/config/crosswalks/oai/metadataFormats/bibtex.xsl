@@ -4,7 +4,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:doc="http://www.lyncode.com/xoai" 
     xmlns:bib="http://lindat.mff.cuni.cz/ns/experimental/bibtex"
-    xmlns:util="cz.cuni.mff.ufal.utils.BibtexUtil"
+    xmlns:util="cz.cuni.mff.ufal.xoai.utils.BibtexUtil"
     exclude-result-prefixes="doc util"
     version="1.0">
     

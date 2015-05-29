@@ -1,16 +1,13 @@
 /* Created for LINDAT/CLARIN */
-package cz.cuni.mff.ufal.utils;
+package cz.cuni.mff.ufal.xoai.utils;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.dspace.app.util.DCInput;
 import org.dspace.content.Bitstream;
 import org.dspace.content.DSpaceObject;

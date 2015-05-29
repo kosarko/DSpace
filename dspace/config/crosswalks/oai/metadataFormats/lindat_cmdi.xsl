@@ -3,8 +3,8 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:doc="http://www.lyncode.com/xoai" 
-    xmlns:itemUtil="cz.cuni.mff.ufal.utils.ItemUtil"
-    xmlns:isocodes="cz.cuni.mff.ufal.IsoLangCodes"
+    xmlns:itemUtil="cz.cuni.mff.ufal.xoai.utils.ItemUtil"
+    xmlns:isocodes="cz.cuni.mff.ufal.xoai.IsoLangCodes"
     xmlns:xalan="http://xml.apache.org/xslt"
     xmlns:configuration="org.dspace.core.ConfigurationManager"
     xmlns:ms="http://www.ilsp.gr/META-XMLSchema"
