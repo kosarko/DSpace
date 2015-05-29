@@ -7,6 +7,7 @@
  */
 package org.dspace.xoai.app;
 
+import com.lyncode.xoai.dataprovider.core.Granularity;
 import com.lyncode.xoai.dataprovider.exceptions.ConfigurationException;
 import com.lyncode.xoai.dataprovider.exceptions.MetadataBindException;
 import com.lyncode.xoai.dataprovider.exceptions.WritingXmlException;
@@ -43,6 +44,7 @@ import org.dspace.xoai.services.api.solr.SolrServerResolver;
 import org.dspace.xoai.solr.DSpaceSolrSearch;
 import org.dspace.xoai.solr.exceptions.DSpaceSolrException;
 import org.dspace.xoai.solr.exceptions.DSpaceSolrIndexerException;
+import org.dspace.xoai.util.ItemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -57,9 +59,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static com.lyncode.xoai.dataprovider.core.Granularity.Second;
 import static org.dspace.content.Item.find;
-import static org.dspace.xoai.util.ItemUtils.retrieveMetadata;
 
 /**
  * @author Lyncode Development Team <dspace@lyncode.com>
@@ -272,8 +272,8 @@ public class XOAI {
         }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        XmlOutputContext context = XmlOutputContext.emptyContext(out, Second);
-        retrieveMetadata(item).write(context);
+        XmlOutputContext context = XmlOutputContext.emptyContext(out, Granularity.Second);
+        ItemUtils.retrieveMetadata(item).write(context);
         context.getWriter().flush();
         context.getWriter().close();
         doc.addField("item.compile", out.toString());
@@ -460,7 +460,7 @@ public class XOAI {
             while (iterator.hasNext()) {
                 Item item = iterator.next();
                 if (verbose) System.out.println("Compiling item with handle: " + item.getHandle());
-                xoaiItemCacheService.put(item, retrieveMetadata(item));
+                xoaiItemCacheService.put(item, ItemUtils.retrieveMetadata(item));
                 context.clearCache();
             }
 
