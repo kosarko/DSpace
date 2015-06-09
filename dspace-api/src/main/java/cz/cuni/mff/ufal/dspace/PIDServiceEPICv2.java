@@ -4,21 +4,31 @@ package cz.cuni.mff.ufal.dspace;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import cz.cuni.mff.ufal.dspace.handle.ConfigurableHandleIdentifierProvider;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dspace.handle.HandleManager;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 public class PIDServiceEPICv2 extends AbstractPIDService {
 
@@ -154,7 +164,38 @@ public class PIDServiceEPICv2 extends AbstractPIDService {
 
 	@Override
 	public String whoAmI(String encoding) throws Exception {
-		throw new NotImplementedException();
+	    return "There is no implementation of whoAmI in v2 you are logging in as " +  PIDServiceUSER;
+	}
+	
+	public Handle[] list(String prefix, String depth, int limit, int page) throws Exception{
+	    List<String> ret = null;
+	    HashMap<String, Object> params = new HashMap<>();
+	    
+		HashMap<String, String> headers = new HashMap<>();
+	    if(depth != null && depth.matches("^(0|1|infinity)$")){
+            headers.put("Depth", depth);
+	    }
+	    if(!headers.isEmpty()){
+	        params.put(PARAMS.HEADER.toString(), headers);
+	    }
+
+	    HashMap<String, String> fields = new HashMap<>();
+	    fields.put("limit", Integer.toString(limit));
+	    if(limit>0){
+	        fields.put("page", Integer.toString(page));
+	    }
+	    params.put(PARAMS.PID.toString(), prefix + "/?" + getQueryString(fields));
+	    String response = sendPIDCommand(HTTPMethod.GET, params);
+	    
+	    // Configure Gson
+	    GsonBuilder gsonBuilder = new GsonBuilder();
+	    gsonBuilder.registerTypeAdapter(Handle[].class, new HandlesDeserializer());
+	    Gson gson = gsonBuilder.create();
+	    Handle[] handles = gson.fromJson(response,Handle[].class);
+	    return handles;
+	    
+	    //ret = Arrays.asList(new Gson().fromJson(response, String[].class));
+	    //return ret;
 	}
 	
 	private String getQueryString(Map<String, String> handleFields) {
@@ -179,4 +220,42 @@ public class PIDServiceEPICv2 extends AbstractPIDService {
 		return json_rep;
 	}
 
+	public static class Handle{
+
+        private String id;
+        private String url;
+
+        public Handle(String id, String url)
+        {
+            this.id = id;
+            this.url = url;
+        }
+        
+        String getId(){
+            return id;
+        }
+        String getUrl(){
+            return url;
+        }
+	    
+	}
+	
+	static class HandlesDeserializer implements JsonDeserializer<Handle[]>{
+
+        @Override
+        public Handle[] deserialize(JsonElement json, Type typeOfT,
+                JsonDeserializationContext context) throws JsonParseException
+        {
+            ArrayList<Handle> handles = new ArrayList<>();
+            JsonObject jsonObject = json.getAsJsonObject();
+            for(Entry<String, JsonElement> entry : jsonObject.entrySet()){
+                String id = entry.getKey();
+                JsonArray jsonInfo = entry.getValue().getAsJsonArray();
+                String url = jsonInfo.get(0).getAsJsonObject().get("parsed_data").getAsString();
+                handles.add(new Handle(id,url));
+            }
+            return handles.toArray(new Handle[handles.size()]);
+        }
+	    
+	}
 }
