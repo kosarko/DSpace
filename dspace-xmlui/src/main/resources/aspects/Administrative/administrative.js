@@ -2135,33 +2135,39 @@ function doManageHandles()
     var result = null;
     
     do {
-	    sendPageAndWait("admin/handle/main",{},result);
-	    assertAdministrator();
-	
-	    result = null;
-	
-	    if (cocoon.request.get("submit_add"))
-	    {
-	        // Just create a blank handle then pass it to the handle editor.
-	        result = doEditHandle(-1);
-	    }
-	    else if (cocoon.request.get("submit_edit") && cocoon.request.get("handle_id"))
-	    {
-	        // Edit a specific handle
-	        var handleID = cocoon.request.get("handle_id");
-	        result = doEditHandle(handleID);
-	    }
-	    else if (cocoon.request.get("submit_delete") && cocoon.request.get("handle_id"))
-	    {
-	        // Delete a specific handle
-	        var handleID = cocoon.request.get("handle_id");
-	        result = doDeleteHandle(handleID);
-	    }	 
-	    else if (cocoon.request.get("submit_change_prefix"))
-	    {
-	        // Change prefix	        
-	        result = doChangeHandlePrefix();
-	    }
+    	if(cocoon.request.get("edit_external")){
+    		sendPageAndWai("admin/handle/external", {}, result);
+    		assertAdmistrator();
+    		result = null;
+    	} else{
+            sendPageAndWait("admin/handle/main",{},result);
+            assertAdministrator();
+        
+            result = null;
+        
+            if (cocoon.request.get("submit_add"))
+            {
+                // Just create a blank handle then pass it to the handle editor.
+                result = doEditHandle(-1);
+            }
+            else if (cocoon.request.get("submit_edit") && cocoon.request.get("handle_id"))
+            {
+                // Edit a specific handle
+                var handleID = cocoon.request.get("handle_id");
+                result = doEditHandle(handleID);
+            }
+            else if (cocoon.request.get("submit_delete") && cocoon.request.get("handle_id"))
+            {
+                // Delete a specific handle
+                var handleID = cocoon.request.get("handle_id");
+                result = doDeleteHandle(handleID);
+            }	 
+            else if (cocoon.request.get("submit_change_prefix"))
+            {
+                // Change prefix	        
+                result = doChangeHandlePrefix();
+            }
+    	}
     } while (true);
 }
 
