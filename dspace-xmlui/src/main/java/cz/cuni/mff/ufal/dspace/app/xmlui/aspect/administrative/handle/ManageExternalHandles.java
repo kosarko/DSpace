@@ -180,7 +180,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
         List<PIDServiceEPICv2.Handle> handles = null;
 		try
         {
-            handles = pidService.list(prefix,"0",resultsPerPage,page);
+            handles = pidService.list(prefix,"1",resultsPerPage,page);
         }
         catch (Exception e)
         {
@@ -270,11 +270,6 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		hlactions.addButton("submit_add").setValue(T_new_external_handle);
 		hlactions.addButton("submit_edit").setValue(T_edit_handle);
 		hlactions.addButton("submit_delete").setValue(T_delete_handle);
-
-		
-		
-		// Close database connection
-		context.complete();
 
 		// Continuation for cocoon workflow
 		hform.addHidden("administrative-continue").setValue(knot.getId());
