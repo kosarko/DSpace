@@ -2136,7 +2136,7 @@ function doManageHandles()
     
     do {
     	if(cocoon.request.get("edit_external")){
-    		sendPageAndWai("admin/handle/external", {}, result);
+    		sendPageAndWait("admin/handle/external", {}, result);
     		assertAdmistrator();
     		result = null;
     	} else{

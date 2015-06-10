@@ -156,7 +156,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		try{
 		    handles = pidService.listAllHandles(prefix);
 		}catch(Exception e){
-		    //TODO something
+		    log.error(e);
 		}
 		//sortHandles(handles, sort, order);
 

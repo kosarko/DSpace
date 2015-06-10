@@ -329,14 +329,26 @@ public class PIDServiceEPICv2 extends AbstractPIDService
                 JsonDeserializationContext context) throws JsonParseException
         {
             JsonArray jsonInfo = json.getAsJsonArray();
-            String url = jsonInfo.get(0).getAsJsonObject()
-                    .get("parsed_data").getAsString();
-            Handle h = new Handle();
-            h.setUrl(url);
-            return h;
+            for (JsonElement el : jsonInfo)
+            {
+                JsonObject obj = el.getAsJsonObject();
+                JsonElement jsonType = obj.get("type");
+                if (jsonType != null)
+                {
+                    String type = jsonType.getAsString();
+                    if (type.equals("URL"))
+                    {
+                        String url = obj.get("parsed_data").getAsString();
+                        Handle h = new Handle();
+                        h.setUrl(url);
+                        return h;
+                    }
+                }
+            }
+            throw new JsonParseException("Failed to find URL for this handle.\n" + json.toString());
         }
-        
     }
+    
     static class HandlesDeserializer implements JsonDeserializer<List<Handle>>
     {
 
@@ -367,9 +379,14 @@ public class PIDServiceEPICv2 extends AbstractPIDService
                 {
                     // remove /handles/ to match ids provided with Depth: 0
                     String id = entry.getKey().replaceFirst("/handles/", "");
-                    Handle h = context.deserialize(entry.getValue(), Handle.class);
-                    h.setHandle(id);
-                    handles.add(h);
+                    try{
+                        Handle h = context.deserialize(entry.getValue(), Handle.class);
+                        h.setHandle(id);
+                        handles.add(h);
+                    }catch (JsonParseException e){
+                       //skip this if it failed to parse, there are handles with no url we don't need those
+                       //throw new JsonParseException("Failed to parse " + id, e); 
+                    }
                 }
             }
             return handles;
