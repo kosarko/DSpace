@@ -110,12 +110,21 @@ public class PIDServiceEPICv2 extends AbstractPIDService
         return response.toString();
     }
 
+    /**
+     * Returns URL
+     */
     @Override
     public String resolvePID(String PID) throws Exception
     {
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put(PARAMS.PID.toString(), PID);
-        return sendPIDCommand(HTTPMethod.GET, params);
+        String response = sendPIDCommand(HTTPMethod.GET, params);
+        // Configure Gson
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Handle.class, new HandleDeserializer());
+        Gson gson = gsonBuilder.create();
+        Handle handle = gson.fromJson(response, Handle.class);
+        return handle.getUrl();
     }
 
     @Override
@@ -231,6 +240,7 @@ public class PIDServiceEPICv2 extends AbstractPIDService
         Type listType = new TypeToken<List<Handle>>()
         {
         }.getType();
+        gsonBuilder.registerTypeAdapter(Handle.class, new HandleDeserializer());
         gsonBuilder.registerTypeAdapter(listType, new HandlesDeserializer(
                 prefix));
         Gson gson = gsonBuilder.create();
@@ -286,6 +296,10 @@ public class PIDServiceEPICv2 extends AbstractPIDService
         {
             this(handle, null);
         }
+        
+        public Handle(){
+            this(null, null);
+        }
 
         public String getHandle()
         {
@@ -301,9 +315,28 @@ public class PIDServiceEPICv2 extends AbstractPIDService
         {
             this.url = url;
         }
+        
+        public void setHandle(String handle){
+            this.handle = handle;
+        }
 
     }
 
+    static class HandleDeserializer implements JsonDeserializer<Handle>{
+
+        @Override
+        public Handle deserialize(JsonElement json, Type typeOfT,
+                JsonDeserializationContext context) throws JsonParseException
+        {
+            JsonArray jsonInfo = json.getAsJsonArray();
+            String url = jsonInfo.get(0).getAsJsonObject()
+                    .get("parsed_data").getAsString();
+            Handle h = new Handle();
+            h.setUrl(url);
+            return h;
+        }
+        
+    }
     static class HandlesDeserializer implements JsonDeserializer<List<Handle>>
     {
 
@@ -334,10 +367,9 @@ public class PIDServiceEPICv2 extends AbstractPIDService
                 {
                     // remove /handles/ to match ids provided with Depth: 0
                     String id = entry.getKey().replaceFirst("/handles/", "");
-                    JsonArray jsonInfo = entry.getValue().getAsJsonArray();
-                    String url = jsonInfo.get(0).getAsJsonObject()
-                            .get("parsed_data").getAsString();
-                    handles.add(new Handle(id, url));
+                    Handle h = context.deserialize(entry.getValue(), Handle.class);
+                    h.setHandle(id);
+                    handles.add(h);
                 }
             }
             return handles;
