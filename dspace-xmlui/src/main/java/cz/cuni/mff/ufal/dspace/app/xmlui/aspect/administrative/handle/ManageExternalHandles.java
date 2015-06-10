@@ -151,17 +151,15 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		int resultsPerPage = resultsPerPageParam == null ? DEFAULT_RESULTS_PER_PAGE
 				: Integer.parseInt(resultsPerPageParam);
 
-		// Retrieve records
-        List<PIDServiceEPICv2.Handle> handles = null;
+		int resultCount = -1;
 		try{
-		    handles = pidService.listAllHandles(prefix);
+            resultCount = pidService.getCount(prefix);
 		}catch(Exception e){
 		    log.error(e);
 		}
 		//sortHandles(handles, sort, order);
 
 		// Calculate
-		int resultCount = handles.size();
 		int totalPages = (int) Math.ceil((double) resultCount / resultsPerPage);
 
 		// Sanitize page parameter
@@ -177,6 +175,17 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		// Sanitize lastIndex
 		if (lastIndex > resultCount)
 			lastIndex = resultCount;
+
+        // Retrieve records
+        List<PIDServiceEPICv2.Handle> handles = null;
+		try
+        {
+            handles = pidService.list(prefix,"0",resultsPerPage,page);
+        }
+        catch (Exception e)
+        {
+            log.error(e);
+        }
 
 		// Page creation		
 		Division div = body.addDivision("main-div");

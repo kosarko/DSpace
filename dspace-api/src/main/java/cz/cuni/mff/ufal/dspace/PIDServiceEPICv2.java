@@ -252,6 +252,10 @@ public class PIDServiceEPICv2 extends AbstractPIDService
     {
         return list(prefix, "1", 0, 0);
     }
+    
+    public int getCount(String prefix) throws Exception{
+       return list(prefix,"0",0,0).size(); 
+    }
 
     private String getQueryString(Map<String, String> handleFields)
     {
@@ -384,7 +388,10 @@ public class PIDServiceEPICv2 extends AbstractPIDService
                         h.setHandle(id);
                         handles.add(h);
                     }catch (JsonParseException e){
-                       //skip this if it failed to parse, there are handles with no url we don't need those
+                       //there are handles with no url
+                        Handle h  = new Handle();
+                        h.setHandle(id);
+                        handles.add(h);
                        //throw new JsonParseException("Failed to parse " + id, e); 
                     }
                 }
