@@ -10,15 +10,11 @@ package cz.cuni.mff.ufal.dspace.app.xmlui.aspect.administrative.handle;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import cz.cuni.mff.ufal.dspace.PIDServiceEPICv2;
-import cz.cuni.mff.ufal.dspace.handle.Handle;
-import cz.cuni.mff.ufal.dspace.handle.HandleComparatorFactory;
 
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
@@ -33,10 +29,7 @@ import org.dspace.app.xmlui.wing.element.PageMeta;
 import org.dspace.app.xmlui.wing.element.Para;
 import org.dspace.app.xmlui.wing.element.Row;
 import org.dspace.app.xmlui.wing.element.Table;
-import org.dspace.core.Constants;
-import org.dspace.core.Context;
 import org.dspace.handle.HandleManager;
-import org.dspace.sort.SortOption;
 
 /**
  */
@@ -60,30 +53,14 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			message("xmlui.administrative.handle.ManageHandlesMain.delete_handle");
 	private static final Message T_edit_handle =
 			message("xmlui.administrative.handle.ManageHandlesMain.edit_handle");
-	private static final Message T_global_actions_head =
-			message("xmlui.administrative.handle.ManageHandlesMain.global_actions_head");
-	private static final Message T_global_actions_help =
-			message("xmlui.administrative.handle.ManageHandlesMain.global_actions_help");
-	private static final Message T_change_handle_prefix =
-			message("xmlui.administrative.handle.ManageHandlesMain.change_handle_prefix");
 	private static final Message T_list_head =
 			message("xmlui.administrative.handle.ManageHandlesMain.list_head");
 	private static final Message T_list_help=
 			message("xmlui.administrative.handle.ManageHandlesMain.list_help");
-	private static final Message T_yes =
-			message("xmlui.administrative.handle.general.yes");
-	private static final Message T_no =
-			message("xmlui.administrative.handle.general.no");
 	private static final Message T_handle =
 			message("xmlui.administrative.handle.general.handle");
-	private static final Message T_internal =
-			message("xmlui.administrative.handle.general.internal");
 	private static final Message T_url =
 			message("xmlui.administrative.handle.general.url");
-	private static final Message T_resource_type =
-			message("xmlui.administrative.handle.general.resource_type");	
-	private static final Message T_resource_id =
-			message("xmlui.administrative.handle.general.resource_id");
 
 	private Request request = null;
 	private static Logger log = Logger
@@ -95,13 +72,8 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 	private static final int[] RESULTS_PER_PAGE_PROGRESSION = { 5, 10, 20, 40, 60, 80, 100 };
 	private static final String RESULTS_PER_PAGE_KEY = "rpp";
 	private static final int DEFAULT_RESULTS_PER_PAGE = 10;
-	private static final String[] SORT_BY_VALUES = { "id", "handle", "resource_id" };
-	private static final String SORT_BY_KEY = "sort_by";
-	private static final String DEFAULT_SORT_BY = "id";
-	private static final String[] ORDER_VALUES = { SortOption.ASCENDING, SortOption.DESCENDING };
-	private static final String ORDER_KEY = "order";
-	private static final String DEFAULT_ORDER = SortOption.ASCENDING;
 	public static final String HANDLES_URL_BASE = "handles";
+	private static final String EDIT_EXTERNAL = "edit_external";
 	
 
 	public void addPageMeta(PageMeta pageMeta) throws WingException {
@@ -121,15 +93,13 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		try{
 		    pidService = new PIDServiceEPICv2();
 		}catch(Exception e){
-		    //TODO something
+		    log.error(e);
 		}
 		
 
 		// Get parameters
 		String pageParam = request.getParameter(PAGE_KEY);
 		String resultsPerPageParam = request.getParameter(RESULTS_PER_PAGE_KEY);
-		String sortParam = request.getParameter(SORT_BY_KEY);
-		String orderParam = request.getParameter(ORDER_KEY);
 		
 		String errorString = parameters.getParameter("errors",null);
 		ArrayList<String> errors = new ArrayList<String>();
@@ -142,10 +112,6 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
         }
 
 		// Sanitize parameters
-		String sort = Arrays.asList(SORT_BY_VALUES).contains(sortParam) ? sortParam
-				: DEFAULT_SORT_BY;
-		String order = Arrays.asList(ORDER_VALUES).contains(orderParam) ? orderParam
-				: DEFAULT_ORDER;
 		int page = pageParam == null ? DEFAULT_PAGE : Integer
 				.parseInt(pageParam);
 		int resultsPerPage = resultsPerPageParam == null ? DEFAULT_RESULTS_PER_PAGE
@@ -157,7 +123,6 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		}catch(Exception e){
 		    log.error(e);
 		}
-		//sortHandles(handles, sort, order);
 
 		// Calculate
 		int totalPages = (int) Math.ceil((double) resultCount / resultsPerPage);
@@ -177,6 +142,10 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			lastIndex = resultCount;
 
         // Retrieve records
+		//TODO search by url
+		//TODO enter PID
+		//TODO create/edit/delete
+		//TODO messages
         List<PIDServiceEPICv2.Handle> handles = null;
 		try
         {
@@ -211,13 +180,14 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 				HANDLES_URL_BASE, Division.METHOD_POST, "primary administrative");
 
 		// List controls
-		addListControls(hform, sort, order, resultsPerPage);
+		addListControls(hform, resultsPerPage);
 
 		// Add pagination
 		Division hdivtable = hform.addDivision("handle-list-paginated-div");
 
 		HashMap<String, String> urlParameters = new HashMap<String, String>();
 
+		urlParameters.put(EDIT_EXTERNAL, EDIT_EXTERNAL);
 		urlParameters.put(PAGE_KEY, PAGE_NUM_PLACEHOLDER);
 		urlParameters.put(RESULTS_PER_PAGE_KEY, Integer.toString(resultsPerPage));
 		hdivtable.setMaskedPagination(resultCount, firstIndex, lastIndex, page,
@@ -234,11 +204,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		hhead.addCellContent(T_url);
 
 		// Table rows
-		for (int i = firstIndex - 1; i < lastIndex && i < handles.size(); i++) {
-			if ( i < 0 ) {
-				break;
-			}
-			PIDServiceEPICv2.Handle h = handles.get(i);
+		for (PIDServiceEPICv2.Handle h : handles) {
 			Row hrow = htable.addRow(null, Row.ROLE_DATA, null);
 			hrow.addCell().addRadio("handle_id")
 					.addOption(false, "" + h.getHandle());
@@ -276,11 +242,9 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 
 	}
 
-	private void addListControls(Division div, String sort, String order,
-			int resultsPerPage) throws WingException {
+	private void addListControls(Division div, int resultsPerPage) throws WingException {
 		Map<String, String> urlParameters = new HashMap<String, String>();
-		urlParameters.put(SORT_BY_KEY, sort);
-		urlParameters.put(ORDER_KEY, order);
+		urlParameters.put(EDIT_EXTERNAL, EDIT_EXTERNAL);
 		urlParameters.put(RESULTS_PER_PAGE_KEY,
 				Integer.toString(resultsPerPage));
 
@@ -290,38 +254,6 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 				.addList("sort-options",
 						org.dspace.app.xmlui.wing.element.List.TYPE_SIMPLE,
 						"gear-selection");
-
-		// Create control to change column for sorting
-		sortList.addItem("sort-head", "gear-head first").addContent("Sort by");
-		org.dspace.app.xmlui.wing.element.List sortByOptions = sortList
-				.addList("sort-selections");
-
-		for (String value : SORT_BY_VALUES) {
-			urlParameters.put(SORT_BY_KEY, value);
-			sortByOptions.addItem(null, null).addXref(
-					generateURL(HANDLES_URL_BASE, urlParameters),
-					value,
-					"gear-option"
-							+ (value.equals(sort) ? " gear-option-selected"
-									: ""));
-		}
-		urlParameters.put(SORT_BY_KEY, sort);
-
-		// Create control to change ascending / descending order
-		sortList.addItem("order-head", "gear-head").addContent("Order By");
-		org.dspace.app.xmlui.wing.element.List ordOptions = sortList
-				.addList("order-selections");
-
-		for (String value : ORDER_VALUES) {
-			urlParameters.put(ORDER_KEY, value);
-			ordOptions.addItem(null, null).addXref(
-					generateURL(HANDLES_URL_BASE, urlParameters),
-					value,
-					"gear-option"
-							+ (value.equals(order) ? " gear-option-selected"
-									: ""));
-		}
-		urlParameters.put(ORDER_KEY, order);
 
 		// Create control to change number of results per page
 		sortList.addItem("rpp-head", "gear-head").addContent("Results/Page");
@@ -336,24 +268,6 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 					"gear-option"
 							+ (i == resultsPerPage ? " gear-option-selected"
 									: ""));
-		}
-		urlParameters.put(RESULTS_PER_PAGE_KEY,
-				Integer.toString(resultsPerPage));
-
-	}
-
-	private void sortHandles(java.util.List<Handle> handles, final String sort,
-			final String order) {
-		if (sort.equals("id")) {
-			Collections.sort(handles,
-					HandleComparatorFactory.createComparatorByID(order));
-		} else if (sort.equals("handle")) {
-			Collections.sort(handles,
-					HandleComparatorFactory.createComparatorByHandle(order));
-		} else if (sort.equals("resource_id")) {
-			Collections
-					.sort(handles, HandleComparatorFactory
-							.createComparatorByResourceID(order));
 		}
 	}
 }
