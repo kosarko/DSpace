@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cz.cuni.mff.ufal.dspace.PIDServiceEPICv2;
@@ -21,6 +22,7 @@ import cz.cuni.mff.ufal.dspace.handle.HandleComparatorFactory;
 
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
@@ -150,7 +152,12 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 				: Integer.parseInt(resultsPerPageParam);
 
 		// Retrieve records
-		java.util.List<String> handles = pidService.list(prefix, 0, -1);
+        List<PIDServiceEPICv2.Handle> handles = null;
+		try{
+		    handles = pidService.listAllHandles(prefix);
+		}catch(Exception e){
+		    //TODO something
+		}
 		//sortHandles(handles, sort, order);
 
 		// Calculate
@@ -208,27 +215,24 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 				totalPages, generateURL(HANDLES_URL_BASE, urlParameters));
 
 		// Table of handles
-		Table htable = hdivtable.addTable("handle-list-table", 1, 6);
+		Table htable = hdivtable.addTable("handle-list-table", 1, 3);
 
 		// Table headers
 		Row hhead = htable.addRow(Row.ROLE_HEADER);
 
 		hhead.addCellContent("");
 		hhead.addCellContent(T_handle);
-		hhead.addCellContent(T_internal);
 		hhead.addCellContent(T_url);
-		hhead.addCellContent(T_resource_type);
-		hhead.addCellContent(T_resource_id);
 
 		// Table rows
 		for (int i = firstIndex - 1; i < lastIndex && i < handles.size(); i++) {
 			if ( i < 0 ) {
 				break;
 			}
-			Handle h = handles.get(i);
+			PIDServiceEPICv2.Handle h = handles.get(i);
 			Row hrow = htable.addRow(null, Row.ROLE_DATA, null);
 			hrow.addCell().addRadio("handle_id")
-					.addOption(false, "" + h.getID());
+					.addOption(false, "" + h.getHandle());
             if (h.getHandle() != null && !h.getHandle().isEmpty())
             {
                 hrow.addCell().addXref(
@@ -239,22 +243,15 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
             {
                 hrow.addCell().addContent(h.getHandle());
             }
-            hrow.addCell().addContent(h.isInternalResource() ? T_yes : T_no);
-            if (h.getHandle() != null && !h.getHandle().isEmpty())
-            {
-                String resolvedURL = HandleManager.resolveToURL(context,
-                        h.getHandle());
-                hrow.addCell()
-                        .addXref(resolvedURL, resolvedURL, "target_blank");
-            }
-            else
+            if (StringUtils.isBlank(h.getUrl()))
             {
                 hrow.addCell().addContent(h.getHandle());
             }
-			String resourceType = h.getResourceTypeID() < 0 ? null : Constants.typeText[h.getResourceTypeID()]; 
-			hrow.addCell().addContent(resourceType);
-			String resourceID = h.getResourceID() < 0 ? null : String.valueOf(h.getResourceID());
-			hrow.addCell().addContent(resourceID); 
+            else
+            {
+                hrow.addCell()
+                        .addXref(h.getUrl(), h.getUrl(), "target_blank");
+            }
 		}
 
 		// Handle list action buttons
@@ -267,31 +264,11 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 
 		
 		
-		// Global actions div
-		Division hgdiv = div.addDivision("handle-global");
-
-		// Global actions heading
-		hgdiv.setHead(T_global_actions_head);
-
-		// Global actions info
-		hgdiv.addPara(null, "alert alert-info")
-				.addContent(T_global_actions_help);
-		
-		Division hgform = hgdiv.addInteractiveDivision("handle-global-actions-form",
-				HANDLES_URL_BASE, Division.METHOD_POST, "primary administrative");
-
-		// Global action buttons
-		Para hgactions = hgform.addPara("handle-global-actions", "");
-
-		hgactions.addButton("submit_change_prefix").setValue(
-				T_change_handle_prefix);
-
 		// Close database connection
 		context.complete();
 
 		// Continuation for cocoon workflow
 		hform.addHidden("administrative-continue").setValue(knot.getId());
-		hgform.addHidden("administrative-continue").setValue(knot.getId());
 
 	}
 

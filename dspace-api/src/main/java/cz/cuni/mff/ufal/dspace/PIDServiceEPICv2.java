@@ -29,233 +29,319 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
-public class PIDServiceEPICv2 extends AbstractPIDService {
+public class PIDServiceEPICv2 extends AbstractPIDService
+{
 
-	Logger log = Logger.getLogger(PIDServiceEPICv2.class);
-	
-	public PIDServiceEPICv2() throws Exception {
+    Logger log = Logger.getLogger(PIDServiceEPICv2.class);
 
-	}
+    public PIDServiceEPICv2() throws Exception
+    {
 
-	@Override
-	public String sendPIDCommand(HTTPMethod method, Map<String, Object> params) throws Exception {
-		String PID = (String) params.get(PARAMS.PID.toString());
-		String data = (String) params.get(PARAMS.DATA.toString());
+    }
 
-		if (PID == null)
-			PID = "";
-		if (!PID.startsWith("/") && !PIDServiceURL.endsWith("/"))
-			PID = "/" + PID;
+    @Override
+    public String sendPIDCommand(HTTPMethod method, Map<String, Object> params)
+            throws Exception
+    {
+        String PID = (String) params.get(PARAMS.PID.toString());
+        String data = (String) params.get(PARAMS.DATA.toString());
 
-		URL url = new URL(PIDServiceURL + PID);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
-		conn.setRequestMethod(method.toString());
-		conn.setRequestProperty("Content-Type", "application/json");
-		conn.setRequestProperty("Accept", "application/json");
-		
-		Map<String, String> headers = (Map<String, String>)params.get(PARAMS.HEADER.toString());
-		if(headers!=null)
-		for(Entry<String, String> header : headers.entrySet()) {
-			conn.setRequestProperty(header.getKey(), header.getValue());
-		}
+        if (PID == null)
+            PID = "";
+        if (!PID.startsWith("/") && !PIDServiceURL.endsWith("/"))
+            PID = "/" + PID;
 
-		if (data != null) {
-			OutputStream out = conn.getOutputStream();
-			out.write(data.getBytes());
-			out.flush();
-		}
-		
-		int responseCode = conn.getResponseCode();
-		
-		if (responseCode < 200 && responseCode > 206) {
-			log.error("Failed : HTTP error code : " + responseCode + " : " + conn.getResponseMessage());
-			throw new RuntimeException("Failed : HTTP error code : " + responseCode + " : " + conn.getResponseMessage());
-		} else {
-			log.debug(responseCode + " : " + conn.getResponseMessage());
-		}
+        URL url = new URL(PIDServiceURL + PID);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setDoOutput(true);
+        conn.setRequestMethod(method.toString());
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
 
-		StringBuffer response = new StringBuffer();			
-		if(responseCode==201) {
-			int index = PIDServiceURL.endsWith("/")?PIDServiceURL.length():(PIDServiceURL.length()+1);
-			response.append(conn.getHeaderField("Location").substring(index));
-		} else {
-			BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				response.append(line).append("\n");
-			}
-		}
-		conn.disconnect();
-		return response.toString();
-	}
+        Map<String, String> headers = (Map<String, String>) params
+                .get(PARAMS.HEADER.toString());
+        if (headers != null)
+            for (Entry<String, String> header : headers.entrySet())
+            {
+                conn.setRequestProperty(header.getKey(), header.getValue());
+            }
 
-	@Override
-	public String resolvePID(String PID) throws Exception {
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put(PARAMS.PID.toString(), PID);
-		return sendPIDCommand(HTTPMethod.GET, params);
-	}
+        if (data != null)
+        {
+            OutputStream out = conn.getOutputStream();
+            out.write(data.getBytes());
+            out.flush();
+        }
 
-	@Override
-	public String createPID(Map<String, String> handleFields, String prefix) throws Exception {
-		JsonArray data = getEPICJsonRepresentation(handleFields);
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put(PARAMS.PID.toString(), prefix);
-		params.put(PARAMS.DATA.toString(), data.toString());
-		return sendPIDCommand(HTTPMethod.POST, params);
-	}
+        int responseCode = conn.getResponseCode();
 
-	@Override
-	public String createCustomPID(Map<String, String> handleFields, String prefix, String suffix) throws Exception {
-		JsonArray data = getEPICJsonRepresentation(handleFields);
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put(PARAMS.PID.toString(), ConfigurableHandleIdentifierProvider.completeHandle(
-			prefix, suffix));
-		params.put(PARAMS.DATA.toString(), data.toString());
-		
-		HashMap<String, String> headers = new HashMap<String, String>();
-		headers.put("If-None-Match", "*");
+        if (responseCode < 200 && responseCode > 206)
+        {
+            log.error("Failed : HTTP error code : " + responseCode + " : "
+                    + conn.getResponseMessage());
+            throw new RuntimeException("Failed : HTTP error code : "
+                    + responseCode + " : " + conn.getResponseMessage());
+        }
+        else
+        {
+            log.debug(responseCode + " : " + conn.getResponseMessage());
+        }
 
-		params.put(PARAMS.HEADER.toString(), headers);
+        StringBuffer response = new StringBuffer();
+        if (responseCode == 201)
+        {
+            int index = PIDServiceURL.endsWith("/") ? PIDServiceURL.length()
+                    : (PIDServiceURL.length() + 1);
+            response.append(conn.getHeaderField("Location").substring(index));
+        }
+        else
+        {
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+            String line = null;
+            while ((line = br.readLine()) != null)
+            {
+                response.append(line).append("\n");
+            }
+        }
+        conn.disconnect();
+        return response.toString();
+    }
 
-		return sendPIDCommand(HTTPMethod.PUT, params);
-	}
+    @Override
+    public String resolvePID(String PID) throws Exception
+    {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(PARAMS.PID.toString(), PID);
+        return sendPIDCommand(HTTPMethod.GET, params);
+    }
 
-	@Override
-	public String modifyPID(String PID, Map<String, String> handleFields) throws Exception {
-		JsonArray data = getEPICJsonRepresentation(handleFields);
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put(PARAMS.PID.toString(), PID);
-		params.put(PARAMS.DATA.toString(), data.toString());
-		
-		HashMap<String, String> headers = new HashMap<String, String>();
-		headers.put("If-Match", "*");
-		
-		params.put(PARAMS.HEADER.toString(), headers);
+    @Override
+    public String createPID(Map<String, String> handleFields, String prefix)
+            throws Exception
+    {
+        JsonArray data = getEPICJsonRepresentation(handleFields);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(PARAMS.PID.toString(), prefix);
+        params.put(PARAMS.DATA.toString(), data.toString());
+        return sendPIDCommand(HTTPMethod.POST, params);
+    }
 
-		return sendPIDCommand(HTTPMethod.PUT, params);
-	}
+    @Override
+    public String createCustomPID(Map<String, String> handleFields,
+            String prefix, String suffix) throws Exception
+    {
+        JsonArray data = getEPICJsonRepresentation(handleFields);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(PARAMS.PID.toString(), ConfigurableHandleIdentifierProvider
+                .completeHandle(prefix, suffix));
+        params.put(PARAMS.DATA.toString(), data.toString());
 
-	@Override
-	public String deletePID(String PID) throws Exception {
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put(PARAMS.PID.toString(), PID);
-		return sendPIDCommand(HTTPMethod.DELETE, params);
-	}
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("If-None-Match", "*");
 
-	@Override
-	public String findHandle(Map<String, String> handleFields, String prefix) throws Exception {
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put(PARAMS.PID.toString(), prefix + "/?" + getQueryString(handleFields));
-		String response = sendPIDCommand(HTTPMethod.GET, params);
-		String[] pids = new Gson().fromJson(response, String[].class);
-	    if (pids.length == 0) {
-	        return null;
-	    }
-	    return StringUtils.join(pids, ",");
-	}
+        params.put(PARAMS.HEADER.toString(), headers);
 
-	@Override
-    public boolean supportsCustomPIDs() {
+        return sendPIDCommand(HTTPMethod.PUT, params);
+    }
+
+    @Override
+    public String modifyPID(String PID, Map<String, String> handleFields)
+            throws Exception
+    {
+        JsonArray data = getEPICJsonRepresentation(handleFields);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(PARAMS.PID.toString(), PID);
+        params.put(PARAMS.DATA.toString(), data.toString());
+
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("If-Match", "*");
+
+        params.put(PARAMS.HEADER.toString(), headers);
+
+        return sendPIDCommand(HTTPMethod.PUT, params);
+    }
+
+    @Override
+    public String deletePID(String PID) throws Exception
+    {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(PARAMS.PID.toString(), PID);
+        return sendPIDCommand(HTTPMethod.DELETE, params);
+    }
+
+    @Override
+    public String findHandle(Map<String, String> handleFields, String prefix)
+            throws Exception
+    {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(PARAMS.PID.toString(), prefix + "/?"
+                + getQueryString(handleFields));
+        String response = sendPIDCommand(HTTPMethod.GET, params);
+        String[] pids = new Gson().fromJson(response, String[].class);
+        if (pids.length == 0)
+        {
+            return null;
+        }
+        return StringUtils.join(pids, ",");
+    }
+
+    @Override
+    public boolean supportsCustomPIDs()
+    {
         return true;
     }
 
-	@Override
-	public String whoAmI(String encoding) throws Exception {
-	    return "There is no implementation of whoAmI in v2 you are logging in as " +  PIDServiceUSER;
-	}
-	
-	public Handle[] list(String prefix, String depth, int limit, int page) throws Exception{
-	    List<String> ret = null;
-	    HashMap<String, Object> params = new HashMap<>();
-	    
-		HashMap<String, String> headers = new HashMap<>();
-	    if(depth != null && depth.matches("^(0|1|infinity)$")){
+    @Override
+    public String whoAmI(String encoding) throws Exception
+    {
+        return "There is no implementation of whoAmI in v2 you are logging in as "
+                + PIDServiceUSER;
+    }
+
+    public List<Handle> list(String prefix, String depth, int limit, int page)
+            throws Exception
+    {
+        HashMap<String, Object> params = new HashMap<>();
+
+        HashMap<String, String> headers = new HashMap<>();
+        if (depth != null && depth.matches("^(0|1|infinity)$"))
+        {
             headers.put("Depth", depth);
-	    }
-	    if(!headers.isEmpty()){
-	        params.put(PARAMS.HEADER.toString(), headers);
-	    }
+        }
+        if (!headers.isEmpty())
+        {
+            params.put(PARAMS.HEADER.toString(), headers);
+        }
 
-	    HashMap<String, String> fields = new HashMap<>();
-	    fields.put("limit", Integer.toString(limit));
-	    if(limit>0){
-	        fields.put("page", Integer.toString(page));
-	    }
-	    params.put(PARAMS.PID.toString(), prefix + "/?" + getQueryString(fields));
-	    String response = sendPIDCommand(HTTPMethod.GET, params);
-	    
-	    // Configure Gson
-	    GsonBuilder gsonBuilder = new GsonBuilder();
-	    gsonBuilder.registerTypeAdapter(Handle[].class, new HandlesDeserializer());
-	    Gson gson = gsonBuilder.create();
-	    Handle[] handles = gson.fromJson(response,Handle[].class);
-	    return handles;
-	    
-	    //ret = Arrays.asList(new Gson().fromJson(response, String[].class));
-	    //return ret;
-	}
-	
-	private String getQueryString(Map<String, String> handleFields) {
-		StringBuffer qstr = new StringBuffer();
-		for(Entry<String, String> entry : handleFields.entrySet()) {
-			qstr.append("&");
-			qstr.append(entry.getKey());
-			qstr.append("=");
-			qstr.append(entry.getValue());			
-		}
-		return qstr.substring(1);
-	}
-	
-	private JsonArray getEPICJsonRepresentation(Map<String, String> handleFields) {
-		JsonArray json_rep = new JsonArray();
-		for(Entry<String, String> entry : handleFields.entrySet()) {
-			JsonObject json_obj = new JsonObject();
-			json_obj.addProperty("type", entry.getKey());
-			json_obj.addProperty("parsed_data", entry.getValue());
-			json_rep.add(json_obj);
-		}
-		return json_rep;
-	}
+        HashMap<String, String> fields = new HashMap<>();
+        fields.put("limit", Integer.toString(limit));
+        if (limit > 0)
+        {
+            fields.put("page", Integer.toString(page));
+        }
+        params.put(PARAMS.PID.toString(), prefix + "/?"
+                + getQueryString(fields));
+        String response = sendPIDCommand(HTTPMethod.GET, params);
 
-	public static class Handle{
+        // Configure Gson
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Type listType = new TypeToken<List<Handle>>()
+        {
+        }.getType();
+        gsonBuilder.registerTypeAdapter(listType, new HandlesDeserializer(
+                prefix));
+        Gson gson = gsonBuilder.create();
+        List<Handle> handles = gson.fromJson(response, listType);
+        return handles;
+    }
 
-        private String id;
+    public List<Handle> listAllHandles(String prefix) throws Exception
+    {
+        return list(prefix, "1", 0, 0);
+    }
+
+    private String getQueryString(Map<String, String> handleFields)
+    {
+        StringBuffer qstr = new StringBuffer();
+        for (Entry<String, String> entry : handleFields.entrySet())
+        {
+            qstr.append("&");
+            qstr.append(entry.getKey());
+            qstr.append("=");
+            qstr.append(entry.getValue());
+        }
+        return qstr.substring(1);
+    }
+
+    private JsonArray getEPICJsonRepresentation(Map<String, String> handleFields)
+    {
+        JsonArray json_rep = new JsonArray();
+        for (Entry<String, String> entry : handleFields.entrySet())
+        {
+            JsonObject json_obj = new JsonObject();
+            json_obj.addProperty("type", entry.getKey());
+            json_obj.addProperty("parsed_data", entry.getValue());
+            json_rep.add(json_obj);
+        }
+        return json_rep;
+    }
+
+    public static class Handle
+    {
+
+        private String handle;
+
         private String url;
 
-        public Handle(String id, String url)
+        public Handle(String handle, String url)
         {
-            this.id = id;
+            this.handle = handle;
             this.url = url;
         }
-        
-        String getId(){
-            return id;
+
+        public Handle(String handle)
+        {
+            this(handle, null);
         }
-        String getUrl(){
+
+        public String getHandle()
+        {
+            return handle;
+        }
+
+        public String getUrl()
+        {
             return url;
         }
-	    
-	}
-	
-	static class HandlesDeserializer implements JsonDeserializer<Handle[]>{
+
+        public void setUrl(String url)
+        {
+            this.url = url;
+        }
+
+    }
+
+    static class HandlesDeserializer implements JsonDeserializer<List<Handle>>
+    {
+
+        private String prefix;
+
+        public HandlesDeserializer(String prefix)
+        {
+            this.prefix = prefix;
+        }
 
         @Override
-        public Handle[] deserialize(JsonElement json, Type typeOfT,
+        public List<Handle> deserialize(JsonElement json, Type typeOfT,
                 JsonDeserializationContext context) throws JsonParseException
         {
             ArrayList<Handle> handles = new ArrayList<>();
-            JsonObject jsonObject = json.getAsJsonObject();
-            for(Entry<String, JsonElement> entry : jsonObject.entrySet()){
-                String id = entry.getKey();
-                JsonArray jsonInfo = entry.getValue().getAsJsonArray();
-                String url = jsonInfo.get(0).getAsJsonObject().get("parsed_data").getAsString();
-                handles.add(new Handle(id,url));
+            if (json.isJsonArray())
+            {
+                String[] ids = context.deserialize(json, String[].class);
+                for (String id : ids)
+                {
+                    handles.add(new Handle(prefix + "/" + id));
+                }
             }
-            return handles.toArray(new Handle[handles.size()]);
+            else
+            {
+                JsonObject jsonObject = json.getAsJsonObject();
+                for (Entry<String, JsonElement> entry : jsonObject.entrySet())
+                {
+                    // remove /handles/ to match ids provided with Depth: 0
+                    String id = entry.getKey().replaceFirst("/handles/", "");
+                    JsonArray jsonInfo = entry.getValue().getAsJsonArray();
+                    String url = jsonInfo.get(0).getAsJsonObject()
+                            .get("parsed_data").getAsString();
+                    handles.add(new Handle(id, url));
+                }
+            }
+            return handles;
         }
-	    
-	}
+
+    }
 }
