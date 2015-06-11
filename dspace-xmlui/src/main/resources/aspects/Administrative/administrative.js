@@ -2136,9 +2136,13 @@ function doManageHandles()
     
     do {
     	if(cocoon.request.get("edit_external")){
-    		sendPageAndWait("admin/handle/external", {}, result);
-    		assertAdmistrator();
-    		result = null;
+			sendPageAndWait("admin/handle/external_prefix", {}, result);
+			assertAdministrator();
+			result = null;
+			if(cocoon.request.get("submit_confirm")){
+				var prefix = cocoon.request.get(prefix);
+				result = doManageExternalPrefix(prefix);
+			}
     	} else{
             sendPageAndWait("admin/handle/main",{},result);
             assertAdministrator();
@@ -2169,6 +2173,72 @@ function doManageHandles()
             }
     	}
     } while (true);
+}
+
+function doManageExternalPrefix(prefix){
+	assertAdministrator();
+
+	var result = null;
+
+	do{
+		sendPageAndWait("admin/handle/external",{"prefix":prefix}, result);
+		assertAdministrator();
+		result = null;
+
+		if(cocoon.request.get("submit_add")){
+			result = doExternalAdd(prefix);
+
+		} else if(cocoon.request.get("submit_edit") && cocoon.request.get("handle_id")){
+			var handleID = cocoon.request.get("handle_id");
+			result = doExternalEdit(handleID, false);
+
+		} else if(cocoon.request.get("submit_delete") && cocoon.request.get("handle_id")){
+			var handleID = cocoon.request.get("handle_id");
+			result = doExternalEdit(handleID, true);
+		}
+	}while(result == null || !result.getContinue())
+	return result;
+}
+
+function doExternalEdit(handleID, isDelete){
+	assertAdministrator();
+
+	var result = null;
+
+	do{
+		sendPageAndWait("admin/handle/external_edit",{"handle_id":handleID, "isDelete":isDelete}, result);
+		assertAdministrator();
+		result = null;
+
+		if(cocoon.request.get("submit_cancel")){
+			return null;
+		} else if(cocoon.request.get("submit_confirm")) {
+			var url = cocoon.request.get("url");
+			result = FlowHandleUtils.processExternalEdit(handleID, url, isDelete);
+		}
+	}while(result == null || !result.getContinue())
+	return result;
+
+}
+
+function doExternalAdd(prefix){
+	assertAdministrator();
+	var result = null;
+	do{
+		sendPageAndWait("admin/handle/external_add",{}, result);
+		assertAdministrator();
+		result = null;
+
+		if(cocoon.request.get("submit_cancel")){
+			return null;
+		} else if(cocoon.request.get("submit_confirm")) {
+			var url = cocoon.request.get("url");
+			var handle_id = cocoon.request.get("handle_id");
+			result = FlowHandleUtils.processExternalAdd(handleID, url, prefix);
+		}
+	}while(result == null || !result.getContinue())
+	return result;
+
 }
 
 

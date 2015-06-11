@@ -29,6 +29,7 @@ import org.dspace.app.xmlui.wing.element.PageMeta;
 import org.dspace.app.xmlui.wing.element.Para;
 import org.dspace.app.xmlui.wing.element.Row;
 import org.dspace.app.xmlui.wing.element.Table;
+import org.dspace.core.ConfigurationManager;
 import org.dspace.handle.HandleManager;
 
 /**
@@ -73,7 +74,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 	private static final String RESULTS_PER_PAGE_KEY = "rpp";
 	private static final int DEFAULT_RESULTS_PER_PAGE = 10;
 	public static final String HANDLES_URL_BASE = "handles";
-	private static final String EDIT_EXTERNAL = "edit_external";
+	public static final String EDIT_EXTERNAL = "edit_external";
 	
 
 	public void addPageMeta(PageMeta pageMeta) throws WingException {
@@ -88,7 +89,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			SQLException {
 
 		request = ObjectModelHelper.getRequest(objectModel);
-		String prefix = "11372";
+		String prefix = parameters.getParameter("prefix", ConfigurationManager.getProperty("handle.prefix"));
 		PIDServiceEPICv2 pidService = null;
 		try{
 		    pidService = new PIDServiceEPICv2();

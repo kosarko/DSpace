@@ -91,6 +91,11 @@ public class PIDService {
 		initialize();
 		return pidService.whoAmI(encoding);
 	}
+
+	public static String deletePID(String PID) throws Exception{
+		initialize();
+		return pidService.deletePID(PID);
+	}
 	
 	public static String test_pid(String PID) throws Exception {
 		who_am_i(null);
