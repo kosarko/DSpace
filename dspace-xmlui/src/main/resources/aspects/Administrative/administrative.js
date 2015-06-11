@@ -2140,7 +2140,7 @@ function doManageHandles()
 			assertAdministrator();
 			result = null;
 			if(cocoon.request.get("submit_confirm")){
-				var prefix = cocoon.request.get(prefix);
+				var prefix = cocoon.request.get("prefix");
 				result = doManageExternalPrefix(prefix);
 			}
     	} else{
