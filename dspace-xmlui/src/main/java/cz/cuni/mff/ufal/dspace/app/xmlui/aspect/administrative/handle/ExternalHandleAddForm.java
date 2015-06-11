@@ -62,15 +62,15 @@ public class ExternalHandleAddForm extends AbstractDSpaceTransformer
     	prefix.setHead(T_head);
     	prefix.addPara(T_help);
 
-		Para list = prefix.addPara("handle-add-list", "well");
-		Text text = list.addText("url");
+		List list = prefix.addList("handle-add-list", List.TYPE_FORM);
+		Text text = list.addItem().addText("url");
 		text.setLabel(T_url_label);
 		text.setHelp(T_url_help);
-		text = list.addText("handle_id");
+		text = list.addItem().addText("handle_id");
 		text.setLabel(T_handle_label);
 		text.setHelp(T_handle_help);
-		list.addButton("submit_confirm").setValue(T_submit_confirm);
-		list.addButton("submit_cancel").setValue(T_submit_cancel);
+		list.addItem().addButton("submit_confirm").setValue(T_submit_confirm);
+		list.addItem().addButton("submit_cancel").setValue(T_submit_cancel);
 		prefix.addHidden(ManageExternalHandles.EDIT_EXTERNAL).setValue(ManageExternalHandles.EDIT_EXTERNAL);
     	prefix.addHidden("administrative-continue").setValue(knot.getId());
     }

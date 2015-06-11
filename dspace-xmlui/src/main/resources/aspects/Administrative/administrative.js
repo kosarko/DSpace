@@ -2196,7 +2196,7 @@ function doManageExternalPrefix(prefix){
 			var handleID = cocoon.request.get("handle_id");
 			result = doExternalEdit(handleID, true);
 		}
-	}while(result == null || !result.getContinue())
+	}while(true)
 	return result;
 }
 

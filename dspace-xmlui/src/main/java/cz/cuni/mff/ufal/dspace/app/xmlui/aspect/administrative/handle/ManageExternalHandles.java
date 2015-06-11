@@ -145,7 +145,6 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
         // Retrieve records
 		//TODO search by url
 		//TODO enter PID
-		//TODO create/edit/delete
 		//TODO messages
         List<PIDServiceEPICv2.Handle> handles = null;
 		try

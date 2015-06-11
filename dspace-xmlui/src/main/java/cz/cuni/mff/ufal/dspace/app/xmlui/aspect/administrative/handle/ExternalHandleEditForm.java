@@ -14,6 +14,7 @@ import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
+import org.hibernate.type.ListType;
 
 import java.sql.SQLException;
 
@@ -69,15 +70,15 @@ public class ExternalHandleEditForm extends AbstractDSpaceTransformer
 		}else{
 			prefix.addPara(T_help_edit);
 		}
-		Para list = prefix.addPara("handle-prefix-list","well");
+		List list = prefix.addList("handle-prefix-list", List.TYPE_FORM);
 		Text text = null;
-		text = list.addText("handel_id");
+		text = list.addItem().addText("handel_id");
 		text.setLabel(T_handle_label);
 		text.setDisabled();
 		text.setValue(PID);
 		try {
 			String url = PIDService.resolvePID(PID);
-			text = list.addText("url");
+			text = list.addItem().addText("url");
 			text.setLabel(T_url_label);
 			text.setValue(url);
 			if(isDelete) {
@@ -88,8 +89,8 @@ public class ExternalHandleEditForm extends AbstractDSpaceTransformer
 			throw new WingException(e);
 		}
 
-		list.addButton("submit_confirm").setValue(T_submit_confirm);
-		list.addButton("submit_cancel").setValue(T_submit_cancel);
+		list.addItem().addButton("submit_confirm").setValue(T_submit_confirm);
+		list.addItem().addButton("submit_cancel").setValue(T_submit_cancel);
 		prefix.addHidden(ManageExternalHandles.EDIT_EXTERNAL).setValue(ManageExternalHandles.EDIT_EXTERNAL);
     	prefix.addHidden("administrative-continue").setValue(knot.getId());
     }
