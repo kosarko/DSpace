@@ -2233,7 +2233,7 @@ function doExternalAdd(prefix){
 			return null;
 		} else if(cocoon.request.get("submit_confirm")) {
 			var url = cocoon.request.get("url");
-			var handle_id = cocoon.request.get("handle_id");
+			var handleID = cocoon.request.get("handle_id");
 			result = FlowHandleUtils.processExternalAdd(handleID, url, prefix);
 		}
 	}while(result == null || !result.getContinue())
