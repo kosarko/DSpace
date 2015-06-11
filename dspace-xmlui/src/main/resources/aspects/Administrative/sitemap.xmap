@@ -1086,7 +1086,7 @@ to administer DSpace.
 		        			<map:transform type="ExternalHandleAddForm"/>
 		        		</map:match>
 		        		<map:match pattern="admin/handle/external_edit">
-		        			<map:transform type="ExternalHandleEditFrom"/>
+		        			<map:transform type="ExternalHandleEditForm"/>
 		        		</map:match>
 		        		<map:match pattern="admin/handle/external">
 		        			<map:transform type="ManageExternalHandles">
