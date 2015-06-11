@@ -1250,6 +1250,7 @@
     <message key="xmlui.administrative.Navigation.administrative_curation">Curation Tasks</message>
     <message key="xmlui.administrative.Navigation.administrative_licenses">Licenses</message>
     <message key="xmlui.administrative.Navigation.administrative_handles">Handles</message>
+	<message key="xmlui.administrative.Navigation.administrative_handles">External Handles</message>
 
     <!-- my account items -->
 	<message key="xmlui.administrative.Navigation.account_export">My Exports</message>

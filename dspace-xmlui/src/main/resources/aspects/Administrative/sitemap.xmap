@@ -1086,7 +1086,10 @@ to administer DSpace.
 		        			<map:transform type="ExternalHandleAddForm"/>
 		        		</map:match>
 		        		<map:match pattern="admin/handle/external_edit">
-		        			<map:transform type="ExternalHandleEditForm"/>
+		        			<map:transform type="ExternalHandleEditForm">
+		        				<map:parameter name="handle_id" value="{flow-attribute:handle_id}"/>
+		        				<map:parameter name="isDelete" value="{flow-attribute:isDelete}"/>
+		        			</map:transform>
 		        		</map:match>
 		        		<map:match pattern="admin/handle/external">
 		        			<map:transform type="ManageExternalHandles">

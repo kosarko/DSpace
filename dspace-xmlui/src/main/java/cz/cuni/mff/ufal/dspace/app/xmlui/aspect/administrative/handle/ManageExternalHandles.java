@@ -234,7 +234,6 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		// Handle list action buttons
 		Para hlactions = hform.addPara("handle-list-actions", null);
 
-		hlactions.addHidden("administrative-continue").setValue(knot.getId());
 		hlactions.addButton("submit_add").setValue(T_new_external_handle);
 		hlactions.addButton("submit_edit").setValue(T_edit_handle);
 		hlactions.addButton("submit_delete").setValue(T_delete_handle);

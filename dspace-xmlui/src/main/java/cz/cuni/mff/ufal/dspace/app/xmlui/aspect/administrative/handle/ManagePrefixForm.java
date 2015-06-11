@@ -53,9 +53,9 @@ public class ManagePrefixForm extends AbstractDSpaceTransformer
     	prefix.setHead(T_head);
     	prefix.addPara(T_help);
 
-		List list = prefix.addList("handle-prefix-list");
-		list.addItem().addText("prefix");
-		list.addItem().addButton("submit_confirm").setValue(T_submit_confirm);
+		Para list = prefix.addPara("handle-prefix-list","well");
+		list.addText("prefix");
+		list.addButton("submit_confirm").setValue(T_submit_confirm);
 		prefix.addHidden(ManageExternalHandles.EDIT_EXTERNAL).setValue(ManageExternalHandles.EDIT_EXTERNAL);
     	prefix.addHidden("administrative-continue").setValue(knot.getId());
     }
