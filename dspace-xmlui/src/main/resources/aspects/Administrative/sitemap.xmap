@@ -60,7 +60,8 @@ to administer DSpace.
             <map:transformer name="ChangeHandlePrefixForm" src="cz.cuni.mff.ufal.dspace.app.xmlui.aspect.administrative.handle.ChangeHandlePrefixForm"/>
             <map:transformer name="ManageExternalHandles" src="cz.cuni.mff.ufal.dspace.app.xmlui.aspect.administrative.handle.ManageExternalHandles"/>
             <map:transformer name="ManagePrefixForm" src="cz.cuni.mff.ufal.dspace.app.xmlui.aspect.administrative.handle.ManagePrefixForm"/>
-            <map:transformer name="ManagePrefixForm" src="cz.cuni.mff.ufal.dspace.app.xmlui.aspect.administrative.handle.ExternalHandleAddForm"/>
+            <map:transformer name="ExternalHandleAddForm" src="cz.cuni.mff.ufal.dspace.app.xmlui.aspect.administrative.handle.ExternalHandleAddForm"/>
+            <map:transformer name="ExternalHandleEditForm" src="cz.cuni.mff.ufal.dspace.app.xmlui.aspect.administrative.handle.ExternalHandleEditForm"/>
 
                         <map:transformer name="CurateItemForm" src="org.dspace.app.xmlui.aspect.administrative.item.CurateItemForm"/>
 			
@@ -1085,11 +1086,11 @@ to administer DSpace.
 		        			<map:transform type="ExternalHandleAddForm"/>
 		        		</map:match>
 		        		<map:match pattern="admin/handle/external_edit">
-		        			<map:transform type=""/>
+		        			<map:transform type="ExternalHandleEditFrom"/>
 		        		</map:match>
 		        		<map:match pattern="admin/handle/external">
 		        			<map:transform type="ManageExternalHandles">
-		        				<map:parameter name="prefix" value="{flow-attribute:prefix}">
+		        				<map:parameter name="prefix" value="{flow-attribute:prefix}"/>
 		        			</map:transform>
 		        		</map:match>
 			        		
