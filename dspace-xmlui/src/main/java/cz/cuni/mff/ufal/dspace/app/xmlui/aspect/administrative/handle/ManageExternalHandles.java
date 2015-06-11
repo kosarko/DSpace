@@ -23,12 +23,7 @@ import org.apache.log4j.Logger;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Para;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.handle.HandleManager;
 
@@ -90,6 +85,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 
 		request = ObjectModelHelper.getRequest(objectModel);
 		String prefix = parameters.getParameter("prefix", ConfigurationManager.getProperty("handle.prefix"));
+		String filterUrl = parameters.getParameter("filter", null);
 		PIDServiceEPICv2 pidService = null;
 		try{
 		    pidService = new PIDServiceEPICv2();
@@ -120,6 +116,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 
 		int resultCount = -1;
 		try{
+			//todo filterUrl
             resultCount = pidService.getCount(prefix);
 		}catch(Exception e){
 		    log.error(e);
@@ -236,6 +233,15 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		hlactions.addButton("submit_add").setValue(T_new_external_handle);
 		hlactions.addButton("submit_edit").setValue(T_edit_handle);
 		hlactions.addButton("submit_delete").setValue(T_delete_handle);
+
+		//View this menu only on "full" list
+		if(filterUrl == null) {
+			org.dspace.app.xmlui.wing.element.List searchForm = hform.addList("handle-search-form", org.dspace.app.xmlui.wing.element.List.TYPE_FORM);
+			Text text = searchForm.addItem().addText("text_search");
+			text.setHelp("Enter url or pid suffix and press the appropriate button to perform search");
+			searchForm.addItem().addButton("submit_search_url");
+			searchForm.addItem().addButton("submit_search_pid");
+		}
 
 		// Continuation for cocoon workflow
 		hform.addHidden("administrative-continue").setValue(knot.getId());

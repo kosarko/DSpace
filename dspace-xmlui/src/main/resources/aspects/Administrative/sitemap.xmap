@@ -1094,6 +1094,7 @@ to administer DSpace.
 		        		<map:match pattern="admin/handle/external">
 		        			<map:transform type="ManageExternalHandles">
 		        				<map:parameter name="prefix" value="{flow-attribute:prefix}"/>
+		        				<map:parameter name="filter" value="{flow-attribute:filter}"/>
 		        			</map:transform>
 		        		</map:match>
 			        		

@@ -2182,21 +2182,45 @@ function doManageExternalPrefix(prefix){
 
 	do{
 		sendPageAndWait("admin/handle/external",{"prefix":prefix}, result);
-		assertAdministrator();
-		result = null;
+		result = doManageExternalButtons(prefix);
 
-		if(cocoon.request.get("submit_add")){
-			result = doExternalAdd(prefix);
-
-		} else if(cocoon.request.get("submit_edit") && cocoon.request.get("handle_id")){
-			var handleID = cocoon.request.get("handle_id");
-			result = doExternalEdit(handleID, false);
-
-		} else if(cocoon.request.get("submit_delete") && cocoon.request.get("handle_id")){
-			var handleID = cocoon.request.get("handle_id");
-			result = doExternalEdit(handleID, true);
-		}
 	}while(true)
+	return result;
+}
+
+function doManageExternalButtons(prefix){
+	assertAdministrator();
+	var result = null;
+	if(cocoon.request.get("submit_add")){
+		result = doExternalAdd(prefix);
+
+	} else if(cocoon.request.get("submit_edit") && cocoon.request.get("handle_id")){
+		var handleID = cocoon.request.get("handle_id");
+		result = doExternalEdit(handleID, false);
+
+	} else if(cocoon.request.get("submit_delete") && cocoon.request.get("handle_id")){
+		var handleID = cocoon.request.get("handle_id");
+		result = doExternalEdit(handleID, true);
+	} else if(cocoon.request.get("submit_search_url") && cocoon.request.get("text_search")){
+		var url = cocoon.request.get("text_search");
+		result = doSearchHandle(prefix, url);
+
+	} else if(cocoon.request.get("submit_search_pid") && cocoon.request.get("text_search")){
+		var handleID = cocoon.request.get("text_search");
+		result = doExternalEdit(handleID, false);
+	}
+	return result;
+}
+
+function doSearchHandle(prefix, url){
+	assertAdministrator();
+	var result = null;
+	do{
+		sendPageAndWait("admin/handle/external", {"prefix":prefix, "filter":url},result);
+		result = doManageExternalButtons(prefix);
+
+	}while(result == null || !result.getContinue())
+
 	return result;
 }
 
