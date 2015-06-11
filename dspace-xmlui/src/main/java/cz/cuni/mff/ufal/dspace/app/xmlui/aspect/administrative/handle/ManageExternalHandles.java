@@ -189,6 +189,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		HashMap<String, String> urlParameters = new HashMap<String, String>();
 
 		urlParameters.put(EDIT_EXTERNAL, EDIT_EXTERNAL);
+		urlParameters.put("administrative-continue", knot.getId());
 		urlParameters.put(PAGE_KEY, PAGE_NUM_PLACEHOLDER);
 		urlParameters.put(RESULTS_PER_PAGE_KEY, Integer.toString(resultsPerPage));
 		hdivtable.setMaskedPagination(resultCount, firstIndex, lastIndex, page,
@@ -246,6 +247,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 	private void addListControls(Division div, int resultsPerPage) throws WingException {
 		Map<String, String> urlParameters = new HashMap<String, String>();
 		urlParameters.put(EDIT_EXTERNAL, EDIT_EXTERNAL);
+		urlParameters.put("administrative-continue", knot.getId());
 		urlParameters.put(RESULTS_PER_PAGE_KEY,
 				Integer.toString(resultsPerPage));
 
