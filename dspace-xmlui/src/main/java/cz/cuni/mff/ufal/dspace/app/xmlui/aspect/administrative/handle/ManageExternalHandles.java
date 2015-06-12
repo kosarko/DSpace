@@ -62,6 +62,8 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			message("xmlui.administrative.handle.general.handle");
 	private static final Message T_url =
 			message("xmlui.administrative.handle.general.url");
+	private static final Message T_return =
+			message("xmlui.general.return");
 
 	private Request request = null;
 	private static Logger log = Logger
@@ -136,6 +138,9 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		if(resultCount < 1){
 			//no results
 			hdiv.addPara(null, "alert alert-error").addContent(T_no_results);
+			Division buttons = hdiv.addInteractiveDivision("buttons", HANDLES_URL_BASE, Division.METHOD_POST, "well");
+			buttons.addHidden("administrative-continue").setValue(knot.getId());
+			buttons.addPara().addButton("submit_cancel").setValue(T_return);
 			return;
 		}
 
@@ -252,6 +257,9 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			text.setHelp("Enter url or pid suffix and press the appropriate button to perform search");
 			searchForm.addItem().addButton("submit_search_url").setValue(T_search_url);
 			searchForm.addItem().addButton("submit_search_pid").setValue(T_search_pid);
+		}else{
+			//add option to return otherwise
+			hlactions.addButton("submit_cancel").setValue(T_return);
 		}
 
 		// Continuation for cocoon workflow

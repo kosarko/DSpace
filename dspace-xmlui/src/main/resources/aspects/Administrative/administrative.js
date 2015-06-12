@@ -2206,8 +2206,10 @@ function doManageExternalButtons(prefix){
 		result = doSearchHandle(prefix, url);
 
 	} else if(cocoon.request.get("submit_search_pid") && cocoon.request.get("text_search")){
-		var handleID = cocoon.request.get("text_search");
+		var handleID = prefix + "/" + cocoon.request.get("text_search");
 		result = doExternalEdit(handleID, false);
+	} else if(cocoon.request.get("submit_cancel")){
+		return {};
 	}
 	return result;
 }

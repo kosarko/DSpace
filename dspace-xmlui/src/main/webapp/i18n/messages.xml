@@ -2402,7 +2402,7 @@
 	<message key="xmlui.administrative.handle.ManageExternalHandles.trail">Handles</message>
 	<message key="xmlui.administrative.handle.ManageExternalHandles.list_head">Handle List</message>
 	<message key="xmlui.administrative.handle.ManageExternalHandles.list_help">This is the list of all handles under prefix {0}.</message>
-	<message key="xmlui.administrative.handle.ManageExternalHandles.list_filtered_help">These are the result for search of term {0} under prefix {1}.</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.list_filtered_help">These are the result for search of term <strong>{0}</strong> under prefix {1}.</message>
 	<message key="xmlui.administrative.handle.ManageExternalHandles.new_external_handle">New handle</message>
 	<message key="xmlui.administrative.handle.ManageExternalHandles.delete_handle">Delete handle</message>
 	<message key="xmlui.administrative.handle.ManageExternalHandles.edit_handle">Edit handle</message>
