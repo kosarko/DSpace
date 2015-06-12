@@ -264,5 +264,11 @@ public class FlowHandleUtils {
 		return result;
 
 	}
+
+	public static FlowResult createEmptyResult(){
+		FlowResult result = new FlowResult();
+		result.setContinue(true);
+		return result;
+	}
 		
 }

@@ -2209,7 +2209,7 @@ function doManageExternalButtons(prefix){
 		var handleID = prefix + "/" + cocoon.request.get("text_search");
 		result = doExternalEdit(handleID, false);
 	} else if(cocoon.request.get("submit_cancel")){
-		return {};
+		return FlowHandleUtils.createEmptyResult();
 	}
 	return result;
 }
