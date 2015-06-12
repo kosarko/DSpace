@@ -9,10 +9,7 @@
 package cz.cuni.mff.ufal.dspace.app.xmlui.aspect.administrative.handle;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import cz.cuni.mff.ufal.dspace.PIDServiceEPICv2;
 
@@ -38,21 +35,29 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 	private static final Message T_head1_none = 
 			message("xmlui.ArtifactBrowser.AbstractSearch.head1_none");
 	private static final Message T_title =
-			message("xmlui.administrative.handle.ManageHandlesMain.title");
+			message("xmlui.administrative.handle.ManageExternalHandles.title");
 	private static final Message T_head =
-			message("xmlui.administrative.handle.ManageHandlesMain.head");
+			message("xmlui.administrative.handle.ManageExternalHandles.head");
 	private static final Message T_trail =
-			message("xmlui.administrative.handle.ManageHandlesMain.trail");
+			message("xmlui.administrative.handle.ManageExternalHandles.trail");
 	private static final Message T_new_external_handle =
-			message("xmlui.administrative.handle.ManageHandlesMain.new_external_handle");
+			message("xmlui.administrative.handle.ManageExternalHandles.new_external_handle");
 	private static final Message T_delete_handle =
-			message("xmlui.administrative.handle.ManageHandlesMain.delete_handle");
+			message("xmlui.administrative.handle.ManageExternalHandles.delete_handle");
 	private static final Message T_edit_handle =
-			message("xmlui.administrative.handle.ManageHandlesMain.edit_handle");
+			message("xmlui.administrative.handle.ManageExternalHandles.edit_handle");
 	private static final Message T_list_head =
-			message("xmlui.administrative.handle.ManageHandlesMain.list_head");
+			message("xmlui.administrative.handle.ManageExternalHandles.list_head");
 	private static final Message T_list_help=
-			message("xmlui.administrative.handle.ManageHandlesMain.list_help");
+			message("xmlui.administrative.handle.ManageExternalHandles.list_help");
+	private static final Message T_list_filtered_help=
+			message("xmlui.administrative.handle.ManageExternalHandles.list_filtered_help");
+	private static final Message T_no_results=
+			message("xmlui.administrative.handle.ManageExternalHandles.para_no_results");
+	private static final Message T_search_url=
+			message("xmlui.administrative.handle.ManageExternalHandles.button_search_url");
+	private static final Message T_search_pid=
+			message("xmlui.administrative.handle.ManageExternalHandles.button_search_pid");
 	private static final Message T_handle =
 			message("xmlui.administrative.handle.general.handle");
 	private static final Message T_url =
@@ -83,6 +88,18 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 	public void addBody(Body body) throws WingException,
 			SQLException {
 
+		// Page creation
+		Division div = body.addDivision("main-div");
+
+		// Handle list heading
+		div.setHead(T_head);
+
+		// Handle list div
+		Division hdiv = div.addDivision("handle-list", "well well-light");
+
+		// Handle list heading
+		hdiv.setHead(T_list_head);
+
 		request = ObjectModelHelper.getRequest(objectModel);
 		String prefix = parameters.getParameter("prefix", ConfigurationManager.getProperty("handle.prefix"));
 		String filterUrl = parameters.getParameter("filter", null);
@@ -98,16 +115,6 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		String pageParam = request.getParameter(PAGE_KEY);
 		String resultsPerPageParam = request.getParameter(RESULTS_PER_PAGE_KEY);
 		
-		String errorString = parameters.getParameter("errors",null);
-		ArrayList<String> errors = new ArrayList<String>();
-		if (errorString != null)
-        {
-            for (String error : errorString.split(","))
-            {
-                errors.add(error);
-            }
-        }
-
 		// Sanitize parameters
 		int page = pageParam == null ? DEFAULT_PAGE : Integer
 				.parseInt(pageParam);
@@ -124,6 +131,12 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			}
 		}catch(Exception e){
 		    log.error(e);
+		}
+
+		if(resultCount < 1){
+			//no results
+			hdiv.addPara(null, "alert alert-error").addContent(T_no_results);
+			return;
 		}
 
 		// Calculate
@@ -144,8 +157,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			lastIndex = resultCount;
 
         // Retrieve records
-		//TODO messages
-        List<PIDServiceEPICv2.Handle> handles = null;
+        java.util.List<PIDServiceEPICv2.Handle> handles = new LinkedList<>();
 		try
         {
 			//if we have filter then do a search otherwise list all
@@ -160,20 +172,12 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
             log.error(e);
         }
 
-		// Page creation		
-		Division div = body.addDivision("main-div");
-		
-		// Handle list heading
-		div.setHead(T_head);
-
-		// Handle list div
-		Division hdiv = div.addDivision("handle-list", "well well-light");
-
-		// Handle list heading
-		hdiv.setHead(T_list_head);
-
 		// Handle list info
-		hdiv.addPara(null, "alert alert-info").addContent(T_list_help);					
+		if(StringUtils.isEmpty(filterUrl)) {
+			hdiv.addPara(null, "alert alert-info").addContent(T_list_help.parameterize(prefix));
+		}else{
+			hdiv.addPara(null, "alert alert-info").addContent(T_list_filtered_help.parameterize(filterUrl, prefix));
+		}
 
 		// Number of results
 		hdiv.addPara(T_head1_none.parameterize(firstIndex, lastIndex,
@@ -246,8 +250,8 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			org.dspace.app.xmlui.wing.element.List searchForm = hform.addList("handle-search-form", org.dspace.app.xmlui.wing.element.List.TYPE_FORM);
 			Text text = searchForm.addItem().addText("text_search");
 			text.setHelp("Enter url or pid suffix and press the appropriate button to perform search");
-			searchForm.addItem().addButton("submit_search_url");
-			searchForm.addItem().addButton("submit_search_pid");
+			searchForm.addItem().addButton("submit_search_url").setValue(T_search_url);
+			searchForm.addItem().addButton("submit_search_pid").setValue(T_search_pid);
 		}
 
 		// Continuation for cocoon workflow

@@ -2397,6 +2397,18 @@
 	<message key="xmlui.administrative.handle.HandleEditForm.handle_label">Handle:</message>
 	<message key="xmlui.administrative.handle.HandleEditForm.url_label">URL:</message>
 
+	<message key="xmlui.administrative.handle.ManageExternalHandles.title">Handles</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.head">Handles</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.trail">Handles</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.list_head">Handle List</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.list_help">This is the list of all handles under prefix {0}.</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.list_filtered_help">These are the result for search of term {0} under prefix {1}.</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.new_external_handle">New handle</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.delete_handle">Delete handle</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.edit_handle">Edit handle</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.para_no_results">Unfortunately, no results were found.</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.button_search_url">Search in urls</message>
+	<message key="xmlui.administrative.handle.ManageExternalHandles.button_search_pid">Goto PID</message>
 
     <!-- </UFAL> -->
 

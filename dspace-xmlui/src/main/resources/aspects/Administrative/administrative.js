@@ -2181,7 +2181,7 @@ function doManageExternalPrefix(prefix){
 	var result = null;
 
 	do{
-		sendPageAndWait("admin/handle/external",{"prefix":prefix}, result);
+		sendPageAndWait("admin/handle/external",{"prefix":prefix, "filter":null}, result);
 		result = doManageExternalButtons(prefix);
 
 	}while(true)
