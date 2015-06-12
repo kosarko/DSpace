@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +15,8 @@ import java.util.Map.Entry;
 
 import cz.cuni.mff.ufal.dspace.handle.ConfigurableHandleIdentifierProvider;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dspace.handle.HandleManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,7 +31,10 @@ import com.google.gson.reflect.TypeToken;
 public class PIDServiceEPICv2 extends AbstractPIDService
 {
 
-    Logger log = Logger.getLogger(PIDServiceEPICv2.class);
+    private static final Logger log = Logger.getLogger(PIDServiceEPICv2.class);
+    private static final Type handleListType = new TypeToken<List<Handle>>()
+    {
+    }.getType();
 
     public PIDServiceEPICv2() throws Exception
     {
@@ -119,10 +119,7 @@ public class PIDServiceEPICv2 extends AbstractPIDService
         HashMap<String, Object> params = new HashMap<String, Object>();
         params.put(PARAMS.PID.toString(), PID);
         String response = sendPIDCommand(HTTPMethod.GET, params);
-        // Configure Gson
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Handle.class, new HandleDeserializer());
-        Gson gson = gsonBuilder.create();
+        Gson gson = getGsonWithHandleDeserializers(null);
         Handle handle = gson.fromJson(response, Handle.class);
         return handle.getUrl();
     }
@@ -197,6 +194,30 @@ public class PIDServiceEPICv2 extends AbstractPIDService
         return StringUtils.join(pids, ",");
     }
 
+    public List<Handle> findHandles(Map<String, String> handleFields, String prefix, String depth, int limit, int page) throws Exception{
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        HashMap<String, String> headers = new HashMap<>();
+        addDepth(headers, depth);
+        if (!headers.isEmpty())
+        {
+            params.put(PARAMS.HEADER.toString(), headers);
+        }
+        addLimitPage(handleFields, limit, page);
+        params.put(PARAMS.PID.toString(), prefix + "/?"
+                + getQueryString(handleFields));
+        String response = sendPIDCommand(HTTPMethod.GET, params);
+        Gson gson = getGsonWithHandleDeserializers(prefix);
+        return gson.fromJson(response, handleListType);
+    }
+
+    public List<Handle> findHandles(String query, String prefix, String depth, int limit, int page) throws Exception{
+        Map<String, String> handleFields = new HashMap<>();
+        //surround the query with **, allows substring matches
+        handleFields.put(HANDLE_FIELDS.URL.toString(), String.format("*%s*",query));
+        return findHandles(handleFields, prefix, depth, limit, page);
+    }
+
     @Override
     public boolean supportsCustomPIDs()
     {
@@ -216,36 +237,20 @@ public class PIDServiceEPICv2 extends AbstractPIDService
         HashMap<String, Object> params = new HashMap<>();
 
         HashMap<String, String> headers = new HashMap<>();
-        if (depth != null && depth.matches("^(0|1|infinity)$"))
-        {
-            headers.put("Depth", depth);
-        }
+        addDepth(headers, depth);
         if (!headers.isEmpty())
         {
             params.put(PARAMS.HEADER.toString(), headers);
         }
 
         HashMap<String, String> fields = new HashMap<>();
-        fields.put("limit", Integer.toString(limit));
-        if (limit > 0)
-        {
-            fields.put("page", Integer.toString(page));
-        }
+        addLimitPage(fields, limit, page);
         params.put(PARAMS.PID.toString(), prefix + "/?"
                 + getQueryString(fields));
         String response = sendPIDCommand(HTTPMethod.GET, params);
 
-        // Configure Gson
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Type listType = new TypeToken<List<Handle>>()
-        {
-        }.getType();
-        gsonBuilder.registerTypeAdapter(Handle.class, new HandleDeserializer());
-        gsonBuilder.registerTypeAdapter(listType, new HandlesDeserializer(
-                prefix));
-        Gson gson = gsonBuilder.create();
-        List<Handle> handles = gson.fromJson(response, listType);
-        return handles;
+        Gson gson = getGsonWithHandleDeserializers(prefix);
+        return gson.fromJson(response, handleListType);
     }
 
     public List<Handle> listAllHandles(String prefix) throws Exception
@@ -255,6 +260,10 @@ public class PIDServiceEPICv2 extends AbstractPIDService
     
     public int getCount(String prefix) throws Exception{
        return list(prefix,"0",0,0).size(); 
+    }
+
+    public int getResultCount(String prefix, String query)throws Exception{
+        return findHandles(query, prefix, "0", 0, 0).size();
     }
 
     private String getQueryString(Map<String, String> handleFields)
@@ -268,6 +277,32 @@ public class PIDServiceEPICv2 extends AbstractPIDService
             qstr.append(entry.getValue());
         }
         return qstr.substring(1);
+    }
+
+    private void addDepth(Map<String, String> headers, String depth){
+        if (depth != null && depth.matches("^(0|1|infinity)$"))
+        {
+            headers.put("Depth", depth);
+        }
+    }
+
+    private void addLimitPage(Map<String, String> fields, int limit, int page){
+        fields.put("limit", Integer.toString(limit));
+        if (limit > 0)
+        {
+            fields.put("page", Integer.toString(page));
+        }
+    }
+
+    private Gson getGsonWithHandleDeserializers(String prefix){
+        // Configure Gson
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Handle.class, new HandleDeserializer());
+        if(prefix != null){
+            gsonBuilder.registerTypeAdapter(handleListType, new HandlesDeserializer(
+                prefix));
+        }
+        return gsonBuilder.create();
     }
 
     private JsonArray getEPICJsonRepresentation(Map<String, String> handleFields)
@@ -356,7 +391,7 @@ public class PIDServiceEPICv2 extends AbstractPIDService
     static class HandlesDeserializer implements JsonDeserializer<List<Handle>>
     {
 
-        private String prefix;
+        private final String prefix;
 
         public HandlesDeserializer(String prefix)
         {

@@ -116,8 +116,12 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 
 		int resultCount = -1;
 		try{
-			//todo filterUrl
-            resultCount = pidService.getCount(prefix);
+			//if we have filter then do a search otherwise list all
+			if(StringUtils.isEmpty(filterUrl)) {
+				resultCount = pidService.getCount(prefix);
+			}else{
+				resultCount = pidService.getResultCount(prefix, filterUrl);
+			}
 		}catch(Exception e){
 		    log.error(e);
 		}
@@ -140,13 +144,16 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 			lastIndex = resultCount;
 
         // Retrieve records
-		//TODO search by url
-		//TODO enter PID
 		//TODO messages
         List<PIDServiceEPICv2.Handle> handles = null;
 		try
         {
-            handles = pidService.list(prefix,"1",resultsPerPage,page);
+			//if we have filter then do a search otherwise list all
+			if(StringUtils.isEmpty(filterUrl)) {
+				handles = pidService.list(prefix, "1", resultsPerPage, page);
+			}else{
+				handles = pidService.findHandles(filterUrl, prefix, "1", resultsPerPage, page);
+			}
         }
         catch (Exception e)
         {
@@ -235,7 +242,7 @@ public class ManageExternalHandles extends AbstractDSpaceTransformer {
 		hlactions.addButton("submit_delete").setValue(T_delete_handle);
 
 		//View this menu only on "full" list
-		if(filterUrl == null) {
+		if(StringUtils.isEmpty(filterUrl)) {
 			org.dspace.app.xmlui.wing.element.List searchForm = hform.addList("handle-search-form", org.dspace.app.xmlui.wing.element.List.TYPE_FORM);
 			Text text = searchForm.addItem().addText("text_search");
 			text.setHelp("Enter url or pid suffix and press the appropriate button to perform search");
