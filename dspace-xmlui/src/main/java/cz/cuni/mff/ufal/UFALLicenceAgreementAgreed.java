@@ -1,7 +1,6 @@
 /* Created for LINDAT/CLARIN */
 package cz.cuni.mff.ufal;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.http.HttpEnvironment;
+import org.dspace.app.xmlui.aspect.administrative.FlowResult;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.HandleUtil;
 import org.dspace.app.xmlui.wing.Message;
@@ -29,7 +29,6 @@ import org.dspace.content.Item;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Utils;
 import org.dspace.handle.HandleManager;
-import org.dspace.utils.DSpace;
 
 import cz.cuni.mff.ufal.lindat.utilities.hibernate.LicenseResourceMapping;
 import cz.cuni.mff.ufal.lindat.utilities.hibernate.LicenseResourceUserAllowance;
@@ -102,24 +101,16 @@ public class UFALLicenceAgreementAgreed extends AbstractDSpaceTransformer {
 			// Loading variables through the web browser
 			Request request = ObjectModelHelper.getRequest(objectModel);
 			HttpServletResponse response = (HttpServletResponse)objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT);
-			HttpSession session = request.getSession();
 
 			String handle = request.getParameter("handle");
 
-			boolean allzip = Boolean.parseBoolean(request.getParameter("allzip"));
-
-			int requestedBitstreamId = -1;
-			String bitid = request.getParameter("bitstreamId");
-
-			if (bitid != null && !bitid.isEmpty()) {
-				requestedBitstreamId = Integer.parseInt(bitid);
-			}
+			boolean allzip = parameters.getParameterAsBoolean("allzip", false);
+			int requestedBitstreamId = parameters.getParameterAsInteger("bitstreamId",-1);
 
 			Item item = (Item) HandleManager.resolveToObject(context, handle);
 
 			HashMap<String, String> seenExtra = new HashMap<String, String>();
 			ArrayList<ExtraLicenseField> actions = new ArrayList<ExtraLicenseField>();
-			ArrayList<ExtraLicenseField> errors = new ArrayList<ExtraLicenseField>();
 
 			for (Object extra : request.getParameters().keySet()) {
 				String ext = extra.toString();
@@ -129,15 +120,10 @@ public class UFALLicenceAgreementAgreed extends AbstractDSpaceTransformer {
 
 				ExtraLicenseField exField = ExtraLicenseField.valueOf(ext.substring(6)); // ext.substring(6) will remove the prefix extra_
 
+				//validated before we get here
 				if (exField.isMetadata()) {
 					String val = request.getParameter(ext);
-
-					if (!exField.validate(val)) {
-						errors.add(exField);
-					}
-
 					if (val != null && !val.isEmpty()) {
-						session.setAttribute("extra_" + exField.name(), val);
 						seenExtra.put(exField.name(), val);
 					}
 				} else {
@@ -145,11 +131,6 @@ public class UFALLicenceAgreementAgreed extends AbstractDSpaceTransformer {
 				}
 			}
 			
-			if(!errors.isEmpty()) {
-				this.errorRedirect(allzip, requestedBitstreamId, item, errors);
-				return;
-			}
-
 			StringBuilder ids = new StringBuilder();
 
 			functionalityManager.openSession();
@@ -292,22 +273,38 @@ public class UFALLicenceAgreementAgreed extends AbstractDSpaceTransformer {
 		}
 	}
 
-	private void errorRedirect(boolean allzip, int bitstreamID, Item item, ArrayList<ExtraLicenseField> errors) throws IOException {
+	public static FlowResult validate(Map objectModel){
+
 		Request request = ObjectModelHelper.getRequest(objectModel);
-		HttpServletResponse response = (HttpServletResponse)objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT);		
-		String redirectURL = request.getContextPath() + "/handle/"+ item.getHandle();
-		if (allzip) {
-			redirectURL += "/ufal-licence-agreement?allzip=true";
-		} else {
-			redirectURL += "/ufal-licence-agreement?bitstreamId=" + bitstreamID;
-		}
-		if(!errors.isEmpty()) {
-			redirectURL += "&err=";
-			for(ExtraLicenseField errField : errors) {
-				redirectURL += errField.name() + ",";
+		HttpSession session = request.getSession();
+		FlowResult result = new FlowResult();
+		result.setContinue(true);
+		result.setOutcome(true);
+
+		List<String> errors = new ArrayList<>();
+
+		for (Object extra : request.getParameters().keySet()) {
+			String ext = extra.toString();
+			if (!ext.startsWith("extra_")) {
+				continue;
+			}
+			ExtraLicenseField exField = ExtraLicenseField.valueOf(ext.substring(6)); // ext.substring(6) will remove the prefix extra_
+			if (exField.isMetadata()) {
+				String val = request.getParameter(ext);
+				if (!exField.validate(val)) {
+					errors.add(exField.toString());
+				}
+				if (val != null && !val.isEmpty()) {
+					session.setAttribute("extra_" + exField.name(), val);
+				}
 			}
 		}
-		response.sendRedirect(redirectURL);
+		if(!errors.isEmpty()){
+			result.setContinue(false);
+			result.setOutcome(false);
+			result.setErrors(errors);
+		}
+		return result;
 	}
 
 }

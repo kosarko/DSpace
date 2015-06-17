@@ -87,6 +87,11 @@ and searching the repository.
 
 
 	</map:components>
+
+	<map:flow language="javascript">
+		<map:script src="licenseAgreement.js"/>
+	</map:flow>
+
 	<map:pipelines>
 		<map:pipeline>
 
@@ -137,45 +142,40 @@ and searching the repository.
 			<map:match pattern="restricted-resource">
 				<map:transform type="RestrictedItem" />
 				<map:serialize type="xml" />
+                <map:match type="HandleAuthorizedMatcher" pattern="!READ">
+                        <map:select type="AuthenticatedSelector">
+                                <map:when test="eperson">
+                                  <map:transform type="RestrictedItem"/>
+                                  <map:serialize/>
+                                </map:when>
+                                <map:otherwise>
+                                  <map:act type="StartAuthentication">
+                                      <map:parameter name="header"
+                                      value="xmlui.ArtifactBrowser.RestrictedItem.auth_header"/>
+                                      <map:parameter name="message"
+                                      value="xmlui.ArtifactBrowser.RestrictedItem.auth_message"
+                                      />
+                                  </map:act>
+                                  <map:serialize/>
+                                </map:otherwise>
+                        </map:select>
+                </map:match>
+            </map:match>
 
 
-                                <map:match type="HandleAuthorizedMatcher" pattern="!READ">
-                                        <map:select type="AuthenticatedSelector">
-                                                <map:when test="eperson">
-                                                  <map:transform type="RestrictedItem"/>
-                                                  <map:serialize/>
-                                                </map:when>
-                                                <map:otherwise>
-                                                  <map:act type="StartAuthentication">
-                                                  <map:parameter name="header"
-                                                  value="xmlui.ArtifactBrowser.RestrictedItem.auth_header"/>
-                                                  <map:parameter name="message"
-                                                  value="xmlui.ArtifactBrowser.RestrictedItem.auth_message"
-                                                  />
-                                                  </map:act>
-                                                  <map:serialize/>
-                                                </map:otherwise>
-                                        </map:select>
-                                </map:match>
-                        </map:match>
+            <!-- <UFAL> licence agreement -->
+            <map:match pattern="license/agree">
+                <map:match type="request" pattern="license-continue">
+                    <map:call continuation="{1}"/>
+                </map:match>
+                <map:call function="startLicenseAgree"/>
+            </map:match>
 
-
-                        <!-- <UFAL> licence agreement -->
-                        <map:match pattern="ufal-licence-agreement">
-                                <map:transform type="UFALLicenceAgreement"/>
-                                <map:serialize type="xml"/>
-                        </map:match>
-
-                        <map:match pattern="ufal-licence-agreement-agreed">
-                                <map:transform type="UFALLicenceAgreementAgreed"/>
-                                <map:serialize type="xml"/>
-                        </map:match>
-
-                        <map:match pattern="ufal-user-validation">
-                                <map:transform type="UFALUserValidation"/>
-                                <map:serialize type="xml"/>
+            <map:match pattern="ufal-user-validation">
+                    <map:transform type="UFALUserValidation"/>
+                    <map:serialize type="xml"/>
 			</map:match>
-                        <!-- </UFAL> -->
+            <!-- </UFAL> -->
 
 
 			<!-- Handle specific features -->
@@ -213,7 +213,11 @@ and searching the repository.
                                 <map:match pattern="handle/*/*/ufal-licence-agreement">
                                         <map:select type="AuthenticatedSelector">
 				                                <map:when test="eperson">                                                                                       
-                                                        <map:transform type="UFALLicenceAgreement"/>
+                                                        <map:transform type="UFALLicenceAgreement">
+                                                        	<map:parameter name="allzip" value="{flow-attribute:allzip}"/>
+                                                        	<map:parameter name="bitstreamId" value="{flow-attribute:bitstreamId}"/>
+                                                        	<map:parameter name="errors" value="{flow-attribute:errors}"/>
+                                                        </map:transform>
                                                         <map:serialize type="xml"/>
                                                 </map:when>
                                                 <map:otherwise>
@@ -226,7 +230,7 @@ and searching the repository.
                                         <map:transform type="UFALLicenceAgreementAgreed"/>
                                         <map:serialize type="xml"/>
                                 </map:match>
-                                <!-- </UFAL> -->
+                    <!-- </UFAL> -->
 
 
 				<!-- Community, Collection, and Item Viewers -->

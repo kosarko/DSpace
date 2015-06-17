@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
 
+import cz.cuni.mff.ufal.lindat.utilities.HibernateFunctionalityManager;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.log4j.Logger;
@@ -95,9 +96,9 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
 			Request request = ObjectModelHelper.getRequest(objectModel);
 
 			HttpSession session = request.getSession();
-			
+
 			ArrayList<ExtraLicenseField> errors = new ArrayList<ExtraLicenseField>();
-			String err = request.getParameter("err");
+			String err = parameters.getParameter("errors");
 			if(err!=null && !err.isEmpty()) {
 				String temp[] = err.split(",");
 				for(String error : temp) {
@@ -115,20 +116,14 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
 			list.addItem().addContent(T_para1);
 
 
-			boolean allzip = Boolean.parseBoolean(request.getParameter("allzip"));
-			int bitstreamID = -1;
-			String redirectURL = contextPath + "/handle/" + dso.getHandle();
-			
+			boolean allzip = parameters.getParameterAsBoolean("allzip", false);
+			int bitstreamID = parameters.getParameterAsInteger("bitstreamId", -1);
+
 			ArrayList<String> licenseRequiresExtra = new ArrayList<String>();
-						
+
 			if (allzip) {
 
-				// this is probably not enough
-				Item item = (Item)dso;
-				Metadatum[] lic = item.getMetadata("dc", "rights", "uri", Item.ANY);
-				String licURL = lic[0].value;
-
-				LicenseDefinition license = functionalityManager.getLicenseByDefinition(licURL);
+				LicenseDefinition license = getLicenseDefinitionFromMetadata(functionalityManager, dso);
 				list.addItem().addXref(license.getDefinition(), license.getName(), "target_blank");
 				String lr = license.getRequiredInfo();
 				if(lr!=null) {
@@ -136,12 +131,17 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
 						licenseRequiresExtra.add(r.trim());
 					}
 				}
-				redirectURL += "/ufal-licence-agreement-agreed?handle=" + dso.getHandle() + "&allzip=true";
 			} else {
 			
-				bitstreamID = Integer.parseInt(request.getParameter("bitstreamId"));
-				int userID = context.getCurrentUser().getID();		
+				int userID = context.getCurrentUser().getID();
 				java.util.List<LicenseDefinition> licenses = functionalityManager.getLicensesToAgree(userID, bitstreamID);
+
+				//if there are no licenses to agree, display what allzip would (but we shouldn't get here in that case)
+				if(licenses.isEmpty()){
+					LicenseDefinition license = getLicenseDefinitionFromMetadata(functionalityManager, dso);
+					licenses = new ArrayList<>();
+					licenses.add(license);
+				}
 
 				Division licences_div = licenceAgreement.addDivision("licences-definition", "");
 				
@@ -160,12 +160,16 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
 						}
 					}
 				}
-				redirectURL += "/ufal-licence-agreement-agreed?handle=" + dso.getHandle() + "&bitstreamId=" + bitstreamID;
 			}
 			
 			licenceAgreement.addPara(" ");
 			licenceAgreement.addPara(T_signer_head);
-			Division form = licenceAgreement.addInteractiveDivision("license-form", redirectURL, Division.METHOD_POST);
+			String action = contextPath + "/handle/" + dso.getHandle() + "/license/agree";
+			Division form = licenceAgreement.addInteractiveDivision("license-form", action, Division.METHOD_POST);
+
+			form.addHidden("license-continue").setValue(knot.getId());
+			form.addHidden("allzip").setValue(String.valueOf(allzip));
+			form.addHidden("bitstreamId").setValue(bitstreamID);
 			
 			String personCredentials = context.getCurrentUser().getFirstName() + " " + context.getCurrentUser().getLastName();
 			String personId = context.getCurrentUser().getEmail();
@@ -267,5 +271,13 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
 		}
 		
 		functionalityManager.closeSession();
+	}
+
+	private LicenseDefinition getLicenseDefinitionFromMetadata(IFunctionalities functionalityManager, DSpaceObject dso){
+		// this is probably not enough
+		Item item = (Item)dso;
+		Metadatum[] lic = item.getMetadata("dc", "rights", "uri", Item.ANY);
+		String licURL = lic[0].value;
+		return functionalityManager.getLicenseByDefinition(licURL);
 	}
 }
