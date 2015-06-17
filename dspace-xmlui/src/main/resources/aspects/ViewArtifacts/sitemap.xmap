@@ -164,7 +164,7 @@ and searching the repository.
 
 
             <!-- <UFAL> licence agreement -->
-            <map:match pattern="license/agree">
+            <map:match pattern="handle/*/*/license/agree">
                 <map:match type="request" pattern="license-continue">
                     <map:call continuation="{1}"/>
                 </map:match>
