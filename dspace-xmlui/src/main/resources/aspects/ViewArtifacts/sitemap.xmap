@@ -96,6 +96,14 @@ and searching the repository.
 		<map:pipeline>
 
 
+            <!-- <UFAL> licence agreement -->
+            <map:match pattern="handle/*/*/license/agree">
+                <map:match type="request" pattern="license-continue">
+                    <map:call continuation="{1}"/>
+                </map:match>
+                <map:call function="startLicenseAgree"/>
+            </map:match>
+            <!-- </UFAL> -->
                         <map:generate/>
 
                         <!--
@@ -163,14 +171,8 @@ and searching the repository.
             </map:match>
 
 
-            <!-- <UFAL> licence agreement -->
-            <map:match pattern="handle/*/*/license/agree">
-                <map:match type="request" pattern="license-continue">
-                    <map:call continuation="{1}"/>
-                </map:match>
-                <map:call function="startLicenseAgree"/>
-            </map:match>
 
+            <!-- <UFAL> -->
             <map:match pattern="ufal-user-validation">
                     <map:transform type="UFALUserValidation"/>
                     <map:serialize type="xml"/>
