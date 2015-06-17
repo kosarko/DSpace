@@ -227,7 +227,10 @@ and searching the repository.
                                 </map:match>
 
                                 <map:match pattern="handle/*/*/ufal-licence-agreement-agreed">
-                                        <map:transform type="UFALLicenceAgreementAgreed"/>
+                                        <map:transform type="UFALLicenceAgreementAgreed">
+                                            <map:parameter name="allzip" value="{flow-attribute:allzip}"/>
+                                            <map:parameter name="bitstreamId" value="{flow-attribute:bitstreamId}"/>
+                                        </map:transform>
                                         <map:serialize type="xml"/>
                                 </map:match>
                     <!-- </UFAL> -->

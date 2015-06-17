@@ -444,11 +444,11 @@ public class BitstreamReader extends AbstractReader implements Recyclable
               redictURL += item.getHandle();
 
           if ( include_bistreamId ) {
-              redictURL += "/ufal-licence-agreement?bitstreamId="
+              redictURL += "/license/agree?bitstreamId="
                       + bitstream.getID();
           }
           else {
-              redictURL += "/ufal-licence-agreement?allzip=true";
+              redictURL += "/license/agree?allzip=true";
           }
 
           HttpServletResponse httpResponse = (HttpServletResponse)
