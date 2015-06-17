@@ -148,7 +148,7 @@ function doLicenseAgree(){
         }
         var bitId = -1;
         if(cocoon.request.get("bitstreamId")){
-            bitstreamId = cocoon.request.get("bitstreamId");
+            bitId = cocoon.request.get("bitstreamId");
         }
         sendPageAndWait("ufal-licence-agreement", {"allzip":allzip, "bitstreamId":bitId}, result);
         result = UFALLicenceAgreementAgreed.validate(getObjectModel());
