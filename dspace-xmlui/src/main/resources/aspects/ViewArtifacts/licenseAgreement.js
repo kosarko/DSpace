@@ -129,7 +129,8 @@ function sendPage(uri,bizData,result)
  */
 function startLicenseAgree()
 {
-    doLicenseAgree();
+    var handleUrl = "handle/" + cocoon.parameters.handle;
+    doLicenseAgree(handleUrl);
 
     // This should never return, but just in case it does then point
     // the user to the home page.
@@ -138,7 +139,7 @@ function startLicenseAgree()
     cocoon.exit();
 }
 
-function doLicenseAgree(){
+function doLicenseAgree(handleUrl){
     var result;
     var err;
     do{
@@ -150,12 +151,12 @@ function doLicenseAgree(){
         if(cocoon.request.get("bitstreamId")){
             bitId = cocoon.request.get("bitstreamId");
         }
-        sendPageAndWait("ufal-licence-agreement", {"allzip":allzip, "bitstreamId":bitId}, result);
+        sendPageAndWait(handleUrl + "/ufal-licence-agreement", {"allzip":allzip, "bitstreamId":bitId}, result);
         result = UFALLicenceAgreementAgreed.validate(getObjectModel());
 
         if(cocoon.requst.get("confirm_license") && result.getContinue()){
             result = null;
-            sendPage("ufal-licence-agreement-agreed", {"allzip":allzip,"bitstreamId":bitId}, result);
+            sendPage(handleUrl + "/ufal-licence-agreement-agreed", {"allzip":allzip,"bitstreamId":bitId}, result);
         }
 
     }while(true)

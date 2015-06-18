@@ -97,11 +97,13 @@ and searching the repository.
 
 
             <!-- <UFAL> licence agreement -->
-            <map:match pattern="handle/*/*/license/agree">
+            <map:match pattern="handle/**/license/agree">
                 <map:match type="request" pattern="license-continue">
                     <map:call continuation="{1}"/>
                 </map:match>
-                <map:call function="startLicenseAgree"/>
+                <map:call function="startLicenseAgree">
+                	<map:parameter name="handle" value="{1}"/>
+                </map:call>
             </map:match>
             <!-- </UFAL> -->
                         <map:generate/>
