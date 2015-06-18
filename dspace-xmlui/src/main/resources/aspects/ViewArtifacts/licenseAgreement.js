@@ -161,6 +161,9 @@ function doLicenseAgree(handleUrl){
 
         if(cocoon.request.get("confirm_license") && result.getContinue()){
             result = null;
+            cocoon.log.error("====== " + cocoon.request.get("handle") );
+            cocoon.log.error("====== " + cocoon.request.get("item-handle") );
+            cocoon.log.error("====== " + cocoon.request.get("extra_EXTRA_EMAIL") );
             var agreement = new UFALLicenceAgreementAgreed();
             agreement.agree(getDSContext(), getObjectModel(), cocoon.request,
                 java.lang.Boolean.parseBoolean(allzip), java.lang.Integer.parseInt(bitId));
