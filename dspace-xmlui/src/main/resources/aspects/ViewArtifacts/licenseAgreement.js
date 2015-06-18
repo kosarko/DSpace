@@ -162,7 +162,7 @@ function doLicenseAgree(handleUrl){
         if(cocoon.request.get("confirm_license") && result.getContinue()){
             result = null;
             var agreement = new UFALLicenceAgreementAgreed();
-            agreement.agree(getDSContext(), getObjectModel(),
+            agreement.agree(getDSContext(), getObjectModel(), cocoon.request,
                 java.lang.Boolean.parseBoolean(allzip), java.lang.Integer.parseInt(bitId));
             cocoon.exit();
         }
