@@ -102,7 +102,7 @@ public class UFALLicenceAgreementAgreed extends AbstractDSpaceTransformer {
 			Request request = ObjectModelHelper.getRequest(objectModel);
 			HttpServletResponse response = (HttpServletResponse)objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT);
 
-			String handle = request.getParameter("handle");
+			String handle = parameters.getParameter("handle");
 
 			boolean allzip = parameters.getParameterAsBoolean("allzip", false);
 			int requestedBitstreamId = parameters.getParameterAsInteger("bitstreamId",-1);

@@ -234,6 +234,7 @@ and searching the repository.
                                         <map:transform type="UFALLicenceAgreementAgreed">
                                             <map:parameter name="allzip" value="{flow-attribute:allzip}"/>
                                             <map:parameter name="bitstreamId" value="{flow-attribute:bitstreamId}"/>
+                							<map:parameter name="handle" value="{1}/{2}"/>
                                         </map:transform>
                                         <map:serialize type="xml"/>
                                 </map:match>
