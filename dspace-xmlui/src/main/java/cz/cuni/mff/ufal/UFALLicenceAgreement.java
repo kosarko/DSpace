@@ -330,6 +330,7 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
 		Context context = ObjectModelHelper.getContext(objectModel);
 		functionalityManager.closeSession();
 		return false;*/
+		return true;
 	}
 
 }
