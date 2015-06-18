@@ -157,6 +157,7 @@ function doLicenseAgree(handleUrl){
         if(cocoon.request.get("confirm_license") && result.getContinue()){
             result = null;
             sendPage(handleUrl + "/ufal-licence-agreement-agreed", {"allzip":allzip,"bitstreamId":bitId}, result);
+            cocoon.exit();
         }
 
     }while(true)
