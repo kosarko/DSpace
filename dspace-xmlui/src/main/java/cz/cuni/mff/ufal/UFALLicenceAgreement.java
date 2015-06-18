@@ -3,13 +3,16 @@ package cz.cuni.mff.ufal;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import cz.cuni.mff.ufal.lindat.utilities.HibernateFunctionalityManager;
+import org.apache.cocoon.environment.Context;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.log4j.Logger;
+import org.dspace.app.xmlui.aspect.administrative.FlowResult;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.HandleUtil;
 import org.dspace.app.xmlui.wing.Message;
@@ -280,4 +283,53 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
 		String licURL = lic[0].value;
 		return functionalityManager.getLicenseByDefinition(licURL);
 	}
+
+	public static FlowResult validate(Map objectModel){
+
+		Request request = ObjectModelHelper.getRequest(objectModel);
+		HttpSession session = request.getSession();
+		FlowResult result = new FlowResult();
+		result.setContinue(true);
+		result.setOutcome(true);
+
+		java.util.List<String> errors = new ArrayList<>();
+
+		for (Object extra : request.getParameters().keySet()) {
+			String ext = extra.toString();
+			if (!ext.startsWith("extra_")) {
+				continue;
+			}
+			ExtraLicenseField exField = ExtraLicenseField.valueOf(ext.substring(6)); // ext.substring(6) will remove the prefix extra_
+			if (exField.isMetadata()) {
+				String val = request.getParameter(ext);
+				if (!exField.validate(val)) {
+					errors.add(exField.toString());
+				}
+				if (val != null && !val.isEmpty()) {
+					session.setAttribute("extra_" + exField.name(), val);
+				}
+			}
+		}
+		if(!errors.isEmpty()){
+			result.setContinue(false);
+			result.setOutcome(false);
+			result.setErrors(errors);
+		}
+		return result;
+	}
+
+	/**
+	 * For the time being true
+	 * @param objectModel
+	 * @return
+	 */
+	public static boolean signatureNeeded(Map objectModel){
+		/*IFunctionalities functionalityManager = DSpaceApi.getFunctionalityManager();
+		functionalityManager.openSession();
+		Request request = ObjectModelHelper.getRequest(objectModel);
+		Context context = ObjectModelHelper.getContext(objectModel);
+		functionalityManager.closeSession();
+		return false;*/
+	}
+
 }

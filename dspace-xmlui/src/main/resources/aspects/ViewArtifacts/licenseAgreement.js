@@ -8,6 +8,7 @@
 
 importClass(Packages.org.dspace.app.xmlui.utils.FlowscriptUtils);
 importClass(Packages.org.dspace.app.xmlui.utils.ContextUtil);
+importClass(Packages.cz.cuni.mff.ufal.UFALLicenceAgreement);
 importClass(Packages.cz.cuni.mff.ufal.UFALLicenceAgreementAgreed);
 
 /**
@@ -130,7 +131,10 @@ function sendPage(uri,bizData,result)
 function startLicenseAgree()
 {
     var handleUrl = "handle/" + cocoon.parameters.handle;
-    doLicenseAgree(handleUrl);
+    var signatureNeeded = UFALLicenceAgreement.signatureNeeded(getObjectModel());
+    if(signatureNeeded) {
+        doLicenseAgree(handleUrl);
+    }
 
     // This should never return, but just in case it does then point
     // the user to the home page.
@@ -152,13 +156,23 @@ function doLicenseAgree(handleUrl){
             bitId = cocoon.request.get("bitstreamId");
         }
         sendPageAndWait(handleUrl + "/ufal-licence-agreement", {"allzip":allzip, "bitstreamId":bitId}, result);
-        result = UFALLicenceAgreementAgreed.validate(getObjectModel());
+        assertEperson();
+        result = UFALLicenceAgreement.validate(getObjectModel());
 
         if(cocoon.request.get("confirm_license") && result.getContinue()){
             result = null;
-            sendPage(handleUrl + "/ufal-licence-agreement-agreed", {"allzip":allzip,"bitstreamId":bitId}, result);
+            var agreement = new UFALLicenceAgreementAgreed();
+            agreement.agree(getDSContext(), getObjectModel(), allzip, bitId);
             cocoon.exit();
         }
 
     }while(true)
+}
+
+function assertEperson(){
+    if(getDSContext().getCurrentUser() != null){
+        return true;
+    }
+    cocoon.redirectTo(cocoon.request.getContextPath());
+    cocoon.exit();
 }

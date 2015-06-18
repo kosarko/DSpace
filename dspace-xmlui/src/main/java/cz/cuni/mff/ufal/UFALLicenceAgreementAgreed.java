@@ -1,7 +1,6 @@
 /* Created for LINDAT/CLARIN */
 package cz.cuni.mff.ufal;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,26 +8,19 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.http.HttpEnvironment;
-import org.dspace.app.xmlui.aspect.administrative.FlowResult;
-import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
-import org.dspace.app.xmlui.utils.HandleUtil;
-import org.dspace.app.xmlui.wing.Message;
-import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.PageMeta;
 import org.dspace.content.Bitstream;
 import org.dspace.content.Bundle;
-import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
 import org.dspace.core.ConfigurationManager;
+import org.dspace.core.Context;
 import org.dspace.core.Utils;
+import org.dspace.eperson.EPerson;
 import org.dspace.handle.HandleManager;
+import static org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer.encodeForURL;
 
 import cz.cuni.mff.ufal.lindat.utilities.hibernate.LicenseResourceMapping;
 import cz.cuni.mff.ufal.lindat.utilities.hibernate.LicenseResourceUserAllowance;
@@ -37,75 +29,30 @@ import cz.cuni.mff.ufal.lindat.utilities.hibernate.UserRegistration;
 import cz.cuni.mff.ufal.lindat.utilities.interfaces.IFunctionalities;
 
 /**
- * Display to the user that the license is successfully signed.
- * 
  * @author Amir Kamran
  */
 
-public class UFALLicenceAgreementAgreed extends AbstractDSpaceTransformer {
+public class UFALLicenceAgreementAgreed {
+	private static final org.apache.log4j.Logger log = Logger.getLogger(UFALLicenceAgreementAgreed.class);
 
-	private static final Message T_title = message("xmlui.ufal.UFALLicenceAgreementAgreed.title");
-
-	private static final Message T_dspace_home = message("xmlui.general.dspace_home");
-
-	private static final Message T_trail_item = message("xmlui.ufal.UFALLicenceAgreementAgreed.trail_item");
-
-	private static final Message T_trail_license_agreed = message("xmlui.ufal.UFALLicenceAgreementAgreed.trail_license_agreed");
-
-	private static final Message T_head = message("xmlui.ufal.UFALLicenceAgreementAgreed.head");
-
-	public void addPageMeta(PageMeta pageMeta) throws WingException,
-			SQLException {
-		// Set the page title
-		pageMeta.addMetadata("title").addContent(T_title);
-
-		DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
-		if (!(dso instanceof Item)) {
-			return;
-		}
-
-		Item item = (Item) dso;
-
-		pageMeta.addTrailLink(contextPath + "/", T_dspace_home);
-		HandleUtil.buildHandleTrail(item, pageMeta, contextPath);
-		pageMeta.addTrailLink(contextPath + "/handle/" + item.getHandle(),
-				T_trail_item);
-		pageMeta.addTrail().addContent(T_trail_license_agreed);
-	}
-
-	public void addBody(Body body) throws WingException {
-		Division licenceAgreementAgreed = null;
+	/**
+	 * Process the agreement form and redirect.
+	 * @param context
+	 * @param objectModel
+	 * @param allzip
+	 * @param requestedBitstreamId
+	 */
+	public void agree(Context context, Map objectModel, boolean allzip, int requestedBitstreamId){
 		IFunctionalities functionalityManager = DSpaceApi.getFunctionalityManager();
 
 		try {
-
-			licenceAgreementAgreed = body.addDivision("ufal-licence-agreement-agreed", "primary");
-			licenceAgreementAgreed.setHead(T_head);
-
-			// First check the availibility of the plugin
-			if (functionalityManager.isFunctionalityEnabled("lr.license.agreement") == false) {
-				functionalityManager.setErrorMessage("xmlui.ufal.UFALLicenceAgreement.functionality_blocked", false);
-				DSpaceXmluiApi.app_xmlui_aspect_eperson_postError(licenceAgreementAgreed);
-				return;
-			}
-
-			// If we have the user that is not logged in, we terminate
-			if (context.getCurrentUser() == null) {
-				functionalityManager.setErrorMessage(
-					"xmlui.ufal.UFALLicenceAgreementAgreed.user_login_error", false
-				);
-				DSpaceXmluiApi.app_xmlui_aspect_eperson_postError(licenceAgreementAgreed);
-				return;
-			}
-
 			// Loading variables through the web browser
 			Request request = ObjectModelHelper.getRequest(objectModel);
 			HttpServletResponse response = (HttpServletResponse)objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT);
 
-			String handle = parameters.getParameter("handle");
+			EPerson eperson = context.getCurrentUser();
 
-			boolean allzip = parameters.getParameterAsBoolean("allzip", false);
-			int requestedBitstreamId = parameters.getParameterAsInteger("bitstreamId",-1);
+			String handle = request.getParameter("handle");
 
 			Item item = (Item) HandleManager.resolveToObject(context, handle);
 
@@ -262,49 +209,8 @@ public class UFALLicenceAgreementAgreed extends AbstractDSpaceTransformer {
 			}
 
 		} catch (Exception e) {
-			try {
-				functionalityManager.setErrorMessage(
-					"xmlui.ufal.UFALLicenceAgreementAgreed.technical_problem", false);
-				DSpaceXmluiApi
-						.app_xmlui_aspect_eperson_postError(licenceAgreementAgreed);
-			} catch (Exception f) {
-			}
+			log.error(e);
 			functionalityManager.close();
 		}
 	}
-
-	public static FlowResult validate(Map objectModel){
-
-		Request request = ObjectModelHelper.getRequest(objectModel);
-		HttpSession session = request.getSession();
-		FlowResult result = new FlowResult();
-		result.setContinue(true);
-		result.setOutcome(true);
-
-		List<String> errors = new ArrayList<>();
-
-		for (Object extra : request.getParameters().keySet()) {
-			String ext = extra.toString();
-			if (!ext.startsWith("extra_")) {
-				continue;
-			}
-			ExtraLicenseField exField = ExtraLicenseField.valueOf(ext.substring(6)); // ext.substring(6) will remove the prefix extra_
-			if (exField.isMetadata()) {
-				String val = request.getParameter(ext);
-				if (!exField.validate(val)) {
-					errors.add(exField.toString());
-				}
-				if (val != null && !val.isEmpty()) {
-					session.setAttribute("extra_" + exField.name(), val);
-				}
-			}
-		}
-		if(!errors.isEmpty()){
-			result.setContinue(false);
-			result.setOutcome(false);
-			result.setErrors(errors);
-		}
-		return result;
-	}
-
 }
