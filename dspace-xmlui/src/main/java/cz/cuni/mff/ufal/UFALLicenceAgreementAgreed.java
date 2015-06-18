@@ -42,16 +42,17 @@ public class UFALLicenceAgreementAgreed {
 	 * @param allzip
 	 * @param requestedBitstreamId
 	 */
-	public void agree(Context context, Map objectModel, Request request, boolean allzip, int requestedBitstreamId){
+	public void agree(Context context, Map objectModel,  boolean allzip, int requestedBitstreamId){
 		IFunctionalities functionalityManager = DSpaceApi.getFunctionalityManager();
 
 		try {
 			// Loading variables through the web browser
+			Request request = ObjectModelHelper.getRequest(objectModel);
 			HttpServletResponse response = (HttpServletResponse)objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT);
 
 			EPerson eperson = context.getCurrentUser();
 
-			String handle = request.getParameter("handle");
+			String handle = request.getParameter("item-handle");
 
 			Item item = (Item) HandleManager.resolveToObject(context, handle);
 
