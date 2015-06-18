@@ -214,6 +214,8 @@ and searching the repository.
 
 					<!-- <UFAL> -->
                                 <map:match pattern="handle/*/*/ufal-licence-agreement">
+                                		<!-- only available through flowscript -->
+                                        <map:parameter name="flow" value="{flow-attribute:flow}"/>
                                         <map:select type="AuthenticatedSelector">
 				                                <map:when test="eperson">                                                                                       
                                                         <map:transform type="UFALLicenceAgreement">
