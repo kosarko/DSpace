@@ -145,7 +145,7 @@ function doLicenseAgree(handleUrl){
     do{
         var allzip = false;
         if(cocoon.request.get("allzip")){
-            allzip = cocoon.request.get.("allzip");
+            allzip = cocoon.request.get("allzip");
         }
         var bitId = -1;
         if(cocoon.request.get("bitstreamId")){
