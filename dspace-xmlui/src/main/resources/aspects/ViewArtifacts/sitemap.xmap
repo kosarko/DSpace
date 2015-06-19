@@ -215,20 +215,23 @@ and searching the repository.
 					<!-- <UFAL> -->
                                 <map:match pattern="handle/*/*/ufal-licence-agreement">
                                 		<!-- only available through flowscript -->
-                                        <map:parameter name="flow" value="{flow-attribute:flow}"/>
-                                        <map:select type="AuthenticatedSelector">
-				                                <map:when test="eperson">                                                                                       
-                                                        <map:transform type="UFALLicenceAgreement">
-                                                        	<map:parameter name="allzip" value="{flow-attribute:allzip}"/>
-                                                        	<map:parameter name="bitstreamId" value="{flow-attribute:bitstreamId}"/>
-                                                        	<map:parameter name="errors" value="{flow-attribute:errors}"/>
-                                                        </map:transform>
-                                                        <map:serialize type="xml"/>
-                                                </map:when>
-                                                <map:otherwise>
-                                                        <map:act type="StartAuthentication"/>
-                                                </map:otherwise>
-                                        </map:select>
+                                        <map:match type="WildcardParameterMatcher" pattern="true">
+                                                <map:parameter name="parameter-name" value="flow"/>
+                                                <map:parameter name="flow" value="{flow-attribute:flow}"/>
+                                                <map:select type="AuthenticatedSelector">
+                                                        <map:when test="eperson">                                                                                       
+                                                                <map:transform type="UFALLicenceAgreement">
+                                                                    <map:parameter name="allzip" value="{flow-attribute:allzip}"/>
+                                                                    <map:parameter name="bitstreamId" value="{flow-attribute:bitstreamId}"/>
+                                                                    <map:parameter name="errors" value="{flow-attribute:errors}"/>
+                                                                </map:transform>
+                                                                <map:serialize type="xml"/>
+                                                        </map:when>
+                                                        <map:otherwise>
+                                                                <map:act type="StartAuthentication"/>
+                                                        </map:otherwise>
+                                                </map:select>
+                                        </map:match>
                                 </map:match>
                     <!-- </UFAL> -->
 
