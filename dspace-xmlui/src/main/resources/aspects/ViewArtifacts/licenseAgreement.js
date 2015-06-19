@@ -136,9 +136,7 @@ function startLicenseAgree()
         doLicenseAgree(handleUrl);
     }
 
-    // This should never return, but just in case it does then point
-    // the user to the home page.
-    cocoon.redirectTo(cocoon.request.getContextPath());
+    cocoon.redirectTo(cocoon.request.getContextPath()+handleUrl);
     getDSContext().complete();
     cocoon.exit();
 }

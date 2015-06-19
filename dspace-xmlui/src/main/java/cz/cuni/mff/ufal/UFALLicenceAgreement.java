@@ -7,8 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import cz.cuni.mff.ufal.lindat.utilities.HibernateFunctionalityManager;
-import org.apache.cocoon.environment.Context;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Request;
 import org.apache.log4j.Logger;
@@ -57,6 +55,8 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
     private static final Message T_signer_message = message("xmlui.ufal.UFALLicenceAgreement.signer_message");
     private static final Message T_signer_agree = message("xmlui.ufal.UFALLicenceAgreement.signer_agree");
     private static final Message T_signer_head = message("xmlui.ufal.UFALLicenceAgreement.signer_head");
+
+	public static final String SessionAttrName = "cz.cuni.mff.ufal.LicenceAgreement.requireAgreement";
 
 	public void addPageMeta(PageMeta pageMeta) throws WingException, SQLException {
 
@@ -319,18 +319,20 @@ public class UFALLicenceAgreement extends AbstractDSpaceTransformer {
 	}
 
 	/**
-	 * For the time being true
+	 * Unless we come from BitstreamReader ignore
 	 * @param objectModel
 	 * @return
 	 */
 	public static boolean signatureNeeded(Map objectModel){
-		/*IFunctionalities functionalityManager = DSpaceApi.getFunctionalityManager();
-		functionalityManager.openSession();
 		Request request = ObjectModelHelper.getRequest(objectModel);
-		Context context = ObjectModelHelper.getContext(objectModel);
-		functionalityManager.closeSession();
-		return false;*/
-		return true;
+		boolean ret = false;
+		HttpSession session = request.getSession();
+		Object requireAgreement = session.getAttribute(SessionAttrName);
+		if(requireAgreement != null){
+			ret = (Boolean)requireAgreement;
+			session.removeAttribute(SessionAttrName);
+		}
+		return ret;
 	}
 
 }
