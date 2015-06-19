@@ -136,7 +136,7 @@ function startLicenseAgree()
         doLicenseAgree(handleUrl);
     }
 
-    cocoon.redirectTo(cocoon.request.getContextPath()+handleUrl);
+    cocoon.redirectTo(cocoon.request.getContextPath() + "/" + handleUrl, true);
     getDSContext().complete();
     cocoon.exit();
 }
@@ -159,9 +159,6 @@ function doLicenseAgree(handleUrl){
 
         if(cocoon.request.get("confirm_license") && result.getContinue()){
             result = null;
-            cocoon.log.error("====== " + cocoon.request.get("handle") );
-            cocoon.log.error("====== " + cocoon.request.get("item-handle") );
-            cocoon.log.error("====== " + cocoon.request.get("extra_EXTRA_EMAIL") );
             var agreement = new UFALLicenceAgreementAgreed();
             agreement.agree(getDSContext(), getObjectModel(),
                 java.lang.Boolean.parseBoolean(allzip), java.lang.Integer.parseInt(bitId));
@@ -175,6 +172,6 @@ function assertEperson(){
     if(getDSContext().getCurrentUser() != null){
         return true;
     }
-    cocoon.redirectTo(cocoon.request.getContextPath());
+    cocoon.redirectTo(cocoon.request.getContextPath(), true);
     cocoon.exit();
 }
