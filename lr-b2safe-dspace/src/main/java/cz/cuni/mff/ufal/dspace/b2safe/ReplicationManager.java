@@ -89,7 +89,7 @@ public class ReplicationManager {
 			config.put(B2SAFE_CONFIGURATION.IRODS_TRANSFER_MAX_THREADS.name(), maxThreads);
 		}
 
-		replicationService = new DataSet(config);
+		replicationService = new HackedDataSet(config);
 		res = replicationService.initB2safeConnection();
 		return res;
 	}
