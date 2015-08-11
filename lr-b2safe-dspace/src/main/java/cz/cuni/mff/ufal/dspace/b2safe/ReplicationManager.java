@@ -261,7 +261,6 @@ public class ReplicationManager {
 		one_do.setFileName(fileName);
 		one_do.setRemoteDirPath(remoteDir);
 		one_do.setRemoteDirPathIsAbsolute(isAbsolute);
-		//fixme local file vs local dir
 		one_do.setLocalFilePath(localDir);
 		replicationService.retrieveOneDOByPath(one_do);
 	}

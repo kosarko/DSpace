@@ -436,7 +436,9 @@ public class ControlPanelReplicationTabHelper {
 			} catch(NumberFormatException e) {
 				
 			}
-			
+
+			//fixme item column empty?
+			//fixme size REP/ORIG displays 118MB/
 			String itemHandle = metadata.get("EUDAT_ROR");
 							
 			String sizes = orig_file_size < 0 ? "NA" : FileUtils.byteCountToDisplaySize(orig_file_size);
