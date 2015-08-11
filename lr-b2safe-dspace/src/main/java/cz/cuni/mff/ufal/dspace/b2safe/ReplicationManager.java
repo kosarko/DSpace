@@ -134,9 +134,6 @@ public class ReplicationManager {
 		List<String> fileNames = new ArrayList<String>();
 		for(DataObject one_do : dos) {
 			String name = one_do.getFileName();
-			if ( null == name ) {
-				name = one_do.getRemoteDirPath();
-			}
 			fileNames.add(name);
 		}
 		return fileNames;
@@ -221,6 +218,9 @@ public class ReplicationManager {
 
 	/**
 	 * Delete file from replicadirectory
+	 * seeing JargonException caught and logged on delete:No access to item in catalog
+	 * org.irods.jargon.core.exception.CatNoAccessException: No access to item in catalog
+	 * might mean insufficient rights.
 	 * @param fileName
 	 * @return
 	 */
@@ -230,6 +230,9 @@ public class ReplicationManager {
 
 	/**
 	 * Delete file from remoteDir (possibly absolute path)
+	 * seeing JargonException caught and logged on delete:No access to item in catalog
+	 * org.irods.jargon.core.exception.CatNoAccessException: No access to item in catalog
+	 * might mean insufficient rights.
 	 * @param fileName
 	 * @param remoteDir
 	 * @param isAbsolute
@@ -400,6 +403,7 @@ public class ReplicationManager {
 	}
 
 	public static void replicate(String handle, boolean force) throws UnsupportedOperationException, SQLException {
+		//fixme what is the force flag for?
 		ReplicationManager.replicationQueue.remove(handle);
 		
 		// not set up

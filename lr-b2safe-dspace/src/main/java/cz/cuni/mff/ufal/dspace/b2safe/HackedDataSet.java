@@ -12,6 +12,9 @@ public class HackedDataSet extends DataSet {
     }
 
     @Override
+    /**
+     * Various DataSet methods expect fileName to be set. see getMetadataFromOneDOByPath, deleteDO or retrieveOneDO
+     */
     public List<DataObject> listDOFromDirectory(String remoteDirectoryAbsolutePath){
         List<DataObject> dos = super.listDOFromDirectory(remoteDirectoryAbsolutePath);
         for(DataObject dobj : dos){
