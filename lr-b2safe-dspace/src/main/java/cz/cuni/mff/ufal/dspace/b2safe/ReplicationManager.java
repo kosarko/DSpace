@@ -10,6 +10,7 @@ package cz.cuni.mff.ufal.dspace.b2safe;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,17 +114,10 @@ public class ReplicationManager {
 		replicationOn = flag;
 	}
 
-	public static List<DataObject> list() throws Exception {
-		List<DataObject> dos = replicationService.listDOFromDirectory(replicadirectory, false);
-        return dos;
-	}
-	
-	public static List<String> listFilenames() throws Exception {
-		return listFilenames(false);
-	}
-	
+
+	//XXX
 	public static List<String> listFilenames(boolean returnAbsPath) throws Exception {
-		List<DataObject> dos = list();
+		List<DataObject> dos = list(returnAbsPath);
 		List<String> fileNames = new ArrayList<String>();
 		for(DataObject one_do : dos) {
 			String name = one_do.getFileName();
@@ -134,14 +128,6 @@ public class ReplicationManager {
 		}
         return fileNames;
 	}	
-
-	public static List<DataObject> list(boolean returnAbsPath) throws Exception {
-		return replicationService.listDOFromDirectory("", true);
-	}
-
-	public static List<DataObject> list(String remoteDirectory, boolean returnAbsPath) throws Exception {
-		return replicationService.listDOFromDirectory(remoteDirectory, returnAbsPath);
-	}
 
 	public static List<String> listMissingReplicas() throws Exception {
 		List<String> alreadyReplicatedItems = listFilenames();
@@ -155,19 +141,26 @@ public class ReplicationManager {
 		return notFound; 
 	}
 	
-	// search is not supported by eudaat replication service implementation
-	/* public static List<String> search(Map<String, String> metadata) throws Exception {
-		return replicationService.search(metadata);
-	}*/
-
+	/**
+	 *
+	 * @param dataObjectAbsolutePath
+	 * @return
+	 * @throws Exception
+	 */
 	public static Map<String, String> getMetadataOfDataObject(
 			String dataObjectAbsolutePath) throws Exception {
+		int last_slash = dataObjectAbsolutePath.lastIndexOf("/");
 		DataObject one_do = new DataObject();
+
+		//XXX test
+		one_do.setRemoteDirPath(dataObjectAbsolutePath.substring(0,last_slash));
+		one_do.setFileName(dataObjectAbsolutePath.substring(last_slash+1));
+		one_do.setRemoteDirPathIsAbsolute(true);
 		one_do = replicationService.getMetadataFromOneDOByPath(one_do);
 		return getMetadataMap(one_do);
 	}
 	
-	public static Map<String, String> getMetadataMap(
+	private static Map<String, String> getMetadataMap(
 			DataObject one_do) throws Exception {
         Map<String, AVUMetaData> m = one_do.getEudatMetadata();
         Map<String, String> ret = new HashMap<String, String>();
@@ -180,6 +173,7 @@ public class ReplicationManager {
 	
 	public static boolean delete(String path) throws Exception  {
         DataObject one_do = new DataObject();
+		//XXX broken
         one_do.setFileName( path );
         one_do.setRemoteDirPath( "" );
         one_do.setRemoteDirPathIsAbsolute( true );
@@ -187,8 +181,9 @@ public class ReplicationManager {
         return one_do.getOperationIsSuccess();
 	}
 
-	public static void retriveFile(String remoteFileName, String localFileName) throws Exception {
+	public static void retrieveFile(String remoteFileName, String localFileName) throws Exception {
         DataObject one_do = new DataObject();
+		//XXX ?
         one_do.setLocalFilePath( localFileName );
         one_do.setFileName( remoteFileName );
 		replicationService.retrieveOneDOByPath(one_do);

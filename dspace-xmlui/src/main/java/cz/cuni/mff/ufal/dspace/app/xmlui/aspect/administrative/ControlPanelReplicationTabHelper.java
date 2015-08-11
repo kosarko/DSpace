@@ -385,7 +385,7 @@ public class ControlPanelReplicationTabHelper {
 	public static void listReplicas(Division div, Request request, Context context) throws WingException {
 		java.util.List<String> list = new ArrayList<>();
 		try {
-			list = ReplicationManager.listFilenames(true);
+			list = ReplicationManager.listAbsoluteFilenames();
 		} catch (Exception e) {
 			Division msg = div.addDivision("message", "alert alert-error");
 			msg.addPara().addContent("Replication Failed");
@@ -416,7 +416,7 @@ public class ControlPanelReplicationTabHelper {
 							
 			Map<String, String> metadata;
 			try {
-				metadata = ReplicationManager.getMetadataOfDataObject(name);
+				metadata = ReplicationManager.getMetadataOfDataObject(new File(name));
 			} catch (Exception e) {
 				throw new WingException(e);
 			}
