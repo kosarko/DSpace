@@ -118,50 +118,6 @@ public class ControlPanelReplicationTabHelper {
 			}
 		}
 	}
-	
-	public static void addForm(Division div, Request request) throws WingException {
-		
-		List form = div.addList("standalone-programs", List.TYPE_FORM, "cp-programs");
-		org.dspace.app.xmlui.wing.element.Item item_row = form.addItem();
-
-		item_row.addButton("submit_repl_list_home").setValue("List HomeDir");
-		item_row.addButton("submit_repl_list_replicas").setValue("List Replicas");
-		item_row.addButton("submit_repl_tobe").setValue("Tobe Replicated");
-		item_row.addButton("submit_repl_not_tobe").setValue("Cannot Replicate");
-
-		form = div.addList("standalone-programs-input", List.TYPE_FORM, "cp-programs");
-		
-		org.dspace.app.xmlui.wing.element.Item form_item = null;
-
-		form_item = form.addItem(null, "prog-param");
-		form_item.addText("submit_repl_missing_count").setValue("3");
-		Button btasync = form_item.addButton("submit_repl_missing");
-		btasync.setValue("Replicate missing (async.)");
-		btasync.setHelp("Number of items to replicate, use with caution as it may be resource intensive");
-
-		form_item = form.addItem(null, "prog-param");
-		form_item.addText("submit_repl_replicate_handle").setValue("");
-		Button btrepl = form_item.addButton("submit_repl_replicate");
-		btrepl.setValue("Replicate specific handle");
-		btrepl.setHelp("Enter handle e.g. 11858/00-097C-0000-000D-F696-9");
-
-		form_item = form.addItem(null, "prog-param");
-		form_item.addText("submit_repl_delete_filepath").setValue("");
-		Button btdel = form_item.addButton("submit_repl_delete");
-		btdel.setValue("Delete replica");
-		btdel.setHelp("Enter Absolute Remote Path e.g. /CINESZone/home/cuni/dspace_1.8.2_ufal_point_dev/11858_1017.zip");
-
-		form_item = form.addItem(null, "prog-param");
-		Text repPath = form_item.addText("submit_repl_download_filepath");
-		repPath.setLabel("Remote Path");
-		repPath.setHelp("Enter Absolute Remote Path e.g. /CINESZone/home/cuni/dspace_1.8.2_ufal_point_dev/11858_1017.zip");		
-		Text localPath = form_item.addText("submit_local_download_filepath");
-		localPath.setLabel("Local Path");
-		localPath.setHelp("Enter local path where the file should be downloaded.");
-		Button btdown = form_item.addButton("submit_repl_download");
-		btdown.setValue("Download replica");
-		
-	}
 
 	public static void executeCommand(Division div, Request request, Context context) throws WingException {
 
@@ -182,22 +138,22 @@ public class ControlPanelReplicationTabHelper {
 	
 			for (String key : params.keySet()) {
 				if (key.startsWith(delete_prefix)) {
-					String path = params.get(key);
-					todel.add(path);
+					String fileName = params.get(key);
+					todel.add(fileName);
 				}
 			}
 			
 			if(!todel.isEmpty()) {
 				Division m = div.addDivision("message", "alert alert-success bold");
-				for(String path : todel) {
+				for(String fileName : todel) {
 					try {
-						if(ReplicationManager.delete(path)) {
-							m.addPara().addContent("Deleted Successfully " + path);
+						if(ReplicationManager.delete(fileName)) {
+							m.addPara().addContent("Deleted Successfully " + fileName);
 						} else {
-							m.addPara(null, "text-error").addContent("Unable to delete " + path);
+							m.addPara(null, "text-error").addContent("Unable to delete " + fileName);
 						}
 					} catch (Exception e) {
-						m.addPara(null, "text-error").addContent("Unable to delete " + path + " " + e.getLocalizedMessage());
+						m.addPara(null, "text-error").addContent("Unable to delete " + fileName + " " + e.getLocalizedMessage());
 					}
 				}
 			} else {
@@ -215,8 +171,6 @@ public class ControlPanelReplicationTabHelper {
 			ReplicationManager.setReplicateAll(false);
 			action = "repl_tobe";
 		}
-				
-		//if (!ReplicationManager.isReplicationOn()) return;
 				
 		if(action.equals("show_info")) {
 			showConfiguration(div, request, context);
@@ -239,13 +193,14 @@ public class ControlPanelReplicationTabHelper {
 		//
 		else if (request.getParameter("submit_repl_download") != null) {
 			try {
-				String remPath = request.getParameter("submit_repl_download_filepath");
+				//fixme these parameters are never set neither is the one above
+				/*String remPath = request.getParameter("submit_repl_download_filepath");
 				String locPath = request.getParameter("submit_local_download_filepath");
 				File file = new File(locPath);
 				if(file.exists()) {
 					file.delete();
 				}
-				ReplicationManager.retriveFile(remPath, file.getAbsolutePath());
+				ReplicationManager.retrieveFile(remPath, file.getAbsolutePath());*/
 				//message = "file retrived and stored to " + file.getAbsolutePath();
 			} catch (Exception e) {
 				//message += "Could not download path: " + e.toString();
@@ -255,6 +210,13 @@ public class ControlPanelReplicationTabHelper {
 
 	}
 
+	/**
+	 * Calls ReplicationManager.listMissingReplicas shows the handles with their status and button to replicate
+	 * @param div
+	 * @param request
+	 * @param context
+	 * @throws WingException
+	 */
 	public static void showTobeReplicated(Division div, Request request, Context context) throws WingException {		
 		int size = 0;
 		ItemIterator it;
@@ -312,6 +274,13 @@ public class ControlPanelReplicationTabHelper {
 		}
 	}
 
+	/**
+	 * Lists handles of ReplicationManager.getNonPublicItemHandles
+	 * @param div
+	 * @param request
+	 * @param context
+	 * @throws WingException
+	 */
 	public static void showCannotReplicate(Division div, Request request, Context context) throws WingException {
 		int size = 0;
 		ItemIterator it;		
@@ -345,6 +314,13 @@ public class ControlPanelReplicationTabHelper {
 		}
 	}
 
+	/**
+	 * Replicate one specified file
+	 * @param div
+	 * @param request
+	 * @param context
+	 * @throws WingException
+	 */
 	public static void replicate(Division div, Request request, Context context) throws WingException {
 		try {
 			String handle = null;
@@ -382,10 +358,17 @@ public class ControlPanelReplicationTabHelper {
 		}
 	}
 
+	/**
+	 * List stored files (inside homedir/replicadir) and their metadata
+	 * @param div
+	 * @param request
+	 * @param context
+	 * @throws WingException
+	 */
 	public static void listReplicas(Division div, Request request, Context context) throws WingException {
 		java.util.List<String> list = new ArrayList<>();
 		try {
-			list = ReplicationManager.listAbsoluteFilenames();
+			list = ReplicationManager.listFilenames();
 		} catch (Exception e) {
 			Division msg = div.addDivision("message", "alert alert-error");
 			msg.addPara().addContent("Replication Failed");
@@ -416,7 +399,7 @@ public class ControlPanelReplicationTabHelper {
 							
 			Map<String, String> metadata;
 			try {
-				metadata = ReplicationManager.getMetadataOfDataObject(new File(name));
+				metadata = ReplicationManager.getMetadataOfDataObject(name);
 			} catch (Exception e) {
 				throw new WingException(e);
 			}

@@ -66,7 +66,7 @@ public class ReplicationManager {
 	public static final List<String> inProgress = new ArrayList<String>();
 	public static final Map<String, Exception> failed = new HashMap<String, Exception>();
 	
-	private static String replicadirectory = ConfigurationManager.getProperty("lr", "lr.replication.eudat.replicadirectory");
+	public static final String replicadirectory = ConfigurationManager.getProperty("lr", "lr.replication.eudat.replicadirectory");
 	
 	private static boolean replicateAll = ConfigurationManager.getBooleanProperty("lr", "lr.replication.eudat.replicateall", false);
 	
@@ -77,18 +77,18 @@ public class ReplicationManager {
 		boolean res = false;
 		config = new Properties();
 		populateConfig(config);
-		
-        // jargon specific
-        String maxThreads = ConfigurationManager.getProperty(
-            "lr", "lr.replication.jargon.numThreads");
-        // must be set or b2_core crashes
-        if ( null == maxThreads ) {
-            maxThreads = "1";
-        }         
-        if ( null != maxThreads ) {
-            config.put(B2SAFE_CONFIGURATION.IRODS_TRANSFER_MAX_THREADS.name(), maxThreads );
-        }
-        
+
+		// jargon specific
+		String maxThreads = ConfigurationManager.getProperty(
+				"lr", "lr.replication.jargon.numThreads");
+		// must be set or b2_core crashes
+		if (null == maxThreads) {
+			maxThreads = "1";
+		}
+		if (null != maxThreads) {
+			config.put(B2SAFE_CONFIGURATION.IRODS_TRANSFER_MAX_THREADS.name(), maxThreads);
+		}
+
 		replicationService = new DataSet(config);
 		res = replicationService.initB2safeConnection();
 		return res;
@@ -115,21 +115,56 @@ public class ReplicationManager {
 	}
 
 
-	//XXX
-	public static List<String> listFilenames(boolean returnAbsPath) throws Exception {
-		List<DataObject> dos = list(returnAbsPath);
+	/**
+	 * List all the file names inside configured directory homedir/replicadir
+	 * @return
+	 */
+	public static List<String> listFilenames() {
+		return listFilenames(replicadirectory, false);
+	}
+
+	/**
+	 * List filenames of replicated DOs.
+	 * @param remotePath is relative to homedir if not absolute
+	 * @param isAbsolute
+	 * @return
+	 */
+	public static List<String> listFilenames(String remotePath, boolean isAbsolute) {
+		List<DataObject> dos = list(remotePath, isAbsolute);
 		List<String> fileNames = new ArrayList<String>();
 		for(DataObject one_do : dos) {
 			String name = one_do.getFileName();
 			if ( null == name ) {
-                name = one_do.getRemoteDirPath();
-            }
+				name = one_do.getRemoteDirPath();
+			}
 			fileNames.add(name);
 		}
-        return fileNames;
-	}	
+		return fileNames;
+	}
 
-	public static List<String> listMissingReplicas() throws Exception {
+	/**
+	 * Just a wrapper around DataSet.lisDOFromDirectory(String, boolean)
+	 * @param remotePath
+	 * @param isAbsolute
+	 * @return
+	 */
+	public static List<DataObject> list(String remotePath, boolean isAbsolute){
+		return replicationService.listDOFromDirectory(remotePath, isAbsolute);
+	}
+
+	/**
+	 * List DOs from the configured homedir/replicadir
+	 * @return
+	 */
+	public static List<DataObject> list(){
+		return list(replicadirectory, false);
+	}
+
+	/**
+	 * Returns handles of items not found in the replicadirectory
+	 * @return
+	 */
+	public static List<String> listMissingReplicas() throws SQLException{
 		List<String> alreadyReplicatedItems = listFilenames();
 		List<String> allPublicItems = getPublicItemHandles();
 		List<String> notFound = new ArrayList<String>();
@@ -142,54 +177,104 @@ public class ReplicationManager {
 	}
 	
 	/**
-	 *
-	 * @param dataObjectAbsolutePath
+	 * Return metadata map of the specified fileName. The file should be in replicadirectory
+	 * @param fileName
 	 * @return
-	 * @throws Exception
 	 */
 	public static Map<String, String> getMetadataOfDataObject(
-			String dataObjectAbsolutePath) throws Exception {
-		int last_slash = dataObjectAbsolutePath.lastIndexOf("/");
-		DataObject one_do = new DataObject();
+			String fileName){
+		return getMetadataOfDataObject(fileName, replicadirectory, false);
+	}
 
-		//XXX test
-		one_do.setRemoteDirPath(dataObjectAbsolutePath.substring(0,last_slash));
-		one_do.setFileName(dataObjectAbsolutePath.substring(last_slash+1));
-		one_do.setRemoteDirPathIsAbsolute(true);
+	/**
+	 * Return metadata map for file in remoteDir (possibly absolute path)
+	 * @param fileName
+	 * @param remoteDir
+	 * @param isAbsolute
+	 * @return
+	 */
+	public static Map<String, String> getMetadataOfDataObject(String fileName, String remoteDir, boolean isAbsolute){
+		DataObject one_do = new DataObject();
+		one_do.setRemoteDirPath(remoteDir);
+		one_do.setRemoteDirPathIsAbsolute(isAbsolute);
+		one_do.setFileName(fileName);
 		one_do = replicationService.getMetadataFromOneDOByPath(one_do);
 		return getMetadataMap(one_do);
 	}
-	
-	private static Map<String, String> getMetadataMap(
-			DataObject one_do) throws Exception {
-        Map<String, AVUMetaData> m = one_do.getEudatMetadata();
-        Map<String, String> ret = new HashMap<String, String>();
-    	for(Map.Entry<String, AVUMetaData> entry : m.entrySet()) {
-            ret.put(entry.getKey(), entry.getValue().getValue());
-        }
-        return ret;
-	}	
 
-	
-	public static boolean delete(String path) throws Exception  {
+	/**
+	 * Returns the values of AVUMetadata, keys stays the same attribute and unit is ignored
+	 * @param one_do
+	 * @return
+	 * @throws Exception
+	 */
+	private static Map<String, String> getMetadataMap(
+			DataObject one_do) {
+		Map<String, AVUMetaData> m = one_do.getEudatMetadata();
+		Map<String, String> ret = new HashMap<String, String>();
+		for (Map.Entry<String, AVUMetaData> entry : m.entrySet()) {
+			ret.put(entry.getKey(), entry.getValue().getValue());
+		}
+		return ret;
+	}
+
+
+	/**
+	 * Delete file from replicadirectory
+	 * @param fileName
+	 * @return
+	 */
+	public static boolean delete(String fileName) {
+		return delete(fileName, replicadirectory, false);
+	}
+
+	/**
+	 * Delete file from remoteDir (possibly absolute path)
+	 * @param fileName
+	 * @param remoteDir
+	 * @param isAbsolute
+	 * @return
+	 */
+	public static boolean delete(String fileName, String remoteDir, boolean isAbsolute){
         DataObject one_do = new DataObject();
-		//XXX broken
-        one_do.setFileName( path );
-        one_do.setRemoteDirPath( "" );
-        one_do.setRemoteDirPathIsAbsolute( true );
+        one_do.setFileName( fileName );
+        one_do.setRemoteDirPath( remoteDir );
+        one_do.setRemoteDirPathIsAbsolute( isAbsolute );
         one_do = replicationService.deleteDO(one_do);
         return one_do.getOperationIsSuccess();
 	}
 
-	public static void retrieveFile(String remoteFileName, String localFileName) throws Exception {
+	/**
+	 * Remote DO to be retrieved is identified by the fileName and the remoteDir.
+	 * The remoteDir might be absolute.
+	 * The local copy is stored in localDir directory
+	 * @param fileName
+	 * @param remoteDir
+	 * @param isAbsolute
+	 * @param localDir
+	 */
+	public static void retrieveFile(String fileName, String remoteDir, boolean isAbsolute, String localDir) {
         DataObject one_do = new DataObject();
-		//XXX ?
-        one_do.setLocalFilePath( localFileName );
-        one_do.setFileName( remoteFileName );
+		one_do.setFileName(fileName);
+		one_do.setRemoteDirPath(remoteDir);
+		one_do.setRemoteDirPathIsAbsolute(isAbsolute);
+		//fixme local file vs local dir
+		one_do.setLocalFilePath(localDir);
 		replicationService.retrieveOneDOByPath(one_do);
 	}
 
+	/**
+	 * Retrieve a f ile from replicadir and store it in localDir
+	 * @param fileName
+	 * @param localDir
+	 */
+	public static void retrieveFile(String fileName, String localDir){
+		retrieveFile(fileName, replicadirectory, false, localDir);
+	}
+
+	//fixme neither replicateMissing is ever called
 	public static void replicateMissing(Context context) throws Exception {
+		//fixme the -1 is odd
 		replicateMissing(context, -1);
 	}
 
@@ -204,7 +289,12 @@ public class ReplicationManager {
 	}
 
 
-	// Must be PUB without embargo.
+
+	/**
+	 * Must be PUB without embargo.
+	 * @param item
+	 * @return
+	 */
 	public static boolean isReplicatable(Item item) {
 		
 		Context context = null;
@@ -296,9 +386,7 @@ public class ReplicationManager {
 	}
 
 	public static void replicate(Context context, String handle, Item item, boolean force) throws UnsupportedOperationException, SQLException {
-		
-		//If replication queue still contains this handle remove it
-		ReplicationManager.replicationQueue.remove(handle);		
+		ReplicationManager.replicationQueue.remove(handle);
 		
 		// not set up
 		if (!replicationService.isInitialized()) {
@@ -358,6 +446,7 @@ public class ReplicationManager {
     }
     
     public static void setReplicateAll(boolean status) {
+		//XXX
     	replicateAll = status;
     	if(status==true) {
     		// this will start the thread if not already running
@@ -376,7 +465,6 @@ public class ReplicationManager {
     	super.finalize();
     	executor.shutdown();
     }
-    
 } // class
 
 @SuppressWarnings("deprecation")
@@ -462,7 +550,7 @@ class ReplicationThread implements Runnable {
             one_do.setRor(itemUrl);
             one_do.setLocalFilePath(file.getAbsolutePath());
             one_do.setFileName(file.getName());
-            one_do.setRemoteDirPath("");
+            one_do.setRemoteDirPath(ReplicationManager.replicadirectory);
             one_do.setRemoteDirPathIsAbsolute(false);			
             ReplicationManager.getReplicationService().replicateOneDO(one_do);
             ReplicationManager.log.info("Replication finished: " + handle);
@@ -503,6 +591,7 @@ class ReplicateAllBackgroundThread extends Thread {
 	private ReplicateAllBackgroundThread() {
 		try {
 			this.context = new Context();
+			//fixme why 1?
 			this.context.setCurrentUser(EPerson.find(context, 1));
 		} catch (SQLException e) {
 			e.printStackTrace();
