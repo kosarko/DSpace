@@ -338,7 +338,7 @@ public class ControlPanelReplicationTabHelper {
 				if (item != null) {
 					try {
 						Division msg = div.addDivision("message", "alert alert-success");
-						ReplicationManager.replicate(context, handle, item, true);
+						ReplicationManager.replicate(handle, true);
 						msg.addPara().addContent("Replication started successfully for item " + handle);
 					} catch (Exception e) {
 						Division msg = div.addDivision("message", "alert alert-error");

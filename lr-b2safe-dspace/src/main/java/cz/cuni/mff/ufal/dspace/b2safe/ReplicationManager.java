@@ -283,13 +283,27 @@ public class ReplicationManager {
 			if (max-- <= 0) {
 				return;
 			}			
-			DSpaceObject dso = HandleManager.resolveToObject(c, handle);
-			replicate(c, handle, (Item) dso);
+			replicate(handle);
 		}
 	}
 
 
 
+	public static boolean isReplicatable(String handle){
+		Context context = null;
+		boolean ret = false;
+		try{
+			context = new Context();
+			Item item = (Item)HandleManager.resolveToObject(context, handle);
+			ret = isReplicatable(item);
+		}catch (SQLException e){
+			log.error(e);
+		}
+		if(context != null) {
+			context.abort();
+		}
+		return ret;
+	}
 	/**
 	 * Must be PUB without embargo.
 	 * @param item
@@ -302,7 +316,7 @@ public class ReplicationManager {
 		try {
 			
 			context = new Context();
-	
+
 			// not even public
 			if (!isPublic(item)) {
 				return false;
@@ -381,11 +395,11 @@ public class ReplicationManager {
 		return handles;
 	}
 
-	public static void replicate(Context context, String handle, Item item) throws UnsupportedOperationException, SQLException {
-		replicate(context, handle, item, false);
+	public static void replicate(String handle) throws UnsupportedOperationException, SQLException {
+		replicate(handle, false);
 	}
 
-	public static void replicate(Context context, String handle, Item item, boolean force) throws UnsupportedOperationException, SQLException {
+	public static void replicate(String handle, boolean force) throws UnsupportedOperationException, SQLException {
 		ReplicationManager.replicationQueue.remove(handle);
 		
 		// not set up
@@ -402,13 +416,13 @@ public class ReplicationManager {
 			throw new UnsupportedOperationException(msg);
 		}
 
-		if (!isReplicatable(item)) {
+		if (!isReplicatable(handle)) {
 			String msg = String.format("Cannot replicate non-public item [%s]", handle);
 			log.warn(msg);
 			throw new UnsupportedOperationException(msg);
 		}
 
-		Thread runner = new Thread(new ReplicationThread(context, handle, item, force));
+		Thread runner = new Thread(new ReplicationThread(handle, force));
 		runner.setPriority(Thread.MIN_PRIORITY);
 		runner.setDaemon(true);
 		runner.start();
@@ -471,42 +485,19 @@ public class ReplicationManager {
 class ReplicationThread implements Runnable {
 	
 	String handle;
-	Item item;
 	boolean force;
-	Context context;
 
-	public ReplicationThread(Context context, String handle, Item item, boolean force) {
-		this.context = context;
+	public ReplicationThread(String handle, boolean force) {
 		this.handle = handle;
-		this.item = item;
 		this.force = force;
 	}
 
-	public Item waitForDspaceItem(Context context) {
-		Item item = null;
-		// loop for few secs
-		for (int i = 0; i < 20; ++i) {
-			// sleep 1 sec
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException ex) {
-				Thread.currentThread().interrupt();
-			}
-			try {
-				item = Item.find(context, item.getID());
-				if (item.getOwningCollection()!=null && item.isArchived()) {
-					break;
-				}
-			} catch (SQLException e) {
-			}
-		}
-
-		return item;
-	}
-
 	public void run() {
+		Context context = null;
 		try {
 
+			context = new Context();
+			Item item = (Item) HandleManager.resolveToObject(context, handle);
 			//If retrying a failed item removed from failed
 			if(ReplicationManager.failed.containsKey(handle)) ReplicationManager.failed.remove(handle);						
 			ReplicationManager.inProgress.add(handle);
@@ -515,9 +506,6 @@ class ReplicationThread implements Runnable {
 			context.turnOffAuthorisationSystem();
 			ReplicationManager.log.info("Replicating to IRODS");
 
-			// wait for DSpace for submitting the item
-			// should not be needed with the new event listener - investigate!
-			Item item = waitForDspaceItem(context);
 			if (handle == null) {
 				handle = item.getHandle();
 			}
@@ -586,16 +574,7 @@ class ReplicateAllBackgroundThread extends Thread {
 
 	private static ReplicateAllBackgroundThread currentThread = null;	
 	
-	private Context context = null;
-	
 	private ReplicateAllBackgroundThread() {
-		try {
-			this.context = new Context();
-			//fixme why 1?
-			this.context.setCurrentUser(EPerson.find(context, 1));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public static void initiate() {
@@ -627,8 +606,7 @@ class ReplicateAllBackgroundThread extends Thread {
 				String handle = ReplicationManager.replicationQueue.remove(0);
 				
 				if(ReplicationManager.failed.containsKey(handle) || ReplicationManager.inProgress.contains(handle)) continue;
-				DSpaceObject dso = HandleManager.resolveToObject(context, handle);
-				ReplicationManager.replicate(context, handle, (Item) dso);
+				ReplicationManager.replicate(handle);
 				
 				try {
 					//wait for few seconds before starting next item 
@@ -648,13 +626,7 @@ class ReplicateAllBackgroundThread extends Thread {
 				ReplicationManager.log.error(e);
 			}
 		}
-		
-		try {
-			context.complete();
-		} catch (SQLException e) {
-			ReplicationManager.log.error(e);
-		}
-		currentThread = null;		
+		currentThread = null;
 		ReplicationManager.setReplicateAll(false);
 		
 	}
