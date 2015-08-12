@@ -20,6 +20,8 @@ public class HackedDataSet extends DataSet {
         for(DataObject dobj : dos){
             String remotePath = dobj.getRemoteDirPath();
             int lastSlash = remotePath.lastIndexOf("/");
+            String dirName = remotePath.substring(0,lastSlash);
+            dobj.setRemoteDirPath(dirName);
             String fileName = remotePath.substring(lastSlash+1);
             dobj.setFileName(fileName);
         }

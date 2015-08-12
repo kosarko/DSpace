@@ -110,6 +110,7 @@ public class ReplicationManager {
 		return replicationOn;
 	}
 
+	//fixme shouldn't the connection be opened/closed with this flag? Also the executor should be terminated
 	public static void setReplicationOn(boolean flag) {
 		replicationOn = flag;
 	}
@@ -428,7 +429,8 @@ public class ReplicationManager {
 		Thread runner = new Thread(new ReplicationThread(handle, force));
 		runner.setPriority(Thread.MIN_PRIORITY);
 		runner.setDaemon(true);
-		runner.start();
+		//don't start the thread if using executors
+		//runner.start();
 		executor.submit(runner);
 	}
 
