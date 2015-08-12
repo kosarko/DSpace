@@ -420,12 +420,12 @@ public class ControlPanelReplicationTabHelper {
 						
 			row.addCell().addHighlight(rend_status).addContent(adminStatus);
 			
-			String eudatPID = metadata.get("EUDAT_PID");
+			String eudatPID = metadata.get("PID");
 			if (eudatPID!=null) {
 				eudatPID = "http://hdl.handle.net" + eudatPID;
 			}
 
-			row.addCell().addXref(eudatPID, metadata.get("EUDAT_ROR"));
+			row.addCell().addXref(eudatPID, metadata.get("PID"));
 			
 			// check md5 too
 			String md5 = metadata.get("INFO_Checksum");
@@ -439,7 +439,7 @@ public class ControlPanelReplicationTabHelper {
 
 			//fixme item column empty?
 			//fixme size REP/ORIG displays 118MB/
-			String itemHandle = metadata.get("EUDAT_ROR");
+			String itemHandle = metadata.get("EUDAT/ROR");
 							
 			String sizes = orig_file_size < 0 ? "NA" : FileUtils.byteCountToDisplaySize(orig_file_size);
 			sizes += " / ";

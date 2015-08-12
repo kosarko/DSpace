@@ -403,7 +403,7 @@ public class ReplicationManager {
 	}
 
 	public static void replicate(String handle, boolean force) throws UnsupportedOperationException, SQLException {
-		//fixme what is the force flag for?
+		//fixme DataSet doesn't allow passing the force flag, can't be overridden without use of reflections
 		ReplicationManager.replicationQueue.remove(handle);
 		
 		// not set up
