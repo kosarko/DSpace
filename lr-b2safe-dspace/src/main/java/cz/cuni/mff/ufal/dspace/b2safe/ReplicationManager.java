@@ -465,7 +465,6 @@ public class ReplicationManager {
     }
     
     public static void setReplicateAll(boolean status) {
-		//XXX
     	replicateAll = status;
     	if(status==true) {
     		// this will start the thread if not already running

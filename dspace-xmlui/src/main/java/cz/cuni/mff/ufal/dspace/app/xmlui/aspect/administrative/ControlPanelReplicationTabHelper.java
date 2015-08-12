@@ -116,6 +116,9 @@ public class ControlPanelReplicationTabHelper {
 				statusList.addLabel(key);
 				statusList.addItem(value);
 			}
+
+			statusList.addLabel("Replica directory (relative to home)");
+			statusList.addItem(ReplicationManager.replicadirectory);
 		}
 	}
 
@@ -384,6 +387,7 @@ public class ControlPanelReplicationTabHelper {
 		Row head = table.addRow(Row.ROLE_HEADER);
 		head.addCellContent("#");
 		head.addCellContent("STATUS");
+		head.addCellContent("EUDAT PID");
 		head.addCellContent("ITEM");
 		head.addCellContent("SIZE REP/ORIG");
 		head.addCellContent("INFO");
@@ -437,9 +441,8 @@ public class ControlPanelReplicationTabHelper {
 				
 			}
 
-			//fixme item column empty?
-			//fixme size REP/ORIG displays 118MB/
 			String itemHandle = metadata.get("EUDAT/ROR");
+			row.addCell().addXref(itemHandle, itemHandle);
 							
 			String sizes = orig_file_size < 0 ? "NA" : FileUtils.byteCountToDisplaySize(orig_file_size);
 			sizes += " / ";
