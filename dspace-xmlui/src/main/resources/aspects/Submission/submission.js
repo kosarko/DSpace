@@ -272,10 +272,15 @@ function doSubmission()
 
 function shareSubmission(workspaceID)
 {
+    cocoon.log.error("shareSubmission() " + workspaceID);
     var link = FlowUtils.shareSubmission(getObjectModel(), workspaceID);
+    cocoon.log.error("FlowUtils.shareSubmission");
     var contextPath = cocoon.request.getContextPath();
+    cocoon.log.error("before sendPage");
     sendPage("submit/displayShareLink",{"link": link});
+    cocoon.log.error("after sendPage");
     getDSContext().complete();
+    cocoon.log.error("complex complete");
     cocoon.exit();
 }
 
