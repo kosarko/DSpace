@@ -279,7 +279,7 @@ function shareSubmission(workspaceID)
     cocoon.log.error("before sendPage");
     sendPage("submit/displayShareLink",{"link": link});
     cocoon.log.error("after sendPage");
-    getDSContext().complete();
+    getDSContext().commit();
     cocoon.log.error("complex complete");
     cocoon.exit();
 }
