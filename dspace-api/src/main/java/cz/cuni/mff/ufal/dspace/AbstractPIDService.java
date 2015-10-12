@@ -31,8 +31,8 @@ public abstract class AbstractPIDService {
 	public enum HANDLE_FIELDS {
 		URL,
 		TITLE,
-		SUBMITDATE,
 		REPOSITORY,
+		SUBMITDATE,
 		REPORTEMAIL
 	}
 

@@ -459,6 +459,7 @@ class ResolvedHandle {
         String title = null;
         String repository = null;
         String submitdate = null;
+        String reportemail = null;
         if (null != dso) {
             Map<String, String> map = HandlePlugin.extractMetadata(dso);
             String key
@@ -471,10 +472,10 @@ class ResolvedHandle {
             key = AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString();
             submitdate = map.getOrDefault(key, "");
         }
-        init(url, title, repository, submitdate);
+        init(url, title, repository, submitdate, reportemail);
     }
 
-    private void init(String url, String title, String repository, String submitdate) {
+    private void init(String url, String title, String repository, String submitdate, String reportemail) {
         idx = 11800;
         values = new LinkedList<>();
         setResolvedUrl(url);
@@ -484,14 +485,18 @@ class ResolvedHandle {
             setValue(key, title);
         }
 
-        if (null != title) {
+        if (null != repository) {
             key = AbstractPIDService.HANDLE_FIELDS.REPOSITORY.toString();
             setValue(key, repository);
         }
 
-        if (null != title) {
+        if (null != submitdate) {
             key = AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString();
             setValue(key, submitdate);
+        }
+        if (null != reportemail) {
+            key = AbstractPIDService.HANDLE_FIELDS.REPORTEMAIL.toString();
+            setValue(key, reportemail);
         }
     }
 
