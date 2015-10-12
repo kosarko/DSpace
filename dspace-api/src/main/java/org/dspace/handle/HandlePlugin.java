@@ -8,12 +8,9 @@
 package org.dspace.handle;
 
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+import cz.cuni.mff.ufal.dspace.AbstractPIDService;
 import cz.cuni.mff.ufal.dspace.handle.ConfigurableHandleIdentifierProvider;
 import net.handle.hdllib.Encoder;
 import net.handle.hdllib.HandleException;
@@ -24,6 +21,9 @@ import net.handle.hdllib.Util;
 import net.handle.util.StreamTable;
 
 import org.apache.log4j.Logger;
+import org.dspace.content.DSpaceObject;
+import org.dspace.content.Item;
+import org.dspace.content.Metadatum;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 
@@ -51,6 +51,13 @@ public class HandlePlugin implements HandleStorage
 {
     /** log4j category */
     private static Logger log = Logger.getLogger(HandlePlugin.class);
+    private static final String repositoryName = ConfigurationManager.getProperty(
+            "dspace.name").trim();
+    private static final String repositoryEmail = ConfigurationManager.getProperty(
+            "lr", "lr.help.mail").trim();
+    private static final boolean resolveMetadata = ConfigurationManager.getBooleanProperty(
+            "lr", "lr.pid.resolvemetadata", true);
+
 
     /**
      * Constructor
@@ -229,7 +236,11 @@ public class HandlePlugin implements HandleStorage
 
             context = new Context();
 
+            DSpaceObject dso = null;
             String url = HandleManager.resolveToURL(context, handle);
+            if (resolveMetadata) {
+                dso = HandleManager.resolveToObject(context, handle);
+            }
 
             if (url == null)
             {
@@ -258,35 +269,10 @@ public class HandlePlugin implements HandleStorage
                 }
             }
 
-            HandleValue value = new HandleValue();
-
-            value.setIndex(100);
-            value.setType(Util.encodeString("URL"));
-            value.setData(Util.encodeString(url));
-            value.setTTLType((byte) 0);
-            value.setTTL(100);
-            value.setTimestamp(100);
-            value.setReferences(null);
-            value.setAdminCanRead(true);
-            value.setAdminCanWrite(false);
-            value.setAnyoneCanRead(true);
-            value.setAnyoneCanWrite(false);
-
-            List<HandleValue> values = new LinkedList<HandleValue>();
-
-            values.add(value);
-
-            byte[][] rawValues = new byte[values.size()][];
-
-            for (int i = 0; i < values.size(); i++)
-            {
-                HandleValue hvalue = values.get(i);
-
-                rawValues[i] = new byte[Encoder.calcStorageSize(hvalue)];
-                Encoder.encodeHandleValue(rawValues[i], 0, hvalue);
-            }
+            ResolvedHandle rh = new ResolvedHandle(url, dso);
             log.info(String.format("Handle [%s] resolved to [%s]", handle, url));
-            return rawValues;
+
+            return rh.toRawValue();
         }
         catch (HandleException he)
         {
@@ -432,4 +418,90 @@ public class HandlePlugin implements HandleStorage
             }
         }
     }
+
+    public static Map<String, String> extractMetadata(DSpaceObject dso) {
+        Map<String, String> map = new LinkedHashMap<>();
+        if (null != dso) {
+            List<Metadatum> mds = dso.getMetadata("dc", "title", null, Item.ANY, null);
+            if (0 < mds.size()) {
+                map.put(AbstractPIDService.HANDLE_FIELDS.TITLE.toString(), mds.get(0).value);
+            }
+            map.put(AbstractPIDService.HANDLE_FIELDS.REPOSITORY.toString(), repositoryName);
+            mds = dso.getMetadata("dc", "date", "accessioned", Item.ANY, null);
+            if (0 < mds.size()) {
+                map.put(AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString(), mds.get(0).value);
+            }
+            map.put(AbstractPIDService.HANDLE_FIELDS.REPORTEMAIL.toString(), repositoryEmail);
+        }
+        return map;
+    }
+}
+
+class ResolvedHandle {
+    List<HandleValue> values;
+    private int idx = -1;
+
+    public ResolvedHandle(String url, DSpaceObject dso) {
+        idx = 11800;
+        values = new LinkedList<HandleValue>();
+        setResolvedUrl(url);
+        if (null != dso) {
+            Map<String, String> map = HandlePlugin.extractMetadata(dso);
+
+            String key = AbstractPIDService.HANDLE_FIELDS.TITLE.toString();
+            setValue(key, map.getOrDefault(key, ""));
+
+            key = AbstractPIDService.HANDLE_FIELDS.REPOSITORY.toString();
+            setValue(key, map.getOrDefault(key, ""));
+
+            key = AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString();
+            setValue(key, map.getOrDefault(key, ""));
+        }
+    }
+
+    private void setResolvedUrl(String url) {
+        HandleValue value = new HandleValue();
+        value.setIndex(100);
+        value.setType(Util.encodeString("URL"));
+        value.setData(Util.encodeString(url));
+        value.setTTLType((byte) 0);
+        value.setTTL(100);
+        value.setTimestamp(100);
+        value.setReferences(null);
+        value.setAdminCanRead(true);
+        value.setAdminCanWrite(false);
+        value.setAnyoneCanRead(true);
+        value.setAnyoneCanWrite(false);
+        values.add(value);
+    }
+
+    private void setValue(String key, String val) {
+        HandleValue hv = new HandleValue();
+        hv.setIndex(idx++);
+        hv.setType(Util.encodeString(key));
+        hv.setData(Util.encodeString(val));
+        hv.setTTLType((byte) 0);
+        hv.setTTL(100);
+        hv.setTimestamp(100);
+        hv.setReferences(null);
+        hv.setAdminCanRead(true);
+        hv.setAdminCanWrite(false);
+        hv.setAnyoneCanRead(true);
+        hv.setAnyoneCanWrite(false);
+        values.add(hv);
+    }
+
+    public byte[][] toRawValue() throws HandleException {
+        byte[][] rawValues = new byte[values.size()][];
+
+        for (int i = 0; i < values.size(); i++)
+        {
+            HandleValue hvalue = values.get(i);
+
+            rawValues[i] = new byte[Encoder.calcStorageSize(hvalue)];
+            Encoder.encodeHandleValue(rawValues[i], 0, hvalue);
+        }
+        return rawValues;
+    }
+
 }
