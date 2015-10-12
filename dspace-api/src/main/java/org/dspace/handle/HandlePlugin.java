@@ -58,6 +58,8 @@ public class HandlePlugin implements HandleStorage
     private static final boolean resolveMetadata = ConfigurationManager.getBooleanProperty(
             "lr", "lr.pid.resolvemetadata", true);
 
+    private static final String magicBean = "@magicLindat@";
+
 
     /**
      * Constructor
@@ -269,7 +271,15 @@ public class HandlePlugin implements HandleStorage
                 }
             }
 
-            ResolvedHandle rh = new ResolvedHandle(url, dso);
+            ResolvedHandle rh = null;
+            if (url.startsWith(magicBean)) {
+                String[] splits = url.split(magicBean);
+                url = splits[splits.length - 1];
+                // String title, String repository, String submitdate
+                rh = new ResolvedHandle(url, splits[0], splits[1], splits[2]);
+            }else {
+                rh = new ResolvedHandle(url, dso);
+            }
             log.info(String.format("Handle [%s] resolved to [%s]", handle, url));
 
             return rh.toRawValue();
@@ -441,21 +451,47 @@ class ResolvedHandle {
     List<HandleValue> values;
     private int idx = -1;
 
+    public ResolvedHandle(String url, String title, String repository, String submitdate) {
+        init(url, title, repository, submitdate);
+    }
+
     public ResolvedHandle(String url, DSpaceObject dso) {
-        idx = 11800;
-        values = new LinkedList<HandleValue>();
-        setResolvedUrl(url);
+        String title = null;
+        String repository = null;
+        String submitdate = null;
         if (null != dso) {
             Map<String, String> map = HandlePlugin.extractMetadata(dso);
-
-            String key = AbstractPIDService.HANDLE_FIELDS.TITLE.toString();
-            setValue(key, map.getOrDefault(key, ""));
+            String key
+                    = AbstractPIDService.HANDLE_FIELDS.TITLE.toString();
+            title = map.getOrDefault(key, "");
 
             key = AbstractPIDService.HANDLE_FIELDS.REPOSITORY.toString();
-            setValue(key, map.getOrDefault(key, ""));
+            repository = map.getOrDefault(key, "");
 
             key = AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString();
-            setValue(key, map.getOrDefault(key, ""));
+            submitdate = map.getOrDefault(key, "");
+        }
+        init(url, title, repository, submitdate);
+    }
+
+    private void init(String url, String title, String repository, String submitdate) {
+        idx = 11800;
+        values = new LinkedList<>();
+        setResolvedUrl(url);
+        String key;
+        if (null != title) {
+            key = AbstractPIDService.HANDLE_FIELDS.TITLE.toString();
+            setValue(key, title);
+        }
+
+        if (null != title) {
+            key = AbstractPIDService.HANDLE_FIELDS.REPOSITORY.toString();
+            setValue(key, repository);
+        }
+
+        if (null != title) {
+            key = AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString();
+            setValue(key, submitdate);
         }
     }
 
