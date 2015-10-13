@@ -499,9 +499,14 @@ class ResolvedHandle {
         values = new LinkedList<>();
         //set timestamp, use submitdate for now
         if(submitdate != null){
-            long stamp = new DCDate(submitdate).toDate().getTime()/1000;
-            if(stamp < Integer.MAX_VALUE && stamp > Integer.MIN_VALUE){
-                timestamp = (int) stamp;
+            try {
+                long stamp = new DCDate(submitdate).toDate().getTime() / 1000;
+                if (stamp < Integer.MAX_VALUE && stamp > Integer.MIN_VALUE) {
+                    timestamp = (int) stamp;
+                }
+            }catch(Exception e){
+                //in case the submitdate is malformed, ie. some junk was in the url we split
+                timestamp = 100;
             }
         }
         setResolvedUrl(url);
