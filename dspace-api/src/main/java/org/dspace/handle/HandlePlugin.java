@@ -21,6 +21,7 @@ import net.handle.hdllib.Util;
 import net.handle.util.StreamTable;
 
 import org.apache.log4j.Logger;
+import org.dspace.content.DCDate;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
 import org.dspace.content.Metadatum;
@@ -275,8 +276,8 @@ public class HandlePlugin implements HandleStorage
             if (url.startsWith(magicBean)) {
                 String[] splits = url.split(magicBean);
                 url = splits[splits.length - 1];
-                // String title, String repository, String submitdate
-                rh = new ResolvedHandle(url, splits[0], splits[1], splits[2]);
+                // String title, String repository, String submitdate, String reportemail
+                rh = new ResolvedHandle(url, splits[0], splits[1], splits[2], splits[3]);
             }else {
                 rh = new ResolvedHandle(url, dso);
             }
@@ -450,9 +451,10 @@ public class HandlePlugin implements HandleStorage
 class ResolvedHandle {
     List<HandleValue> values;
     private int idx = -1;
+    private int timestamp = 100;
 
-    public ResolvedHandle(String url, String title, String repository, String submitdate) {
-        init(url, title, repository, submitdate);
+    public ResolvedHandle(String url, String title, String repository, String submitdate, String reportemail) {
+        init(url, title, repository, submitdate, reportemail);
     }
 
     public ResolvedHandle(String url, DSpaceObject dso) {
@@ -471,6 +473,9 @@ class ResolvedHandle {
 
             key = AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString();
             submitdate = map.getOrDefault(key, "");
+
+            key = AbstractPIDService.HANDLE_FIELDS.REPORTEMAIL.toString();
+            reportemail = map.getOrDefault(key, "");
         }
         init(url, title, repository, submitdate, reportemail);
     }
@@ -478,6 +483,13 @@ class ResolvedHandle {
     private void init(String url, String title, String repository, String submitdate, String reportemail) {
         idx = 11800;
         values = new LinkedList<>();
+        //set timestamp, use submitdate for now
+        if(submitdate != null){
+            long stamp = new DCDate(submitdate).toDate().getTime()/1000;
+            if(stamp < Integer.MAX_VALUE && stamp > Integer.MIN_VALUE){
+                timestamp = (int) stamp;
+            }
+        }
         setResolvedUrl(url);
         String key;
         if (null != title) {
@@ -507,7 +519,7 @@ class ResolvedHandle {
         value.setData(Util.encodeString(url));
         value.setTTLType((byte) 0);
         value.setTTL(100);
-        value.setTimestamp(100);
+        value.setTimestamp(timestamp);
         value.setReferences(null);
         value.setAdminCanRead(true);
         value.setAdminCanWrite(false);
@@ -523,7 +535,7 @@ class ResolvedHandle {
         hv.setData(Util.encodeString(val));
         hv.setTTLType((byte) 0);
         hv.setTTL(100);
-        hv.setTimestamp(100);
+        hv.setTimestamp(timestamp);
         hv.setReferences(null);
         hv.setAdminCanRead(true);
         hv.setAdminCanWrite(false);
