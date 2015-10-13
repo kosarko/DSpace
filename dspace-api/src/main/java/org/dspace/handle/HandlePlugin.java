@@ -73,7 +73,7 @@ public class HandlePlugin implements HandleStorage
     private static final boolean resolveMetadata = ConfigurationManager.getBooleanProperty(
             "lr", "lr.pid.resolvemetadata", true);
 
-    private static final String magicBean = "@magicLindat@";
+    public static final String magicBean = "@magicLindat@";
 
 
     /**
