@@ -447,14 +447,14 @@ public class HandlePlugin implements HandleStorage
     public static Map<String, String> extractMetadata(DSpaceObject dso) {
         Map<String, String> map = new LinkedHashMap<>();
         if (null != dso) {
-            List<Metadatum> mds = dso.getMetadata("dc", "title", null, Item.ANY, null);
-            if (0 < mds.size()) {
-                map.put(AbstractPIDService.HANDLE_FIELDS.TITLE.toString(), mds.get(0).value);
+            Metadatum[] mds = dso.getMetadata("dc", "title", null, Item.ANY);
+            if (0 < mds.length) {
+                map.put(AbstractPIDService.HANDLE_FIELDS.TITLE.toString(), mds[0].value);
             }
             map.put(AbstractPIDService.HANDLE_FIELDS.REPOSITORY.toString(), repositoryName);
-            mds = dso.getMetadata("dc", "date", "accessioned", Item.ANY, null);
-            if (0 < mds.size()) {
-                map.put(AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString(), mds.get(0).value);
+            mds = dso.getMetadata("dc", "date", "accessioned", Item.ANY);
+            if (0 < mds.length) {
+                map.put(AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString(), mds[0].value);
             }
             map.put(AbstractPIDService.HANDLE_FIELDS.REPORTEMAIL.toString(), repositoryEmail);
         }
