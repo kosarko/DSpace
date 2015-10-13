@@ -10,9 +10,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Handle {
 
     @XmlElement
-    String handle;
+    public String handle;
     @XmlElement
-    String url;
+    public String url;
 
     public Handle(){
 
