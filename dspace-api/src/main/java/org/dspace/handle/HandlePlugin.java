@@ -52,10 +52,24 @@ public class HandlePlugin implements HandleStorage
 {
     /** log4j category */
     private static Logger log = Logger.getLogger(HandlePlugin.class);
-    private static final String repositoryName = ConfigurationManager.getProperty(
-            "dspace.name").trim();
-    private static final String repositoryEmail = ConfigurationManager.getProperty(
-            "lr", "lr.help.mail").trim();
+    private static final String repositoryName;
+    private static final String repositoryEmail;
+    static {
+        String name = ConfigurationManager.getProperty(
+                "dspace.name");
+        if (name != null) {
+            repositoryName = name.trim();
+        } else {
+            repositoryName = null;
+        }
+        String email= ConfigurationManager.getProperty(
+                "lr", "lr.help.mail");
+        if(email != null){
+            repositoryEmail = email.trim();
+        }else{
+            repositoryEmail = null;
+        }
+    }
     private static final boolean resolveMetadata = ConfigurationManager.getBooleanProperty(
             "lr", "lr.pid.resolvemetadata", true);
 
