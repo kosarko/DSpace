@@ -20,7 +20,7 @@ public class IPFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String host = request.getRemoteHost();
-        if(host.contains("mff.cuni.cz")){
+        if(!host.contains("mff.cuni.cz")){
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).
                     entity("Restricted access to this resource.").build());
         }
