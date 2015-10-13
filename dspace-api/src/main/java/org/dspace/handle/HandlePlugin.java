@@ -274,10 +274,10 @@ public class HandlePlugin implements HandleStorage
 
             ResolvedHandle rh = null;
             if (url.startsWith(magicBean)) {
-                String[] splits = url.split(magicBean);
+                String[] splits = url.split(magicBean, 6);
                 url = splits[splits.length - 1];
-                // String title, String repository, String submitdate, String reportemail
-                rh = new ResolvedHandle(url, splits[0], splits[1], splits[2], splits[3]);
+                // EMPTY, String title, String repository, String submitdate, String reportemail
+                rh = new ResolvedHandle(url, splits[1], splits[2], splits[3], splits[4]);
             }else {
                 rh = new ResolvedHandle(url, dso);
             }
