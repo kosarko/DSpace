@@ -76,13 +76,13 @@ public class MyHandleResource extends Resource {
         TableRowIterator tri = DatabaseManager.query(context, query, url);
         if(tri.hasNext()){
             TableRow row = tri.next();
-            //if the url is there create it again
+            //if the url is there dont create it again
             return row.getStringColumn("handle");
         }
         String handle;
         query = "select * from handle where handle like ? ;";
         while(true){
-            String rnd = RandomStringUtils.random(4,true,true);
+            String rnd = RandomStringUtils.random(4,true,true).toUpperCase();
             handle = prefix + "/" + rnd;
             tri = DatabaseManager.query(context, query, handle);
             if(!tri.hasNext()){
@@ -90,8 +90,10 @@ public class MyHandleResource extends Resource {
                 break;
             }
         }
-        query = "insert into handle(handle_id, handle, url) values(nextval('handle_seq'), ?, ?)";
-        DatabaseManager.query(context, query, handle, url);
+        TableRow row = DatabaseManager.row("handle");
+        row.setColumn("handle", handle);
+        row.setColumn("url", url);
+        DatabaseManager.insert(context, row);
         return handle;
     }
 }
