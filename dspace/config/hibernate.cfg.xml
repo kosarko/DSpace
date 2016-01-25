@@ -9,7 +9,7 @@
          bean in [dspace.dir]/config/spring/api/core-hibernate.xml
         -->
 
-        <property name="hibernate.dialect">${db.dialect}</property>
+        <property name="hibernate.dialect">org.dspace.storage.rdbms.hibernate.postgres.DSpacePostgreSQL82Dialect</property>
         <!--
          Schema name - if your database contains multiple schemas, you can avoid
          problems with retrieving the definitions of duplicate object names by

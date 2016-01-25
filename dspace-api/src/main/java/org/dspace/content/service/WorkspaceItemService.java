@@ -124,4 +124,6 @@ public interface WorkspaceItemService extends InProgressSubmissionService<Worksp
      * notwithstanding.)
      */
     public void deleteAll(Context context, WorkspaceItem workspaceItem) throws SQLException, AuthorizeException, IOException;
+
+    int countTotal(Context context) throws SQLException;
 }

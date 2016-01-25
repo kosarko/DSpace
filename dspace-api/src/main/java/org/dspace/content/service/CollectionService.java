@@ -285,7 +285,7 @@ public interface CollectionService extends DSpaceObjectService<Collection>, DSpa
      * collections a person is an editor for.
      *
      * @param context
-     * @param comm
+     * @param community
      *            (optional) restrict search to a community, else null
      * @param actionID
      *            of the action
@@ -296,4 +296,8 @@ public interface CollectionService extends DSpaceObjectService<Collection>, DSpa
     public List<Collection> findAuthorized(Context context, Community community, int actionID) throws java.sql.SQLException;
 
     public Collection findByGroup(Context context, Group group) throws SQLException;
+
+    List<Collection> findCollectionsWithSubscribers(Context context) throws SQLException;
+
+    int countTotal(Context context) throws SQLException;
 }

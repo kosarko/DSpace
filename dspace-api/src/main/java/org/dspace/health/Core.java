@@ -38,62 +38,7 @@ public class Core {
 
     // get info
     //
-    public  String getCollectionSizesInfo() throws SQLException {
-        final StringBuffer ret = new StringBuffer();
-        List<Object[]> col_bitSizes = query("select col, sum(bit.sizeBytes) as sum from Item i join i.collections col join i.bundles bun join bun.bitstreams bit group by col");
-        long total_size = 0;
 
-        Collections.sort(col_bitSizes, new Comparator<Object[]>() {
-            @Override
-            public int compare(Object[] o1, Object[] o2) {
-                try {
-                    return CollectionDropDown.collectionPath((Collection) o1[0]).compareTo(
-                        CollectionDropDown.collectionPath((Collection) o2[0])
-                    );
-                } catch (Exception e) {
-                    ret.append(e.getMessage());
-                }
-                return 0;
-            }
-        });
-        for (Object[] row : col_bitSizes) {
-            Long size = (Long) row[1];
-            total_size += size;
-            Collection col = (Collection) row[0];
-            ret.append(String.format(
-                    "\t%s:  %s\n", CollectionDropDown.collectionPath(col), FileUtils.byteCountToDisplaySize((long) size)));
-        }
-        ret.append(String.format(
-                "Total size:              %s\n", FileUtils.byteCountToDisplaySize(total_size)));
-
-        ret.append(String.format(
-                "Resource without policy: %d\n", getBitstreamsWithoutPolicyCount()));
-
-        ret.append(String.format(
-                "Deleted bitstreams:      %d\n", getBitstreamsDeletedCount()));
-
-        String list_str = "";
-        List<UUID> bitstreamOrphans = getBitstreamOrphansRows();
-        for (UUID id : bitstreamOrphans) {
-            list_str += String.format("%d, ", id);
-        }
-        ret.append(String.format(
-                "Orphan bitstreams:       %d [%s]\n", bitstreamOrphans.size(), list_str));
-
-        return ret.toString();
-    }
-
-    public  String getObjectSizesInfo() throws SQLException {
-        String ret = "";
-        for (String tb : new String[] { "Bitstream", "Bundle", "Collection",
-            "Community", "MetadataValue", "EPerson", "Item", "Handle",
-            "Group", "BasicWorkflowItem", "WorkspaceItem", }) {
-            int count = count("SELECT COUNT(*) from " + tb);
-            ret += String.format("Count %-14s: %s\n", tb,
-                String.valueOf(count));
-        }
-        return ret;
-    }
 
 
     // get objects
@@ -114,26 +59,13 @@ public class Core {
     // get sizes
     //
 
-    public  int getWorkflowItemsCount() throws SQLException {
-        return count("SELECT count(*) FROM BasicWorkflowItem");
-    }
-
-    public  int getNotArchivedItemsCount() throws SQLException {
-        return count(
-            "SELECT count(*) FROM Item i WHERE i.inArchive=false AND i.withdrawn=false");
-    }
-
-    public  int getWithdrawnItemsCount() throws SQLException {
-        return count("SELECT count(*) FROM Item i WHERE i.withdrawn=true");
-    }
-
     public  int getBitstreamsWithoutPolicyCount() throws SQLException {
         return count("SELECT count(bit.id) from Bitstream bit where bit.deleted<>true and bit.id not in" +
                 " (select res.dSpaceObject from ResourcePolicy res where res.resourceTypeId=" + Constants.BITSTREAM +")");
     }
 
     public  int getBitstreamsDeletedCount() throws SQLException {
-        return count("SELECT count(*) FROM Bitstream b WHERE b.deleted=true");
+        return count();
     }
 
     // get more complex information
@@ -150,23 +82,6 @@ public class Core {
             );
         }
         return cl;
-    }
-
-    public  List<String> getEmptyGroups() throws SQLException {
-        List<String> ret = new ArrayList<>();
-        List<Group> emptyGroups = query("SELECT g from Group g where g.epeople is EMPTY");
-        for (Group group : emptyGroups) {
-            ret.add(String.format("id=%s;name=%s", group.getID(), group.getName() ));
-        }
-        return ret;
-    }
-
-    public  List<UUID> getSubscribers() throws SQLException {
-        return query("SELECT DISTINCT e.id from Subscription s join s.ePerson e");
-    }
-
-    public  List<UUID> getSubscribedCollections() throws SQLException {
-        return query("SELECT DISTINCT col.id FROM Subscription s join  s.collection col");
     }
 
     //

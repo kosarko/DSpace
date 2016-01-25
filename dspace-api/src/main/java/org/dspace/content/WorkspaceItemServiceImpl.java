@@ -217,6 +217,11 @@ public class WorkspaceItemServiceImpl implements WorkspaceItemService {
     }
 
     @Override
+    public int countTotal(Context context) throws SQLException {
+        return workspaceItemDAO.countRows(context);
+    }
+
+    @Override
     public void deleteWrapper(Context context, WorkspaceItem workspaceItem) throws SQLException, AuthorizeException {
         // Check authorisation. We check permissions on the enclosed item.
         Item item = workspaceItem.getItem();

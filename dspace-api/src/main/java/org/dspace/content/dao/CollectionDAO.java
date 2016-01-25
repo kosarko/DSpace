@@ -37,4 +37,8 @@ public interface CollectionDAO extends DSpaceObjectLegacySupportDAO<Collection> 
     public List<Collection> findAuthorized(Context context, EPerson ePerson, List<Integer> actions) throws SQLException;
 
     List<Collection> findAuthorizedByGroup(Context context, EPerson ePerson, List<Integer> actions) throws SQLException;
+
+    List<Collection> findCollectionsWithSubscribers(Context context) throws SQLException;
+
+    int countRows(Context context) throws SQLException;
 }

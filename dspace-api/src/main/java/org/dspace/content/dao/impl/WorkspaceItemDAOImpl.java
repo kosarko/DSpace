@@ -82,4 +82,9 @@ public class WorkspaceItemDAOImpl extends AbstractHibernateDAO<WorkspaceItem> im
         return list(criteria);
     }
 
+    @Override
+    public int countRows(Context context) throws SQLException {
+        return count(createQuery(context, "SELECT count(*) from WorkspaceItem"));
+    }
+
 }

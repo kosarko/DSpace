@@ -13,6 +13,7 @@ import org.dspace.content.Community;
 import org.dspace.content.Item;
 import org.dspace.content.dao.BitstreamDAO;
 import org.dspace.core.AbstractHibernateDSODAO;
+import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -118,5 +119,23 @@ public class BitstreamDAOImpl extends AbstractHibernateDSODAO<Bitstream> impleme
         Criteria criteria = createCriteria(context, Bitstream.class);
         criteria.add(Restrictions.eq("storeNumber", storeNumber));
         return countLong(criteria);
+    }
+
+    @Override
+    public int countRows(Context context) throws SQLException {
+        return count(createQuery(context, "SELECT count(*) form Bitstream"));
+    }
+
+    @Override
+    public int countDeleted(Context context) throws SQLException {
+        return count(createQuery(context, "SELECT count(*) FROM Bitstream b WHERE b.deleted=true"));
+    }
+
+    @Override
+    public int countWithNoPolicy(Context context) throws SQLException {
+        Query query = createQuery(context,"SELECT count(bit.id) from Bitstream bit where bit.deleted<>true and bit.id not in" +
+                " (select res.dSpaceObject from ResourcePolicy res where res.resourceTypeId = :typeId" );
+        query.setParameter("typeId", Constants.BITSTREAM);
+        return count(query);
     }
 }

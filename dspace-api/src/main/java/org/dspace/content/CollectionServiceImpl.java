@@ -24,6 +24,7 @@ import org.dspace.eperson.service.GroupService;
 import org.dspace.eperson.service.SubscribeService;
 import org.dspace.event.Event;
 import org.dspace.workflow.factory.WorkflowServiceFactory;
+import org.elasticsearch.common.recycler.Recycler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -763,6 +764,11 @@ public class CollectionServiceImpl extends DSpaceObjectServiceImpl<Collection> i
     }
 
     @Override
+    public List<Collection> findCollectionsWithSubscribers(Context context) throws SQLException {
+        return collectionDAO.findCollectionsWithSubscribers(context);
+    }
+
+    @Override
     public DSpaceObject getAdminObject(Context context, Collection collection, int action) throws SQLException {
         DSpaceObject adminObject = null;
         Community community = null;
@@ -830,5 +836,10 @@ public class CollectionServiceImpl extends DSpaceObjectServiceImpl<Collection> i
     @Override
     public Collection findByLegacyId(Context context, int id) throws SQLException {
         return collectionDAO.findByLegacyId(context, id, Collection.class);
+    }
+
+    @Override
+    public int countTotal(Context context) throws SQLException {
+        return collectionDAO.countRows(context);
     }
 }
