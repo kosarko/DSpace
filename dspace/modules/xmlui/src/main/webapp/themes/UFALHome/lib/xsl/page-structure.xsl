@@ -864,13 +864,13 @@
 		</div>
 		<div class="col-md-5 col-lg-4 hidden-xs hidden-sm">
 			<div class="row">
-				<div style="height: 160px; position: relative;" class="col-md-7 col-lg-7">
-				  <a href="/lindat">
-			            <img src="{$context-path}/themes/UFAL/images/lindat/lindat-logo.png" style="position: absolute; height: 60%; top: 0px; bottom: 0px; margin: auto;" class="logo" alt="LINDAT/CLARIN logo" /></a>
+				<div style="height: 160px; position: relative;" class="col-md-6 col-lg-6 text-center">
+				  <a href="http://www.coh.usd.cas.cz">
+			            <img src="{$context-path}/themes/UFAL/images/usd/logo_coh.png" style="position: absolute; height: 60%; top: 0px; bottom: 0px; margin: auto;" class="logo" alt="COH logo" /></a>
 				</div>
-		                <div style="height: 160px; position: relative;" class="col-md-5 col-lg-5">
-				    <a href="http://www.clarin.eu/">
-		                    <img src="{$context-path}/themes/UFAL/images/lindat/clarin-logo.png" style="position: absolute; height: 70%; top: 0px; bottom: 0px; margin: auto;" class="logo" alt="LINDAT/CLARIN logo" /></a>
+		                <div style="height: 160px; position: relative;" class="col-md-6 col-lg-6">
+				    <a href="http://www.usd.cas.cz/">
+		                    <img src="{$context-path}/themes/UFAL/images/usd/logo_usd.png" style="position: absolute; height: 60%; top: 0px; bottom: 0px; margin: auto;" class="logo" alt="USD logo" /></a>
 		                </div>
 			</div>
         </div>		
