@@ -3265,6 +3265,8 @@
     <message key="homepage.carousel.license">Volitelné licence (avšak preferujeme otevřené)</message>
     <message key="homepage.carousel.easy_find">Snadné hledání</message>
     <message key="homepage.carousel.easy_cite">Snadná citace</message>
+
+    <message key="homepage.carousel.head">Repozitář Centra orální historie ÚSD&#160;AV&#160;ČR</message>
     
     <message key="homepage.item.description">Popis:</message>
     <message key="homepage.item.authors">Autoři</message>

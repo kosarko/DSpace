@@ -825,39 +825,11 @@
 		<div style="height: 160px;" class="carousel col-xs-12 col-sm-12 col-md-7 col-lg-8" id="layerslider">
 			<ol class="carousel-indicators">
 				<li class="active" data-slide-to="0" data-target="#layerslider" />
-				<li data-slide-to="1" data-target="#layerslider" />
-				<li data-slide-to="2" data-target="#layerslider" />
 			</ol>
 			<div class="carousel-inner">
 				<div class="item active">
 					<div style="position: relative; height: 180px;">
-						<img style="width: 100px; position: absolute; left: 22%; top: 20%" src="{$context-path}/themes/UFALHome/lib/images/glass.png" />
-						<h3 style="left: 34%; position: absolute; top: 25%;"><i18n:text i18n:key="homepage.carousel.data_tools">Linguistic Data and NLP Tools</i18n:text></h3>
-						<h5 style="left: 40%; position: absolute; top: 15%;"><i18n:text i18n:key="homepage.carousel.find">Find</i18n:text></h5>
-						<h5 style="left: 54%; position: absolute; top: 45%;"><i18n:text i18n:key="homepage.carousel.citation_support">Citation Support (with Persistent IDs)</i18n:text></h5>
-					</div>
-				</div>
-				<div class="item">
-					<div style="position: relative; height: 180px;">
-						<h3 style="left: 40%; position: absolute; top: 10%;"><i18n:text i18n:key="homepage.carousel.deposit">Deposit Free and Safe</i18n:text></h3>
-						<h5 style="left: 28%; position: absolute; top: 30%;"><i18n:text i18n:key="homepage.carousel.license">License of your Choice (Open licenses encouraged)</i18n:text></h5>
-						<h5 style="left: 32%; position: absolute; top: 42%;"><i18n:text i18n:key="homepage.carousel.easy_find">Easy to Find</i18n:text></h5>
-						<h5 style="left: 36%; position: absolute; top: 54%;"><i18n:text i18n:key="homepage.carousel.easy_cite">Easy to Cite</i18n:text></h5>
-					</div>
-				</div>
-				<div class="item">
-					<div style="position: relative; height: 180px;">
-						<div style="position: absolute; width: 65%; top: 20%; left: 20%; line-height: 20px;">
-							<blockquote>
-								<strong>
-									<i class="fa fa-quote-left fa-2x pull-left">&#160;</i>
-									<i18n:text i18n:key="homepage.carousel.quote">“There ought to be only one grand dépôt of art in the world, to
-									which the artist might repair with his works, and on presenting them
-									receive what he required... ”</i18n:text>
-								</strong>
-								<small>Ludwig van Beethoven, 1801</small>
-							</blockquote>
-						</div>
+						<h3 style="left: 34%; position: absolute; top: 25%;"><i18n:text i18n:key="homepage.carousel.head">Repository of the Oral History Center ÚSD&#160;AV&#160;ČR</i18n:text></h3>
 					</div>
 				</div>
 			</div>
