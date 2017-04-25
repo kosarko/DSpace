@@ -23,8 +23,10 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.connect.web.ConnectController;
+import org.springframework.social.connect.web.GenericConnectionStatusView;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
+import org.springframework.web.servlet.View;
 
 import java.sql.SQLException;
 
@@ -81,6 +83,11 @@ public class SocialConfig implements SocialConfigurer {
     @Scope(value="request", proxyMode = ScopedProxyMode.INTERFACES)
     public Google google(ConnectionRepository connectionRepository){
         return connectionRepository.getPrimaryConnection(Google.class).getApi();
+    }
+
+    @Bean(name={"connect/googleConnect", "connect/googleConnected"})
+    public View googleConnectView() {
+        return new GenericConnectionStatusView("google", "Google");
     }
 
 }
