@@ -334,6 +334,12 @@ public class UploadStep extends AbstractSubmissionStep
 
         make_sherpaRomeo_submission(item, div);
 
+        Division connectGoogleForm = div.addInteractiveDivision("connect-google", contextPath + "/connect/google", Division.METHOD_POST, "connect-google-form");
+        connectGoogleForm.addHidden("scope").setValue("email https://www.googleapis.com/auth/drive");
+        connectGoogleForm.addHidden("access_type").setValue("offline");
+        connectGoogleForm.addList("connect-google-list").addItem().addButton("connect-google-button").setValue("Connect to Google");
+
+
         // Part B:
         //  If the user has already uploaded files provide a list for the user.
     	
