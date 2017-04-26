@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
@@ -26,10 +27,13 @@ import org.springframework.social.connect.web.ConnectController;
 import org.springframework.social.connect.web.GenericConnectionStatusView;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
@@ -37,6 +41,7 @@ import java.sql.SQLException;
  */
 @Configuration
 @EnableSocial
+@EnableTransactionManagement
 public class SocialConfig implements SocialConfigurer {
 
     Logger log = Logger.getLogger(SocialConfig.class);
@@ -69,9 +74,19 @@ public class SocialConfig implements SocialConfigurer {
         };
     }
 
+    @Bean
+    public DataSource dataSource(){
+        return DatabaseManager.getDataSource();
+    }
+
+    @Bean
+    public PlatformTransactionManager txManager() {
+          return new DataSourceTransactionManager(dataSource());
+    }
+
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-        return new JdbcUsersConnectionRepository(DatabaseManager.getDataSource(), connectionFactoryLocator, Encryptors.noOpText());
+        return new JdbcUsersConnectionRepository(dataSource(), connectionFactoryLocator, Encryptors.noOpText());
     }
 
     @Bean
