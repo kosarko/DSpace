@@ -245,6 +245,11 @@ public class UploadStep extends AbstractSubmissionStep
 
         // Part A:
         //  First ask the user if they would like to upload a new file (may be the first one)
+        Division connectGoogleForm = body.addInteractiveDivision("connect-google", contextPath + "/connect/google", Division.METHOD_POST, "well well-light");
+        connectGoogleForm.addHidden("scope").setValue("email https://www.googleapis.com/auth/drive");
+        connectGoogleForm.addHidden("access_type").setValue("offline");
+        connectGoogleForm.addList("connect-google-list").addItem().addButton("connect-google-button").setValue("Connect to Google");
+
         Division div = body.addInteractiveDivision("submit-upload", actionURL, Division.METHOD_MULTIPART, "primary submission");
         div.setHead(T_submission_head);
         addSubmissionProgressList(div);
@@ -333,12 +338,6 @@ public class UploadStep extends AbstractSubmissionStep
     	}
 
         make_sherpaRomeo_submission(item, div);
-
-        Division connectGoogleForm = div.addInteractiveDivision("connect-google", contextPath + "/connect/google", Division.METHOD_POST, "connect-google-form");
-        connectGoogleForm.addHidden("scope").setValue("email https://www.googleapis.com/auth/drive");
-        connectGoogleForm.addHidden("access_type").setValue("offline");
-        connectGoogleForm.addList("connect-google-list").addItem().addButton("connect-google-button").setValue("Connect to Google");
-
 
         // Part B:
         //  If the user has already uploaded files provide a list for the user.
