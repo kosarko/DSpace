@@ -251,6 +251,11 @@
         </dependency>
 
         <dependency>
+            <artifactId>spring-context-support</artifactId>
+            <groupId>org.springframework</groupId>
+        </dependency>
+
+        <dependency>
             <artifactId>spring-tx</artifactId>
             <groupId>org.springframework</groupId>
         </dependency>

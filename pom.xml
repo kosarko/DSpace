@@ -36,7 +36,7 @@
         <jena.version>2.12.0</jena.version>
         <slf4j.version>1.6.1</slf4j.version>
         <!-- need at least 3.2.2 for spring-social-google (StreamUtils, MappingJackson2HttpMessageConverter) -->
-        <spring.version>3.2.18.RELEASE</spring.version>
+        <spring.version>3.2.5.RELEASE</spring.version>
         <!-- 'root.basedir' is the path to the root [dspace-src] dir. It must be redefined by each child POM,
              as it is used to reference the LICENSE_HEADER and *.properties file(s) in that directory. -->
         <root.basedir>${basedir}</root.basedir>
@@ -935,6 +935,12 @@
             <groupId>org.springframework</groupId>
             <version>${spring.version}</version>
         </dependency>
+
+          <dependency>
+              <artifactId>spring-context-support</artifactId>
+              <groupId>org.springframework</groupId>
+              <version>${spring.version}</version>
+          </dependency>
 
         <dependency>
             <artifactId>spring-tx</artifactId>
