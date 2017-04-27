@@ -255,7 +255,7 @@ public class UploadStep extends AbstractSubmissionStep
         // Part A:
         //  First ask the user if they would like to upload a new file (may be the first one)
         ObjectModelHelper.getRequest(objectModel).getSession().setAttribute(UploadStep.RETURN_TO, actionURL);
-        ApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(ObjectModelHelper.getRequest(objectModel).getSession(true).getServletContext());
+        ApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(new DSpace().getRequestService().getCurrentRequest().getHttpServletRequest().getSession(true).getServletContext());
         Google google = null;
         try {
             google = applicationContext.getBean(Google.class);
