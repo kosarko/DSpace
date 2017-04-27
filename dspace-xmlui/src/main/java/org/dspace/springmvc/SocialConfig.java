@@ -32,12 +32,16 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.AbstractView;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * Created by ondra on 21.4.17.
@@ -119,9 +123,14 @@ public class SocialConfig implements SocialConfigurer {
     }
     */
     @Bean(name={"connect/googleConnected"})
-    public View googleConnectView(HttpSession session){
-        String url = (String) session.getAttribute(UploadStep.RETURN_TO);
-        return new RedirectView(url);
+    public View googleConnectView(){
+        return new AbstractView() {
+            @Override
+            protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                String url = (String) request.getSession().getAttribute(UploadStep.RETURN_TO);
+                response.sendRedirect(url);
+            }
+        };
     }
 
 }
