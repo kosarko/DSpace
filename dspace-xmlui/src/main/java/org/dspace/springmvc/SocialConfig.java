@@ -1,6 +1,7 @@
 package org.dspace.springmvc;
 
 import org.apache.log4j.Logger;
+import org.dspace.app.xmlui.aspect.submission.submit.UploadStep;
 import org.dspace.app.xmlui.utils.ContextUtil;
 import org.dspace.core.Context;
 import org.dspace.eperson.EPerson;
@@ -32,7 +33,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
@@ -109,9 +112,16 @@ public class SocialConfig implements SocialConfigurer {
         return viewResolver;
     }
 
+    /*
     @Bean(name={"connect/googleConnect", "connect/googleConnected", "connect/status"})
     public View googleConnectView() {
         return new GenericConnectionStatusView("google", "Google");
+    }
+    */
+    @Bean(name={"connect/googleConnected"})
+    public View googleConnectView(HttpSession session){
+        String url = (String) session.getAttribute(UploadStep.RETURN_TO);
+        return new RedirectView(url);
     }
 
 }

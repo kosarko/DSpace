@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.ProcessingException;
+import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.commons.collections.CollectionUtils;
 import org.dspace.app.sherpa.SHERPAJournal;
@@ -167,6 +168,8 @@ public class UploadStep extends AbstractSubmissionStep
 
     protected static final Message T_review_no_file = message("xmlui.Submission.submit.UploadStep.review.no_file");
 
+    public static final String RETURN_TO = "dspace.upload.returnto";
+
     /**
      * Global reference to edit file page
      * (this is used when a user requests to edit a bitstream)
@@ -247,6 +250,7 @@ public class UploadStep extends AbstractSubmissionStep
 
         // Part A:
         //  First ask the user if they would like to upload a new file (may be the first one)
+        ObjectModelHelper.getRequest(objectModel).getSession().setAttribute(UploadStep.RETURN_TO, actionURL);
         Division connectGoogleForm = body.addInteractiveDivision("connect-google", contextPath + "/connect/google", Division.METHOD_POST, "well well-light");
         connectGoogleForm.addHidden("scope").setValue(configurationService.getProperty("social.google.scope"));
         connectGoogleForm.addHidden("access_type").setValue("offline");
