@@ -50,6 +50,10 @@ import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.services.ConfigurationService;
 import org.dspace.utils.DSpace;
+import org.springframework.context.ApplicationContext;
+import org.springframework.social.connect.NotConnectedException;
+import org.springframework.social.google.api.Google;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.xml.sax.SAXException;
 
 import cz.cuni.mff.ufal.DSpaceApi;
@@ -251,10 +255,22 @@ public class UploadStep extends AbstractSubmissionStep
         // Part A:
         //  First ask the user if they would like to upload a new file (may be the first one)
         ObjectModelHelper.getRequest(objectModel).getSession().setAttribute(UploadStep.RETURN_TO, actionURL);
-        Division connectGoogleForm = body.addInteractiveDivision("connect-google", contextPath + "/connect/google", Division.METHOD_POST, "well well-light");
-        connectGoogleForm.addHidden("scope").setValue(configurationService.getProperty("social.google.scope"));
-        connectGoogleForm.addHidden("access_type").setValue("offline");
-        connectGoogleForm.addList("connect-google-list").addItem().addButton("connect-google-button").setValue("Connect to Google");
+        ApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(ObjectModelHelper.getRequest(objectModel).getSession(true).getServletContext());
+        Google google = null;
+        try {
+            google = applicationContext.getBean(Google.class);
+        }catch (NotConnectedException e){
+            google = null;
+        }
+        if(google == null) {
+            Division connectGoogleForm = body.addInteractiveDivision("connect-google", contextPath + "/connect/google", Division.METHOD_POST, "well well-light");
+            connectGoogleForm.addHidden("scope").setValue(configurationService.getProperty("social.google.scope"));
+            connectGoogleForm.addHidden("access_type").setValue("offline");
+            connectGoogleForm.addList("connect-google-list").addItem().addButton("connect-google-button").setValue("Connect to Google");
+        }else{
+            Division filesDiv = body.addDivision("google-files", "well well-light");
+            filesDiv.addList("google-files-list").addItemXref(contextPath + "/drive/list", "/list");
+        }
 
         Division div = body.addInteractiveDivision("submit-upload", actionURL, Division.METHOD_MULTIPART, "primary submission");
         div.setHead(T_submission_head);
