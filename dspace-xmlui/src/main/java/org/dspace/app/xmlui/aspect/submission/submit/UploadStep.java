@@ -47,6 +47,7 @@ import org.dspace.content.Collection;
 import org.dspace.content.Item;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
+import org.dspace.services.ConfigurationService;
 import org.dspace.utils.DSpace;
 import org.xml.sax.SAXException;
 
@@ -223,6 +224,7 @@ public class UploadStep extends AbstractSubmissionStep
     public void addBody(Body body) throws SAXException, WingException,
             UIException, SQLException, IOException, AuthorizeException
     {
+        ConfigurationService configurationService = new DSpace().getConfigurationService();
         // If we are actually editing information of an uploaded file,
         // then display that body instead!
         if(this.editFile!=null)
@@ -246,7 +248,7 @@ public class UploadStep extends AbstractSubmissionStep
         // Part A:
         //  First ask the user if they would like to upload a new file (may be the first one)
         Division connectGoogleForm = body.addInteractiveDivision("connect-google", contextPath + "/connect/google", Division.METHOD_POST, "well well-light");
-        connectGoogleForm.addHidden("scope").setValue("email https://www.googleapis.com/auth/drive");
+        connectGoogleForm.addHidden("scope").setValue(configurationService.getProperty("social.google.scope"));
         connectGoogleForm.addHidden("access_type").setValue("offline");
         connectGoogleForm.addList("connect-google-list").addItem().addButton("connect-google-button").setValue("Connect to Google");
 
