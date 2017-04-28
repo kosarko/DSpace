@@ -169,6 +169,7 @@ public class UploadStep extends AbstractSubmissionStep
     protected static final Message T_review_no_file = message("xmlui.Submission.submit.UploadStep.review.no_file");
 
     public static final String RETURN_TO = "dspace.upload.returnto";
+    public static final String ITEM_ID = "dspace.upload.item_id";
 
     /**
      * Global reference to edit file page
@@ -251,6 +252,7 @@ public class UploadStep extends AbstractSubmissionStep
         // Part A:
         //  First ask the user if they would like to upload a new file (may be the first one)
         ObjectModelHelper.getRequest(objectModel).getSession().setAttribute(UploadStep.RETURN_TO, actionURL);
+        ObjectModelHelper.getRequest(objectModel).getSession().setAttribute(UploadStep.ITEM_ID, item.getID());
         Division connectGoogleForm = body.addInteractiveDivision("connect-google", contextPath + "/connect/google", Division.METHOD_POST, "well well-light");
         connectGoogleForm.addHidden("scope").setValue(configurationService.getProperty("social.google.scope"));
         connectGoogleForm.addHidden("access_type").setValue("offline");

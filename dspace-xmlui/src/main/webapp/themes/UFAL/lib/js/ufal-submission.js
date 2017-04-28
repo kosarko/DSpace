@@ -41,6 +41,18 @@ ufal.submission = {
                     jForm.submit();
                 })
             });
+            var base = "https://ufal-point-dev.ms.mff.cuni.cz/dspace5l/xmlui/drive";
+            jQuery.ajax(base + "/files")
+                .done(function (page) {
+                    if(page && page.items) {
+                        var jGoogleConnectButton = jQuery("input[name='connect-google-button']");
+                        jGoogleConnectButton.toggleClass("hidden");
+                        var jList = jGoogleConnectButton.parent().parent();
+                        page.items.forEach(function(item){
+                            jList.append(jQuery("<li>").append(jQuery("<img>").attr("src",item.iconLink)).append(jQuery("<a>").attr("src", base + "/files/" + item.id).append(item.title)));
+                        });
+                    }
+                });
         }
     },
 
@@ -49,4 +61,5 @@ ufal.submission = {
 jQuery(document).ready(function () {
     ufal.submission.init_openaire();
     ufal.submission.fix_l10n();
+
 }); // ready
