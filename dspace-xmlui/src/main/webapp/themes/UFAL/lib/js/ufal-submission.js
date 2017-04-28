@@ -49,7 +49,7 @@ ufal.submission = {
                         jGoogleConnectButton.toggleClass("hidden");
                         var jList = jGoogleConnectButton.parent().parent();
                         page.items.forEach(function(item){
-                            jList.append(jQuery("<li>").append(jQuery("<img>").attr("src",item.iconLink)).append(jQuery("<a>").attr("src", base + "/files/" + item.id).append(item.title)));
+                            jList.append(jQuery("<li>").append(jQuery("<img>").attr("src",item.iconLink)).append(jQuery("<a>").attr("href", base + "/files/" + item.id).append(item.title)));
                         });
                     }
                 });
