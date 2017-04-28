@@ -20,6 +20,7 @@ import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
 import org.springframework.social.config.annotation.EnableSocial;
 import org.springframework.social.config.annotation.SocialConfigurer;
+import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.UsersConnectionRepository;
@@ -106,7 +107,11 @@ public class SocialConfig implements SocialConfigurer {
     @Bean
     @Scope(value="request", proxyMode = ScopedProxyMode.INTERFACES)
     public Google google(ConnectionRepository connectionRepository){
-        return connectionRepository.getPrimaryConnection(Google.class).getApi();
+        Connection<Google> googleConnection = connectionRepository.getPrimaryConnection(Google.class);
+        if(googleConnection.hasExpired()){
+            googleConnection.refresh();
+        }
+        return googleConnection.getApi();
     }
 
     @Bean
