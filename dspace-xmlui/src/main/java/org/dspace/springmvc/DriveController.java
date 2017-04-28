@@ -35,7 +35,11 @@ public class DriveController {
 	@ResponseBody
 	@RequestMapping(value="/list", method=GET)
 	public DriveFilesPage getTaskLists(@RequestParam(required=false) String pageToken) {
-		return google.driveOperations().getRootFiles(pageToken);
+        try {
+		    return google.driveOperations().getRootFiles(pageToken);
+        }catch(Exception e){
+            return new DriveFilesPage();
+        }
 	}
 
 	@ResponseBody
