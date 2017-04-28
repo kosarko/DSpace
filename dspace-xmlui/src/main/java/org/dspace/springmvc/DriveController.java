@@ -41,7 +41,7 @@ public class DriveController {
 	
 	@ResponseBody
 	@RequestMapping(value="/files", method=GET)
-	public DriveFilesPage getTaskLists(@RequestParam(required=false) String pageToken) {
+	public DriveFilesPage getRootFileList(@RequestParam(required=false) String pageToken) {
         try {
 		    return google.driveOperations().getRootFiles(pageToken);
         }catch(Exception e){
@@ -50,8 +50,8 @@ public class DriveController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value="/files/{dirId}", method=GET)
-	public DriveFilesPage getFilesList(@PathVariable String dirId, @RequestParam(required=false) String pageToken) {
+	@RequestMapping(value="/files/directories/{dirId}", method=GET)
+	public DriveFilesPage getFileListFromDirectory(@PathVariable String dirId, @RequestParam(required=false) String pageToken) {
 		return google.driveOperations().getFiles(dirId, pageToken);
 	}
 
