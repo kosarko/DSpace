@@ -96,7 +96,7 @@
         <!--Which sidebar facets are to be displayed-->
         <property name="sidebarFacets">
             <list>
-                <ref bean="searchFilterAuthor" />
+                <ref bean="searchFilterNarrator" />
                 <ref bean="searchFilterSubject" />
 		        <ref bean="searchFilterLanguage" />
             </list>
@@ -107,7 +107,7 @@
         <property name="searchFilters">
             <list>
                 <ref bean="searchFilterTitle" />
-                <ref bean="searchFilterAuthor" />
+                <ref bean="searchFilterNarrator" />
                 <ref bean="searchFilterSubject" />
                 <ref bean="searchFilterIssued" />
                 <ref bean="searchFilterRights" />
@@ -449,6 +449,18 @@
 		<property name="fullAutoComplete" value="true"/>
     </bean>
 
+    <bean id="searchFilterNarrator" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narrator"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.name</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="true"/>
+    </bean>
+
     <bean id="searchFilterSubject" class="org.dspace.discovery.configuration.HierarchicalSidebarFacetConfiguration">
         <property name="indexFieldName" value="subject"/>
         <property name="metadataFields">
@@ -527,6 +539,18 @@
                 <value>dc.contributor.author</value>
                 <value>dc.contributor.other</value>
                 <value>dc.creator</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="20"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="true"/>
+    </bean>
+
+    <bean id="searchFacetNarrator" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narrator"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.name</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>

@@ -255,8 +255,8 @@
 			<!--Step 3 will be to Sign off on the License -->
 			<step id="license" />
 
-			<!-- jmisutka/UFAL Step 4 will be to add additional metdata for moredetails e.g., metashare -->
-			<step id="moredetails" />
+			<!-- jmisutka/UFAL Step 4 will be to add additional metdata for moredetails e.g., metashare
+			<step id="moredetails" />-->
 
  	  <!--Step 5 will be to Verify/Review everything -->
 			<step id="review" />

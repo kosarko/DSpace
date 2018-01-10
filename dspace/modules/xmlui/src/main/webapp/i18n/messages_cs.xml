@@ -827,12 +827,12 @@
 
 	<!-- submission progress bar messages -->
 	<message key="xmlui.Submission.submit.progressbar.initial-questions">Odpovědi na počáteční otázky</message>
-	<message key="xmlui.Submission.submit.progressbar.describe">Základní údaje</message>
-	<message key="xmlui.Submission.submit.progressbar.describe2">Kdo se podílel</message>
+	<message key="xmlui.Submission.submit.progressbar.describe">Narátor</message>
+	<message key="xmlui.Submission.submit.progressbar.describe2">Rozhovor</message>
 	<message key="xmlui.Submission.submit.progressbar.describe3">Popis</message>
 	<message key="xmlui.Submission.submit.progressbar.access">Přístup</message>
 	<message key="xmlui.Submission.submit.progressbar.upload">Nahrát</message>
-	<message key="xmlui.Submission.submit.progressbar.additional">Poznámka</message>q
+	<message key="xmlui.Submission.submit.progressbar.additional">Poznámka</message>
 	<message key="xmlui.Submission.submit.progressbar.additional2">Poznámka</message>
 	<message key="xmlui.Submission.submit.progressbar.verify">Kontrola</message>
 	<message key="xmlui.Submission.submit.progressbar.creative-commons">Creative Commons</message>
@@ -1025,7 +1025,7 @@
 	<!-- org.dspace.app.xmlui.Submission.submit.UploadStep -->
 	<message key="xmlui.Submission.submit.UploadStep.head">Nahrát soubory</message>
 	<message key="xmlui.Submission.submit.UploadStep.file">Soubor</message>
-	<message key="xmlui.Submission.submit.UploadStep.file_help">Prosím, zadejte plnou cestu k souboru na vašem počítači, která odpovídá vašemu záznamu. Po kliknutí na „Procházet...“ se zobrazí nové okno, které vám umožní vybrat soubor z vašeho počítače. <div class='alert'>Pokud je to možné, snažte se poskytnout soubory v jednom z formátů doporučených v <a href='http://www.clarin.eu/sites/default/files/Standards%20for%20LRT-v6.pdf' target='_blank'>LRT Standards</a>.</div><div class='alert'> Nahrání souborů <strong>větších než {0} </strong> vyžaduje pomoc správců. V tomto případě kontaktujte <a class="helpdesk-tolink">Help Desk</a>. Děkujeme za pochopení.</div></message>
+	<message key="xmlui.Submission.submit.UploadStep.file_help">Prosím, zadejte plnou cestu k souboru na vašem počítači, která odpovídá vašemu záznamu. Po kliknutí na „Procházet...“ se zobrazí nové okno, které vám umožní vybrat soubor z vašeho počítače. <div class='alert'> Nahrání souborů <strong>větších než {0} </strong> vyžaduje pomoc správců. V tomto případě kontaktujte <a class="helpdesk-tolink">Help Desk</a>. Děkujeme za pochopení.</div></message>
 	<message key="xmlui.Submission.submit.UploadStep.file_local_head">Přidat soubory z URI</message>
 	<message key="xmlui.Submission.submit.UploadStep.file_local_help">Zadejte cestu k souboru na serveru nebo na webu (http).</message>
 	<message key="xmlui.Submission.submit.UploadStep.file_error">Záznam musí obsahovat alespoň jeden soubor.</message>
@@ -3487,6 +3487,31 @@
 	<message key="input_forms.field.dc.relation.isreferencedby.label">Odkazy na záznam</message>
 	<message key="input_forms.field.dc.relation.isreferencedby.hint">Odkaz na původní článek, který zmiňuje tento záznam.</message>
 	<message key="input_forms.field.dc.relation.isreferencedby.regexp-warning">URL musi začínat http/https</message>
+
+	<message key="input_forms.field.viadat.narrator.name.label">Narátor</message>
+	<message key="input_forms.field.viadat.narrator.name.hint">Zadejte jméno narátora, využijte autocomplete</message>
+	<message key="input_forms.field.viadat.narrator.name.required">Musíte vyplnit jméno</message>
+	<message key="input_forms.field.viadat.narrator.gender.label">Pohlaví</message>
+	<message key="input_forms.field.viadat.narrator.gender.hint">Uveďte pohlaví narátora</message>
+	<message key="input_forms.field.viadat.narrator.birth_date.label">Datum narození</message>
+	<message key="input_forms.field.viadat.narrator.birth_date.hint">Uveďte datum narození ve formátu RRRR-MM-DD, RRRR-MM nebo RRRR</message>
+	<message key="input_forms.field.viadat.narrator.identifier.label">Signatura narátora</message>
+	<message key="input_forms.field.viadat.narrator.identifier.hint">ID narátora</message>
+	<message key="input_forms.field.viadat.narrator.identifier.required">Vyplňte ID narátora</message>
+	<message key="input_forms.field.viadat.interview.type.label">Typ rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.type.hint">Typ rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.type.required">Vyplňte typ rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.identifier.label">Identifikátor rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.identifier.hint">Identifikátor rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.identifier.required">Vyplňte identifikátor rozhovoru</message>
+	<message key="input_forms.value_pairs.viadat_gender.male">Muž</message>
+	<message key="input_forms.value_pairs.viadat_gender.female">Žena</message>
+	<message key="input_forms.value_pairs.viadat_gender.unspecified">Nespecifikováno</message>
+    <message key="input_forms.value_pairs.interview_types.biographical">Životopisný</message>
+    <message key="input_forms.value_pairs.interview_types.thematic">Tematický</message>
+    <message key="input_forms.value_pairs.interview_types.biographical_thematic">Životopisně-tematický</message>
+    <message key="input_forms.value_pairs.interview_types.other">Ostatní</message>
+
 
 	<!-- cz.cuni.mff.ufal.ContractPage -->
 	<message key="xmlui.ContractPage.title">Smlouva o distribuci dat</message>
