@@ -166,7 +166,8 @@
    <message key="xmlui.ArtifactBrowser.AdvancedSearch.and">A</message>
    <message key="xmlui.ArtifactBrowser.AdvancedSearch.or">NEBO</message>
    <message key="xmlui.ArtifactBrowser.AdvancedSearch.not">NE</message>
-	
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narrator">Narátor</message>
+
 	
 	<!-- org.dspace.app.xmlui.artifactbrowser.ConfigureableBrowse.java -->
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.general.starts_with">Nebo zadejte několik prvních písmen:</message>

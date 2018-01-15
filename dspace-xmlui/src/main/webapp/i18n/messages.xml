@@ -141,7 +141,8 @@
     <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.hasfile">Contain Files</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_branding">Community</message>
     <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.branding">Community</message>
-            
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narrator">Narrator</message>
+
 
    <!--  some common other possibilities for Advanced Search Fields -->
    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_contributor">Contributor</message>
