@@ -1077,6 +1077,12 @@
     <message key="xmlui.Submission.submit.UploadWithEmbargoStep.submit_remove">Remove selected files</message>
     <message key="xmlui.Submission.submit.UploadWithEmbargoStep.submit_policy">Policies</message>
 
+	<message key="xmlui.Submission.submit.UploadStep.desciption.consent">Informed consent</message>
+	<message key="xmlui.Submission.submit.UploadStep.desciption.output">Outputs</message>
+	<message key="xmlui.Submission.submit.UploadStep.desciption.material">Provided materials</message>
+	<message key="xmlui.Submission.submit.UploadStep.desciption.interview">Interview itself</message>
+	<message key="xmlui.Submission.submit.UploadStep.desciption.transcript">Transcript of the interview</message>
+
 
 	<!-- org.dspace.app.xmlui.Submission.submit.EditFileStep -->
 	<message key="xmlui.Submission.submit.EditFileStep.head">Edit File</message>

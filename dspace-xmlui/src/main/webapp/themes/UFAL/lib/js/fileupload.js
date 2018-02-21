@@ -44,7 +44,7 @@ function convertBytesToHumanReadableForm(b) {
 	return Math.round((b / Math.pow(1024, exp)) * 100) / 100 + " " + units[exp];
 }
 
-function createFileUploadDialog(files) {
+function createFileUploadDialog(files, describe) {
 	var xhrs = [];
 
 	var fileFieldO = jQuery("#aspect_submission_StepTransformer_field_file");
@@ -80,8 +80,7 @@ function createFileUploadDialog(files) {
 		modal_body.append("<div id='fileType" + i + "'><b>" + $.i18n._("upload-type") + ": </b>"
 			+ file.type + "</div>");
 		modal_body.append("<div id='fileDescDiv" + i
-			+ "'><b>" + $.i18n._("upload-describe-file") + ": </b><input id='fileDesc" + i
-			+ "' type=\"text\"/></div>");
+			+ "'><b>" + $.i18n._("upload-describe-file") + ": </b>" + describe.replace("${iteration_id}", i) + "</div>");
 		modal_body.append("<div id='fileSizeProgress" + i
 			+ "'><b>" + $.i18n._("upload-progress") + ": </b><span id='fileSize" + i + "'>0 bytes / "
 			+ convertBytesToHumanReadableForm(file.size) + "</span></div>");
@@ -207,7 +206,13 @@ function processFiles(files) {
 	var fileUploadDialog;
 
 	if (filesToUpload.length > 0) {
-		fileUploadDialog = createFileUploadDialog(filesToUpload);
+		var $select = jQuery("#aspect_submission_StepTransformer_field_descriptionLocal");
+		if($select.size() > 0){
+			var desc = "<select id='fileDesc${iteration_id}'>" + $select.html() + "</select>";
+		}else{
+          var desc = "<input id='fileDesc${iteration_id}' type=\"text\"/>";
+		}
+		fileUploadDialog = createFileUploadDialog(filesToUpload, desc);
 	}
 
 	if (filesToReject.length > 0) {

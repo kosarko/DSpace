@@ -28,17 +28,7 @@ import org.dspace.app.xmlui.aspect.submission.AbstractSubmissionStep;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Button;
-import org.dspace.app.xmlui.wing.element.Cell;
-import org.dspace.app.xmlui.wing.element.CheckBox;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.File;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.PageMeta;
-import org.dspace.app.xmlui.wing.element.Row;
-import org.dspace.app.xmlui.wing.element.Table;
-import org.dspace.app.xmlui.wing.element.Text;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.Bitstream;
@@ -249,12 +239,7 @@ public class UploadStep extends AbstractSubmissionStep
         Collection collection = submission.getCollection();
         String actionURL = contextPath + "/handle/"+collection.getHandle() + "/submit/" + knot.getId() + ".continue";
         boolean disableFileEditing = (submissionInfo.isInWorkflow()) && !ConfigurationManager.getBooleanProperty("workflow", "reviewer.file-edit");
-        Bundle[] bundles = item.getBundles("ORIGINAL");
-        Bitstream[] bitstreams = new Bitstream[0];
-        if (bundles.length > 0)
-        {
-            bitstreams = bundles[0].getBitstreams();
-        }
+        Bitstream[] bitstreams = item.getNonInternalBitstreams();
 
         // Part A:
         //  First ask the user if they would like to upload a new file (may be the first one)
@@ -310,9 +295,6 @@ public class UploadStep extends AbstractSubmissionStep
             description.setLabel(T_description);
             description.setHelp(T_description_help);
 
-            // UFAL/jmisutka
-            upload.addItem(null, null).addHighlight("label label-warning").addContent(T_inform_about_licences);
-
             if("true".equalsIgnoreCase(configurationService.getProperty("social.enabled"))) {
                 //spring-social
                 //remember where we came from in order to return after connecting
@@ -361,9 +343,13 @@ public class UploadStep extends AbstractSubmissionStep
 	            	fileLocal.addError(T_virus_error);
 	            }
 	    		
-		        Text desc = uploadLocal.addItem("description-field-local","description-field").addText("descriptionLocal");
+                Select desc = uploadLocal.addItem("description-field-local","description-field").addSelect
+                        ("descriptionLocal");
 		        desc.setLabel(T_description);
 		        desc.setHelp(T_description_help);
+		        for(String option : new String[]{"consent", "output", "material", "interview", "transcript"}){
+		            desc.addOption(option, message(option));
+                }
 	    		
 		        Button submit = uploadLocal.addItem().addButton("submit_upload_local");
 		        submit.setValue(T_submit_upload);

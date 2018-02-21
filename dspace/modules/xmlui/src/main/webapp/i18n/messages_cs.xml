@@ -1094,6 +1094,12 @@
 	<message key="xmlui.Submission.submit.UploadStep.column_checksum">Checksum</message>
 	<message key="xmlui.Submission.submit.UploadStep.column_order">Pořadí</message>
 
+	<message key="xmlui.Submission.submit.UploadStep.desciption.consent">Informovaný souhlas</message>
+	<message key="xmlui.Submission.submit.UploadStep.desciption.output">Výstupy</message>
+	<message key="xmlui.Submission.submit.UploadStep.desciption.material">Poskytnuté materiály</message>
+	<message key="xmlui.Submission.submit.UploadStep.desciption.interview">Samotný rozhovor</message>
+	<message key="xmlui.Submission.submit.UploadStep.desciption.transcript">Přepis rozhovoru</message>
+
 	<!-- org.dspace.app.xmlui.Submission.submit.EditFileStep -->
 	<message key="xmlui.Submission.submit.EditFileStep.head">Editovat soubor</message>
 	<message key="xmlui.Submission.submit.EditFileStep.file">Soubor</message>
