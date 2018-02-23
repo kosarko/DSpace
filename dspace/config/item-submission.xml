@@ -131,6 +131,14 @@
 		<!-- </step> -->
 
 
+
+	 	<step id="narrator">
+			<heading>submit.progressbar.narrator</heading>
+			<processing-class>cz.cuni.mff.ufal.dspace.submit.step.NarratorStep</processing-class>
+			<xmlui-binding>cz.cuni.mff.ufal.dspace.app.xmlui.aspect.submission.submit.NarratorStep</xmlui-binding>
+			<workflow-editable>true</workflow-editable>
+		</step>
+
 		<step id="describe">
 			<heading>submit.progressbar.describe</heading>
 			<processing-class>org.dspace.submit.step.DescribeStep</processing-class>
@@ -245,7 +253,8 @@
 			<!--input-forms configuration -->
 			<!-- <step> <processing-class>org.dspace.submit.step.SkipInitialQuestionsStep</processing-class> 
 	  </step> -->
-      
+
+	   		<step id="narrator" />
 			<!--Step 1 will be to Describe the item. -->
 			<step id="describe" />
 
