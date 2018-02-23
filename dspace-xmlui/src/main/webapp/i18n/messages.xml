@@ -947,6 +947,7 @@
 	<message key="xmlui.Submission.submit.NarratorStep.new_narrator">Create new narrator</message>
     <message key="xmlui.Submission.submit.NarratorStep.title_help">The title of this session, for example narrator's name and the interview id.</message>
 	<message key="xmlui.Submission.submit.NarratorStep.title_label">Name of this session</message>
+	<message key="xmlui.Submission.submit.NarratorStep.title_missing">This field is required</message>
 	<message key="xmlui.Submission.submit.NarratorStep.select_help">Select existing narrator or create new record</message>
 	<message key="xmlui.Submission.submit.NarratorStep.select_label">Narrator</message>
 

@@ -17,10 +17,16 @@ import java.sql.SQLException;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class NarratorStep extends AbstractProcessingStep {
+
+    public static final int STATUS_REQUIRED_MISSING = 2;
+
     @Override
     public int doProcessing(Context context, HttpServletRequest request, HttpServletResponse response, SubmissionInfo subInfo) throws ServletException, IOException, SQLException, AuthorizeException {
+        int status = STATUS_COMPLETE;
         int resource_id = Util.getIntParameter(request, "submit-narrator-select");
         String title = request.getParameter("submit-title");
+
+        clearErrorFields(request);
 
         Item submission = subInfo.getSubmissionItem().getItem();
         submission.clearMetadata("viadat", "narrator", Item.ANY, Item.ANY);
@@ -31,6 +37,9 @@ public class NarratorStep extends AbstractProcessingStep {
             metadatum.element = "title";
             metadatum.value = title;
             submission.addMetadatum(metadatum);
+        }else{
+           status = STATUS_REQUIRED_MISSING;
+           addErrorField(request, "submit-title");
         }
 
         Item narratorTemplate = Item.find(context, resource_id);
@@ -45,7 +54,7 @@ public class NarratorStep extends AbstractProcessingStep {
         submission.update();
         context.commit();
 
-        return STATUS_COMPLETE;
+        return status;
     }
 
     @Override

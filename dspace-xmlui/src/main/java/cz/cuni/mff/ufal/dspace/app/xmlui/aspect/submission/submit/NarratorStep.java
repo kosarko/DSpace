@@ -31,6 +31,8 @@ public class NarratorStep extends AbstractSubmissionStep {
             message("xmlui.Submission.submit.NarratorStep.title_help");
     protected static final Message T_title_label =
             message("xmlui.Submission.submit.NarratorStep.title_label");
+    protected static final Message T_title_missing =
+            message("xmlui.Submission.submit.NarratorStep.title_missing");
     protected static final Message T_select_help =
             message("xmlui.Submission.submit.NarratorStep.select_help");
     protected static final Message T_select_label =
@@ -68,6 +70,9 @@ public class NarratorStep extends AbstractSubmissionStep {
         textTitle.setHelp(T_title_help);
         if(isNotBlank(title)){
            textTitle.setValue(title);
+        }
+        if(this.errorFields.contains("submit-title")){
+            textTitle.addError(T_title_missing);
         }
 
 

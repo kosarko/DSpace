@@ -960,6 +960,7 @@
 	<message key="xmlui.Submission.submit.NarratorStep.new_narrator">Vytvořit nového narátora</message>
 	<message key="xmlui.Submission.submit.NarratorStep.title_help">Jméno tohoto sezení, například jméno narátora a id rozhovoru.</message>
 	<message key="xmlui.Submission.submit.NarratorStep.title_label">Jméno sezení</message>
+	<message key="xmlui.Submission.submit.NarratorStep.title_missing">Vyplňte toto pole</message>
 	<message key="xmlui.Submission.submit.NarratorStep.select_help">Zvolte existujícího narátora, nebo vytvořte nového.</message>
 	<message key="xmlui.Submission.submit.NarratorStep.select_label">Narátor</message>
 
