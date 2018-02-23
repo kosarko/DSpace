@@ -840,7 +840,8 @@
 	<message key="xmlui.Submission.submit.progressbar.CClicense">Licence CC</message>
 	<message key="xmlui.Submission.submit.progressbar.license">Licence</message>
 	<message key="xmlui.Submission.submit.progressbar.complete">Dokončeno</message>
-	
+	<message key="xmlui.Submission.submit.progressbar.narrator">Úvodní informace</message>
+
 	<!-- org.dspace.app.xmlui.Submission.submit.ResumeStep -->
 	<message key="xmlui.Submission.submit.ResumeStep.submit_resume">Pokračovat</message>
 	<message key="xmlui.Submission.submit.ResumeStep.submit_share">Sdílet příspěvek</message>
@@ -955,6 +956,12 @@
 	<message key="xmlui.Submission.submit.UFALLicenseStep.select_head">Vyberte licenci záznamu</message>
 	<message key="xmlui.Submission.submit.UFALLicenseStep.or_label">- NEBO -</message>
 
+	<message key="xmlui.Submission.submit.NarratorStep.head">Úvodní informace</message>
+	<message key="xmlui.Submission.submit.NarratorStep.new_narrator">Vytvořit nového narátora</message>
+	<message key="xmlui.Submission.submit.NarratorStep.title_help">Jméno tohoto sezení, například jméno narátora a id rozhovoru.</message>
+	<message key="xmlui.Submission.submit.NarratorStep.title_label">Jméno sezení</message>
+	<message key="xmlui.Submission.submit.NarratorStep.select_help">Zvolte existujícího narátora, nebo vytvořte nového.</message>
+	<message key="xmlui.Submission.submit.NarratorStep.select_label">Narátor</message>
 
 	<!-- cz.cuni.mff.ufal.UFALLicenceAgreement -->
 	<message key="xmlui.ufal.UFALLicenceAgreement.title">Licenční ujednání</message>

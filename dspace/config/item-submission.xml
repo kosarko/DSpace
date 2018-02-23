@@ -214,7 +214,7 @@
  <!--						JSP-UI:  "jsp." prefix			   			   -->
  <!-- <jspui-binding> - JSP-UI binding step class which will generate the JSP-->
  <!--                 based user interface for this step.  The class must  -->
- <!--                 extend 'org.dspace.app.webui.submit.JSPStep'.        -->
+ <!--                 extend 'org.dspace.app.webui.submit.JSPStep'.        -->gt
  <!--                 This property should reference the full path of the  -->
  <!--                 class.  It is only necessary if you are using the    -->
  <!--                 DSpace JSP-UI, and the step requires user interaction-->

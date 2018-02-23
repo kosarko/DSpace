@@ -828,6 +828,7 @@
 	<message key="xmlui.Submission.submit.progressbar.CClicense">CC License</message>
     <message key="xmlui.Submission.submit.progressbar.license">License</message>
 	<message key="xmlui.Submission.submit.progressbar.complete">Complete</message>
+	<message key="xmlui.Submission.submit.progressbar.narrator">Initial information</message>
 
 	<!-- org.dspace.app.xmlui.Submission.submit.ResumeStep -->
 	<message key="xmlui.Submission.submit.ResumeStep.submit_resume">Resume</message>
@@ -941,6 +942,13 @@
 	<message key="xmlui.Submission.submit.UFALLicenseStep.option_placeholder">Select a License ...</message>
 	<message key="xmlui.Submission.submit.UFALLicenseStep.select_head">Select the resource license</message>
 	<message key="xmlui.Submission.submit.UFALLicenseStep.or_label">- OR -</message>
+
+	<message key="xmlui.Submission.submit.NarratorStep.head">Initial information</message>
+	<message key="xmlui.Submission.submit.NarratorStep.new_narrator">Create new narrator</message>
+    <message key="xmlui.Submission.submit.NarratorStep.title_help">The title of this session, for example narrator's name and the interview id.</message>
+	<message key="xmlui.Submission.submit.NarratorStep.title_label">Name of this session</message>
+	<message key="xmlui.Submission.submit.NarratorStep.select_help">Select existing narrator or create new record</message>
+	<message key="xmlui.Submission.submit.NarratorStep.select_label">Narrator</message>
 
     
     <!-- cz.cuni.mff.ufal.UFALLicenceAgreement -->

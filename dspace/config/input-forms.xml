@@ -45,7 +45,6 @@
                     <label>input_forms.field.viadat.narrator.name.label</label>
                     <input-type>name</input-type>
                     <hint>input_forms.field.viadat.narrator.name.hint</hint>
-                    <autocomplete>solr-narrator_ac</autocomplete>
                     <required>input_forms.field.viadat.narrator.name.required</required>
                 </field>
 
