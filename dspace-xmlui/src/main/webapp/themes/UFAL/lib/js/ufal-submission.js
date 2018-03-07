@@ -73,7 +73,7 @@ ufal.submissions = {
                 "thumbnail col-sm-3 alert-info");
         }
 
-        jQuery("#aspect_submission_StepTransformer_field_viadat_narrator_birth_date")
+        jQuery("#aspect_submission_StepTransformer_field_viadat_narrator_birthdate")
             .datepicker({
                 autoclose: true,
                 format: 'yyyy-mm-dd',

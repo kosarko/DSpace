@@ -62,11 +62,11 @@
                 <field>
                     <dc-schema>viadat</dc-schema>
                     <dc-element>narrator</dc-element>
-                    <dc-qualifier>birth_date</dc-qualifier>
+                    <dc-qualifier>birthdate</dc-qualifier>
                     <repeatable>false</repeatable>
-                    <label>input_forms.field.viadat.narrator.birth_date.label</label>
+                    <label>input_forms.field.viadat.narrator.birthdate.label</label>
                     <input-type>FormattedDate</input-type>
-                    <hint>input_forms.field.viadat.narrator.birth_date.hint</hint>
+                    <hint>input_forms.field.viadat.narrator.birthdate.hint</hint>
                 </field>
 
                 <field>

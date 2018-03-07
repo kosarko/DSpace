@@ -19,7 +19,7 @@
     <dc-type>
         <schema>viadat</schema>
         <element>narrator</element>
-        <qualifier>birth_date</qualifier>
+        <qualifier>birthdate</qualifier>
         <scope_note></scope_note>
     </dc-type>
     <dc-type>

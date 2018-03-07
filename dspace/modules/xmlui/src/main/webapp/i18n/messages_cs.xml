@@ -3508,8 +3508,8 @@
 	<message key="input_forms.field.viadat.narrator.name.required">Musíte vyplnit jméno</message>
 	<message key="input_forms.field.viadat.narrator.gender.label">Pohlaví</message>
 	<message key="input_forms.field.viadat.narrator.gender.hint">Uveďte pohlaví narátora</message>
-	<message key="input_forms.field.viadat.narrator.birth_date.label">Datum narození</message>
-	<message key="input_forms.field.viadat.narrator.birth_date.hint">Uveďte datum narození ve formátu RRRR-MM-DD, RRRR-MM nebo RRRR</message>
+	<message key="input_forms.field.viadat.narrator.birthdate.label">Datum narození</message>
+	<message key="input_forms.field.viadat.narrator.birthdate.hint">Uveďte datum narození ve formátu RRRR-MM-DD, RRRR-MM nebo RRRR</message>
 	<message key="input_forms.field.viadat.narrator.identifier.label">Signatura narátora</message>
 	<message key="input_forms.field.viadat.narrator.identifier.hint">ID narátora</message>
 	<message key="input_forms.field.viadat.narrator.identifier.required">Vyplňte ID narátora</message>
