@@ -509,42 +509,23 @@
 		</div>
 		<div class="artifact-info">
 			<div class="author-head">
-				<i18n:text i18n:key="homepage.item.authors">Author(s):</i18n:text>
+				<i18n:text>homepage.item.narrators</i18n:text>
 			</div>
 			<div class="author">
 				<xsl:choose>
-					<xsl:when test="dim:field[@element='contributor'][@qualifier='author' or @qualifier='other']">
-						<xsl:for-each
-							select="dim:field[@element='contributor'][@qualifier='author' or @qualifier='other']">
+					<xsl:when test="dim:field[@element='narrator'][@qualifier='name']">
 							<span>
 								<xsl:if test="@authority">
 									<xsl:attribute name="class"><xsl:text>ds-dc_contributor_author-authority</xsl:text></xsl:attribute>
 								</xsl:if>
                                 <a>
 									<xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="node()" />&amp;type=author</xsl:attribute>
-									<xsl:copy-of select="node()" />
+									<xsl:copy-of select="dim:field[@element='narrator'][@qualifier='name']" />
 								</a>                                
 							</span>
-							<xsl:if
-								test="count(following-sibling::dim:field[@element='contributor'][@qualifier='author' or @qualifier='other']) != 0">
-								<xsl:text>; </xsl:text>
-							</xsl:if>
-						</xsl:for-each>
-					</xsl:when>
-					<xsl:when test="dim:field[@element='creator']">
-						<xsl:for-each select="dim:field[@element='creator']">
-                            <a>
-                                <xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="node()" />&amp;type=author</xsl:attribute>
-                                <xsl:copy-of select="node()" />
-                            </a>                                
-							<xsl:if
-								test="count(following-sibling::dim:field[@element='creator']) != 0">
-								<xsl:text>; </xsl:text>
-							</xsl:if>
-						</xsl:for-each>
 					</xsl:when>
 					<xsl:otherwise>
-						<i18n:text>xmlui.dri2xhtml.METS-1.0.no-author</i18n:text>
+						<i18n:text>xmlui.dri2xhtml.METS-1.0.no-narrator</i18n:text>
 					</xsl:otherwise>
 				</xsl:choose>
 			</div>

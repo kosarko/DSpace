@@ -3239,6 +3239,8 @@
 	<message key="xmlui.UFAL.artifactbrowser.filters.selected">Vybrané filtry</message>
 	<message key="xmlui.UFAL.artifactbrowser.search.limit">Zúžit hledání</message>
 	<message key="xmlui.UFAL.artifactbrowser.item_list.authors">Autoři:</message>
+	<message key="xmlui.UFAL.artifactbrowser.item_list.narrators">Narátor:</message>
+
 
 	<!-- UFAL/lib/xsl/aspect/artifactbrowser/item-view.xsl -->
 	<message key="xmlui.UFAL.artifactbrowser.item-download-all-files">Stáhnout všechny soubory záznamu ({0})</message>
@@ -3255,6 +3257,7 @@
 	<message key="xmlui.UFAL.artifactbrowser.item_view.licensed_under">Licenční kategorie: {0} <br/>Licence: </message>
 	<message key="xmlui.UFAL.artifactbrowser.item_view.preview">Náhled</message>
 	<message key="xmlui.UFAL.artifactbrowser.item_view.file_preview">Náhled souboru</message>
+	<message key="xmlui.UFAL.artifactbrowser.narrator">Narátor</message>
 
 	<!-- DisplayShareLink -->
 	<message key="xmlui.aspect.submission.submit.DisplayShareLink.title">Sdílet odkaz</message>
@@ -3285,6 +3288,7 @@
     
     <message key="homepage.item.description">Popis:</message>
     <message key="homepage.item.authors">Autoři</message>
+    <message key="homepage.item.narrators">Narátor:</message>
 
     <message key="homepage.whatsnew">Nově přidané</message>
     <message key="homepage.norecent">Žádné nové položky</message>
