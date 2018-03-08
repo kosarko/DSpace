@@ -231,6 +231,12 @@
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.mediatype">Procházení dle druhu média</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.mediatype.column_heading">Druh média</message>
 
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narrator.column_heading">Jméno narátora</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narrator">Prohlížení {0} dle narátora
+		{1}</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narrator">Prohlížení {0} dle
+		narátora</message>
+
 
 
 
@@ -341,7 +347,9 @@
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_language">Jazyk</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_type">Typ</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_mediatype">Druh média</message>
-	
+
+	<message key="xmlui.ArtifactBrowser.Navigation.browse_narrator">Narátor</message>
+
 	<!-- org.dspace.app.xmlui.artifactbrowser.SimpleSearch.java -->
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.title">Hledat</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.trail">Hledat</message>
