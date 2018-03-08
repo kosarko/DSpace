@@ -5,6 +5,7 @@ import org.dspace.app.util.Util;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Item;
 import org.dspace.content.Metadatum;
+import org.dspace.content.WorkspaceItem;
 import org.dspace.core.Context;
 import org.dspace.submit.AbstractProcessingStep;
 
@@ -50,6 +51,9 @@ public class NarratorStep extends AbstractProcessingStep {
                     submission.addMetadatum(md);
                 }
             }
+        }else{
+            int stepNumber = subInfo.getStepConfig("narrator").getStepNumber();
+            ((WorkspaceItem)subInfo.getSubmissionItem()).setStageReached(stepNumber);
         }
         submission.update();
         context.commit();

@@ -102,6 +102,15 @@ public class NarratorStep extends AbstractSubmissionStep {
 
     @Override
     public List addReviewSection(List reviewList) throws SAXException, WingException, UIException, SQLException, IOException, AuthorizeException {
-        return null;
+        //Create a new list section for this step (and set its heading)
+        List reviewSection = reviewList.addList("submit-review-" + this.stepAndPage, List.TYPE_FORM);
+        reviewSection.setHead(T_head);
+
+        Item item = submission.getItem();
+        String title = item.getName();
+
+        reviewSection.addLabel(T_title_label);
+        reviewSection.addItem(title);
+        return reviewSection;
     }
 }
