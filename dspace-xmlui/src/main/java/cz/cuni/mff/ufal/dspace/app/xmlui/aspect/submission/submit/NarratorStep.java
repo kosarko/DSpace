@@ -37,6 +37,14 @@ public class NarratorStep extends AbstractSubmissionStep {
             message("xmlui.Submission.submit.NarratorStep.select_help");
     protected static final Message T_select_label =
             message("xmlui.Submission.submit.NarratorStep.select_label");
+    protected static final Message T_project_help =
+            message("xmlui.Submission.submit.NarratorStep.project_help");
+    protected static final Message T_project_label =
+            message("xmlui.Submission.submit.NarratorStep.project_label");
+    protected static final Message T_output_help =
+            message("xmlui.Submission.submit.NarratorStep.output_help");
+    protected static final Message T_output_label =
+            message("xmlui.Submission.submit.NarratorStep.output_label");
 
     public NarratorStep()
     {
@@ -73,6 +81,28 @@ public class NarratorStep extends AbstractSubmissionStep {
         }
         if(this.errorFields.contains("submit-title")){
             textTitle.addError(T_title_missing);
+        }
+
+        String project = item.getMetadata("viadat.project.name");
+        Text textProject = form.addItem().addText("submit-project");
+        textProject.setLabel(T_project_label);
+        textProject.setHelp(T_project_help);
+        if(isNotBlank(project)){
+            textProject.setValue(project);
+        }
+        if(this.errorFields.contains("submit-project")){
+            textProject.addError("!");
+        }
+
+        String output = item.getMetadata("viadat.output");
+        TextArea textOutput = form.addItem().addTextArea("submit-output");
+        textOutput.setLabel(T_output_label);
+        textOutput.setHelp(T_output_help);
+        if(isNotBlank(output)){
+            textOutput.setValue(output);
+        }
+        if(this.errorFields.contains("submit-output")){
+            textOutput.addError("!");
         }
 
 

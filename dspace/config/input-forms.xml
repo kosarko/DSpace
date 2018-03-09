@@ -51,10 +51,19 @@
                 <field>
                     <dc-schema>viadat</dc-schema>
                     <dc-element>narrator</dc-element>
+                    <dc-qualifier>alias</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>input_forms.field.viadat.narrator.alias.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.narrator.alias.hint</hint>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
                     <dc-qualifier>gender</dc-qualifier>
                     <repeatable>false</repeatable>
                     <label>input_forms.field.viadat.narrator.gender.label</label>
-                    <type-bind>corpus,lexicalConceptualResource</type-bind>
                     <input-type value-pairs-name="viadat_gender">dropdown</input-type>
                     <hint>input_forms.field.viadat.narrator.gender.hint</hint>
                 </field>
@@ -78,6 +87,77 @@
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.narrator.identifier.hint</hint>
                     <required>input_forms.field.viadat.narrator.identifier.required</required>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>degree</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>input_forms.field.viadat.narrator.degree.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.narrator.degree.hint</hint>
+                    <autocomplete>solr-viadat.narrator.degree_ac</autocomplete>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>profession</dc-qualifier>
+                    <label>input_forms.field.viadat.narrator.profession.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.narrator.profession.hint</hint>
+                    <autocomplete>solr-viadat.narrator.profession_ac</autocomplete>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>keywords</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <repeatable-parse>true</repeatable-parse>
+                    <label>input_forms.field.viadat.narrator.keywords.label</label>
+                    <input-type>twobox</input-type>
+                    <hint>input_forms.field.viadat.narrator.keywords.hint</hint>
+                    <autocomplete>solr-viadat.narrator.keywords_ac</autocomplete>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>consent</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.viadat.narrator.consent.label</label>
+                    <input-type value-pairs-name="viadat_consent">dropdown</input-type>
+                    <hint>input_forms.field.viadat.narrator.consent.hint</hint>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>characteristics</dc-qualifier>
+                    <label>input_forms.field.viadat.narrator.characteristics.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.narrator.characteristics.hint</hint>
+                    <autocomplete>solr-viadat.narrator.characteristics_ac</autocomplete>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>contact</dc-qualifier>
+                    <label>input_forms.field.viadat.narrator.contact.label</label>
+                    <input-type>textarea</input-type>
+                    <hint>input_forms.field.viadat.narrator.contact.hint</hint>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>note</dc-qualifier>
+                    <label>input_forms.field.viadat.narrator.note.label</label>
+                    <input-type>textarea</input-type>
+                    <hint>input_forms.field.viadat.narrator.note.hint</hint>
                 </field>
             </page>
 
@@ -157,6 +237,21 @@
             <pair>
                 <displayed-value>input_forms.value_pairs.viadat_gender.unspecified</displayed-value>
                 <stored-value>nespecifikováno</stored-value>
+            </pair>
+        </value-pairs>
+
+        <value-pairs value-pairs-name="viadat_consent" dc-term="">
+            <pair>
+                <displayed-value>input_forms.value_pairs.viadat_consent.yes</displayed-value>
+                <stored-value>Ano</stored-value>
+            </pair>
+            <pair>
+                <displayed-value>input_forms.value_pairs.viadat_consent.no</displayed-value>
+                <stored-value>Ne</stored-value>
+            </pair>
+            <pair>
+                <displayed-value>input_forms.value_pairs.viadat_consent.extras</displayed-value>
+                <stored-value>Včetně dalších ujednání</stored-value>
             </pair>
         </value-pairs>
 

@@ -967,10 +967,15 @@
 	<message key="xmlui.Submission.submit.NarratorStep.head">Úvodní informace</message>
 	<message key="xmlui.Submission.submit.NarratorStep.new_narrator">Vytvořit nového narátora</message>
 	<message key="xmlui.Submission.submit.NarratorStep.title_help">Jméno tohoto sezení, například jméno narátora a id rozhovoru.</message>
-	<message key="xmlui.Submission.submit.NarratorStep.title_label">Jméno sezení</message>
+	<message key="xmlui.Submission.submit.NarratorStep.title_label">Jméno zázamu v repozitáři</message>
 	<message key="xmlui.Submission.submit.NarratorStep.title_missing">Vyplňte toto pole</message>
 	<message key="xmlui.Submission.submit.NarratorStep.select_help">Zvolte existujícího narátora, nebo vytvořte nového.</message>
 	<message key="xmlui.Submission.submit.NarratorStep.select_label">Narátor</message>
+	<message key="xmlui.Submission.submit.NarratorStep.project_help">Jméno projektu</message>
+	<message key="xmlui.Submission.submit.NarratorStep.project_label">Projekt</message>
+	<message key="xmlui.Submission.submit.NarratorStep.output_help">Výstupy jako například diplomové práce,
+		citace apod. Možnost nahrát konkrétní soubory je v dalších krocích.</message>
+	<message key="xmlui.Submission.submit.NarratorStep.output_label">Výstupy</message>
 
 	<!-- cz.cuni.mff.ufal.UFALLicenceAgreement -->
 	<message key="xmlui.ufal.UFALLicenceAgreement.title">Licenční ujednání</message>
@@ -3525,6 +3530,23 @@
 	<message key="input_forms.field.viadat.narrator.identifier.label">Signatura narátora</message>
 	<message key="input_forms.field.viadat.narrator.identifier.hint">ID narátora</message>
 	<message key="input_forms.field.viadat.narrator.identifier.required">Vyplňte ID narátora</message>
+	<message key="input_forms.field.viadat.narrator.alias.label">Alternativní jméno</message>
+	<message key="input_forms.field.viadat.narrator.alias.hint">Alias, umělecká jména, rodné příjmení</message>
+	<message key="input_forms.field.viadat.narrator.degree.label">Titul</message>
+	<message key="input_forms.field.viadat.narrator.degree.hint">Titul</message>
+	<message key="input_forms.field.viadat.narrator.profession.label">Profese</message>
+	<message key="input_forms.field.viadat.narrator.profession.hint">Profese</message>
+	<message key="input_forms.field.viadat.narrator.keywords.label">Klíčova slova</message>
+	<message key="input_forms.field.viadat.narrator.keywords.hint">Klíčová slova buď přidávejte po jednom, nebo je oddělte čárkou, nebo středníkem. Začnete-li psát, objeví se nápověda.</message>
+	<message key="input_forms.field.viadat.narrator.consent.label">Informovaný souhlas</message>
+	<message key="input_forms.field.viadat.narrator.consent.hint">Možnost nahrát soubor s informovaným
+		souhlasem je v dalších krocích</message>
+	<message key="input_forms.field.viadat.narrator.characteristics.label">Charakteristika</message>
+	<message key="input_forms.field.viadat.narrator.characteristics.hint">Charakteristika</message>
+	<message key="input_forms.field.viadat.narrator.contact.label">Kontaktní údaje</message>
+	<message key="input_forms.field.viadat.narrator.contact.hint">Kontaktní údaje</message>
+	<message key="input_forms.field.viadat.narrator.note.label">Poznámka</message>
+	<message key="input_forms.field.viadat.narrator.note.hint">Poznámka</message>
 	<message key="input_forms.field.viadat.interview.type.label">Typ rozhovoru</message>
 	<message key="input_forms.field.viadat.interview.type.hint">Typ rozhovoru</message>
 	<message key="input_forms.field.viadat.interview.type.required">Vyplňte typ rozhovoru</message>
@@ -3538,6 +3560,9 @@
     <message key="input_forms.value_pairs.interview_types.thematic">Tematický</message>
     <message key="input_forms.value_pairs.interview_types.biographical_thematic">Životopisně-tematický</message>
     <message key="input_forms.value_pairs.interview_types.other">Ostatní</message>
+	<message key="input_forms.value_pairs.viadat_consent.yes">Ano</message>
+	<message key="input_forms.value_pairs.viadat_consent.no">Ne</message>
+	<message key="input_forms.value_pairs.viadat_consent.extras">Včetně dalších ujednání</message>
 
 
 	<!-- cz.cuni.mff.ufal.ContractPage -->

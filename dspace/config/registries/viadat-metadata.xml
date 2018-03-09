@@ -40,6 +40,68 @@
         <qualifier>identifier</qualifier>
         <scope_note></scope_note>
     </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>narrator</element>
+        <qualifier>alias</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>narrator</element>
+        <qualifier>degree</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>narrator</element>
+        <qualifier>profession</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>narrator</element>
+        <qualifier>keywords</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>narrator</element>
+        <qualifier>consent</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>narrator</element>
+        <qualifier>characteristics</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>narrator</element>
+        <qualifier>contact</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>narrator</element>
+        <qualifier>note</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+
+
+    <dc-type>
+        <schema>viadat</schema>
+        <element>project</element>
+        <qualifier>name</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+
+    <dc-type>
+        <schema>viadat</schema>
+        <element>output</element>
+        <scope_note></scope_note>
+    </dc-type>
 </dspace-dc-types>
 
 

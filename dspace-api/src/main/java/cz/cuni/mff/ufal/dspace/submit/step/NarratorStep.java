@@ -26,11 +26,12 @@ public class NarratorStep extends AbstractProcessingStep {
         int status = STATUS_COMPLETE;
         int resource_id = Util.getIntParameter(request, "submit-narrator-select");
         String title = request.getParameter("submit-title");
+        String project = request.getParameter("submit-project");
+        String output = request.getParameter("submit-output");
 
         clearErrorFields(request);
 
         Item submission = subInfo.getSubmissionItem().getItem();
-        submission.clearMetadata("viadat", "narrator", Item.ANY, Item.ANY);
         if(isNotBlank(title)){
             submission.clearMetadata("dc", "title", Item.ANY, Item.ANY);
             Metadatum metadatum = new Metadatum();
@@ -43,12 +44,34 @@ public class NarratorStep extends AbstractProcessingStep {
            addErrorField(request, "submit-title");
         }
 
+        if(isNotBlank(project)){
+            submission.clearMetadata("viadat", "project", "name", Item.ANY);
+            Metadatum metadatum = new Metadatum();
+            metadatum.schema = "viadat";
+            metadatum.element = "project";
+            metadatum.qualifier = "name";
+            metadatum.value = project;
+            submission.addMetadatum(metadatum);
+        }
+
+        if(isNotBlank(output)){
+            submission.clearMetadata("viadat", "output", Item.ANY, Item.ANY);
+            Metadatum metadatum = new Metadatum();
+            metadatum.schema = "viadat";
+            metadatum.element = "output";
+            metadatum.value = output;
+            submission.addMetadatum(metadatum);
+        }
+
         Item narratorTemplate = Item.find(context, resource_id);
         if(narratorTemplate != null){
-            Metadatum[] mds = narratorTemplate.getMetadata("viadat", "narrator", Item.ANY, Item.ANY);
-            if(mds != null){
-                for(Metadatum md : mds){
-                    submission.addMetadatum(md);
+            if(narratorTemplate.getID() != submission.getID()){
+                submission.clearMetadata("viadat", "narrator", Item.ANY, Item.ANY);
+                Metadatum[] mds = narratorTemplate.getMetadata("viadat", "narrator", Item.ANY, Item.ANY);
+                if(mds != null){
+                    for(Metadatum md : mds){
+                        submission.addMetadatum(md);
+                    }
                 }
             }
         }else{
