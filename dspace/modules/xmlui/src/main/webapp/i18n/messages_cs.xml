@@ -841,8 +841,7 @@
 	<message key="xmlui.Submission.submit.progressbar.describe3">Popis</message>
 	<message key="xmlui.Submission.submit.progressbar.access">Přístup</message>
 	<message key="xmlui.Submission.submit.progressbar.upload">Nahrát</message>
-	<message key="xmlui.Submission.submit.progressbar.additional">Poznámka</message>
-	<message key="xmlui.Submission.submit.progressbar.additional2">Poznámka</message>
+	<message key="xmlui.Submission.submit.progressbar.additional">Technické údaje</message>
 	<message key="xmlui.Submission.submit.progressbar.verify">Kontrola</message>
 	<message key="xmlui.Submission.submit.progressbar.creative-commons">Creative Commons</message>
 	<message key="xmlui.Submission.submit.progressbar.CClicense">Licence CC</message>
@@ -922,7 +921,7 @@
 	<message key="xmlui.Submission.submit.NA">N/A</message>
 
 	<!-- org.dspace.app.xmlui.Submission.submit.ExtraMetadataStep -->
-	<message key="xmlui.Submission.submit.ExtraMetadataStep.head">Doplňující metadata pro tento záznam</message>
+	<message key="xmlui.Submission.submit.ExtraMetadataStep.head">Technická metadata</message>
 	<message key="xmlui.Submission.submit.ExtraMetadataStep.deleteRepeatabaleComponent">Smazat vybrané</message>
 	<message key="xmlui.Submission.submit.ExtraMetadataStep.addNewRepeatabaleComponent">Přidat komponentu</message>
 
@@ -3547,12 +3546,6 @@
 	<message key="input_forms.field.viadat.narrator.contact.hint">Kontaktní údaje</message>
 	<message key="input_forms.field.viadat.narrator.note.label">Poznámka</message>
 	<message key="input_forms.field.viadat.narrator.note.hint">Poznámka</message>
-	<message key="input_forms.field.viadat.interview.type.label">Typ rozhovoru</message>
-	<message key="input_forms.field.viadat.interview.type.hint">Typ rozhovoru</message>
-	<message key="input_forms.field.viadat.interview.type.required">Vyplňte typ rozhovoru</message>
-	<message key="input_forms.field.viadat.interview.identifier.label">Identifikátor rozhovoru</message>
-	<message key="input_forms.field.viadat.interview.identifier.hint">Identifikátor rozhovoru</message>
-	<message key="input_forms.field.viadat.interview.identifier.required">Vyplňte identifikátor rozhovoru</message>
 	<message key="input_forms.value_pairs.viadat_gender.male">Muž</message>
 	<message key="input_forms.value_pairs.viadat_gender.female">Žena</message>
 	<message key="input_forms.value_pairs.viadat_gender.unspecified">Nespecifikováno</message>
@@ -3563,6 +3556,45 @@
 	<message key="input_forms.value_pairs.viadat_consent.yes">Ano</message>
 	<message key="input_forms.value_pairs.viadat_consent.no">Ne</message>
 	<message key="input_forms.value_pairs.viadat_consent.extras">Včetně dalších ujednání</message>
+	<message key="input_forms.field.viadat.interview.type.label">Typ rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.type.hint">Typ rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.type.required">Vyplňte typ rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.identifier.label">Identifikátor rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.identifier.hint">Identifikátor rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.identifier.required">Vyplňte identifikátor rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.transcript.label">Přepis</message>
+	<message key="input_forms.field.viadat.interview.transcript.hint">Soubor s přepisem je možno nahrát v
+		samostatném kroku.</message>
+	<message key="input_forms.field.viadat.interview.date.label">Datum rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.date.hint">Uveďte datum uskutečnění rozhovoru ve formátu RRRR-MM-DD, RRRR-MM nebo RRRR</message>
+	<message key="input_forms.field.viadat.interview.length.label">Délka rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.length.hint">Délka rozhovoru ve formátu HH:MM:SS</message>
+	<message key="input_forms.field.viadat.interview.length.regexp_warn">Délka rozhovoru neodpovídá formátu HH:MM:SS</message>
+	<message key="input_forms.field.viadat.interview.place.label">Místo rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.place.hint">Místo rozhovoru</message>
+	<message key="input_forms.field.viadat.interview.interviewer.label">Tazatel</message>
+	<message key="input_forms.field.viadat.interview.interviewer.hint">Uveďte příjmení a jméno tazatele/přispěvatele</message>
+	<message key="input_forms.field.viadat.interview.description.label">Popis</message>
+	<message key="input_forms.field.viadat.interview.description.hint">Popis/anotace</message>
+	<message key="input_forms.field.viadat.interview.keywords.label">Klíčová slova</message>
+	<message key="input_forms.field.viadat.interview.keywords.hint">Klíčová slova buď přidávejte po jednom, nebo je oddělte čárkou, nebo středníkem. Začnete-li psát, objeví se nápověda.</message>
+	<message key="input_forms.field.viadat.interview.detailedKeywords.label">Detailní klíčová slova/kódy</message>
+	<message key="input_forms.field.viadat.interview.detailedKeywords.hint">Klíčová slova buď přidávejte po jednom, nebo je oddělte čárkou, nebo středníkem. Začnete-li psát, objeví se nápověda.</message>
+	<message key="input_forms.field.viadat.interview.period.label">Období</message>
+	<message key="input_forms.field.viadat.interview.period.hint">Období</message>
+	<message key="input_forms.field.viadat.interview.note.label">Poznámka</message>
+	<message key="input_forms.field.viadat.interview.note.hint">Poznámka</message>
+	<message key="input_forms.value_pairs.interview_transcript.literal">Doslovný</message>
+	<message key="input_forms.value_pairs.interview_transcript.edited">Redigovaný</message>
+	<message key="input_forms.value_pairs.interview_transcript.approximate">Orientační</message>
+	<message key="input_forms.value_pairs.interview_transcript.no">Ne</message>
+	<message key="input_forms.field.viadat.technical.type.label">Typ souboru</message>
+	<message key="input_forms.field.viadat.technical.type.hint">Např. audio, audio-vizuální, text apod.</message>
+	<message key="input_forms.field.viadat.technical.type.required">Typ souboru je povinný údaj</message>
+	<message key="input_forms.field.dc.creator.label">Tvůrce záznamu</message>
+	<message key="input_forms.field.dc.creator.hint">Tvůrce záznamu nebo instituce</message>
+	<message key="input_forms.field.viadat.technical.note.label">Poznámka</message>
+	<message key="input_forms.field.viadat.technical.note.hint">Poznámka</message>
 
 
 	<!-- cz.cuni.mff.ufal.ContractPage -->

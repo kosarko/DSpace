@@ -76,6 +76,7 @@
                     <label>input_forms.field.viadat.narrator.birthdate.label</label>
                     <input-type>FormattedDate</input-type>
                     <hint>input_forms.field.viadat.narrator.birthdate.hint</hint>
+                    <class>with-datepicker</class>
                 </field>
 
                 <field>
@@ -166,9 +167,8 @@
                 <!-- Interview-->
 
                 <field>
-                    <dc-schema>viadat</dc-schema>
-                    <dc-element>interview</dc-element>
-                    <dc-qualifier>type</dc-qualifier>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>type</dc-element>
                     <repeatable>false</repeatable>
                     <label>input_forms.field.viadat.interview.type.label</label>
                     <input-type value-pairs-name="interview_types">dropdown</input-type>
@@ -199,6 +199,111 @@
                     <required>input_forms.field.viadat.interview.identifier.required</required>
                 </field>
 
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>transcript</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.viadat.interview.transcript.label</label>
+                    <input-type value-pairs-name="interview_transcript">dropdown</input-type>
+                    <hint>input_forms.field.viadat.interview.transcript.hint</hint>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>date</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.viadat.interview.date.label</label>
+                    <input-type>FormattedDate</input-type>
+                    <hint>input_forms.field.viadat.interview.date.hint</hint>
+                    <class>with-datepicker</class>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>length</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.viadat.interview.length.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.interview.length.hint</hint>
+                    <regexp>\d\d:\d\d:\d\d</regexp>
+                    <regexp-warning>input_forms.field.viadat.interview.length.regexp_warn</regexp-warning>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>place</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.viadat.interview.place.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.interview.place.hint</hint>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>interviewer</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.viadat.interview.interviewer.label</label>
+                    <input-type>name</input-type>
+                    <hint>input_forms.field.viadat.interview.interviewer.hint</hint>
+                </field>
+
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.viadat.interview.description.label</label>
+                    <input-type>textarea</input-type>
+                    <hint>input_forms.field.viadat.interview.description.hint</hint>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>keywords</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <repeatable-parse>true</repeatable-parse>
+                    <label>input_forms.field.viadat.interview.keywords.label</label>
+                    <input-type>twobox</input-type>
+                    <hint>input_forms.field.viadat.interview.keywords.hint</hint>
+                    <autocomplete>solr-viadat.interview.keywords_ac</autocomplete>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>detailedKeywords</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <repeatable-parse>true</repeatable-parse>
+                    <label>input_forms.field.viadat.interview.detailedKeywords.label</label>
+                    <input-type>twobox</input-type>
+                    <hint>input_forms.field.viadat.interview.detailedKeywords.hint</hint>
+                    <autocomplete>solr-viadat.interview.detailedKeywords_ac</autocomplete>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>period</dc-qualifier>
+                    <label>input_forms.field.viadat.interview.period.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.interview.period.hint</hint>
+                    <autocomplete>solr-viadat.interview.period_ac</autocomplete>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>note</dc-qualifier>
+                    <label>input_forms.field.viadat.interview.note.label</label>
+                    <input-type>textarea</input-type>
+                    <hint>input_forms.field.viadat.interview.note.hint</hint>
+                </field>
+
 
             </page>
 
@@ -210,6 +315,37 @@
         </form>
 
     </form-definitions>
+    <form-definitions-extra>
+        <form name="traditional">
+            <page number="1">
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>technical</dc-element>
+                    <dc-qualifier>type</dc-qualifier>
+                    <label>input_forms.field.viadat.technical.type.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.technical.type.hint</hint>
+                    <required>input_forms.field.viadat.technical.type.required</required>
+                </field>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>creator</dc-element>
+                    <label>input_forms.field.dc.creator.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.dc.creator.hint</hint>
+                    <autocomplete>solr-dc.creator_ac</autocomplete>
+                </field>
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>technical</dc-element>
+                    <dc-qualifier>note</dc-qualifier>
+                    <label>input_forms.field.viadat.technical.note.label</label>
+                    <input-type>textarea</input-type>
+                    <hint>input_forms.field.viadat.technical.note.hint</hint>
+                </field>
+            </page>
+        </form>
+    </form-definitions-extra>
 
     <!-- form-value-pairs populate dropdown and qualdrop-value lists.          -->
     <!-- The form-value-pairs element holds child elements named 'value-pairs' -->
@@ -271,6 +407,25 @@
             <pair>
                 <displayed-value>input_forms.value_pairs.interview_types.other</displayed-value>
                 <stored-value>ostatní</stored-value>
+            </pair>
+        </value-pairs>
+
+        <value-pairs value-pairs-name="interview_transcript" dc-term="">
+            <pair>
+                <displayed-value>input_forms.value_pairs.interview_transcript.literal</displayed-value>
+                <stored-value>Doslovný</stored-value>
+            </pair>
+            <pair>
+                <displayed-value>input_forms.value_pairs.interview_transcript.edited</displayed-value>
+                <stored-value>Redigovaný</stored-value>
+            </pair>
+            <pair>
+                <displayed-value>input_forms.value_pairs.interview_transcript.approximate</displayed-value>
+                <stored-value>Orientační</stored-value>
+            </pair>
+            <pair>
+                <displayed-value>input_forms.value_pairs.interview_transcript.no</displayed-value>
+                <stored-value>Ne</stored-value>
             </pair>
         </value-pairs>
     </form-value-pairs>

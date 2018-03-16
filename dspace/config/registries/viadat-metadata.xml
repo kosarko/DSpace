@@ -30,18 +30,6 @@
     </dc-type>
     <dc-type>
         <schema>viadat</schema>
-        <element>interview</element>
-        <qualifier>type</qualifier>
-        <scope_note></scope_note>
-    </dc-type>
-    <dc-type>
-        <schema>viadat</schema>
-        <element>interview</element>
-        <qualifier>identifier</qualifier>
-        <scope_note></scope_note>
-    </dc-type>
-    <dc-type>
-        <schema>viadat</schema>
         <element>narrator</element>
         <qualifier>alias</qualifier>
         <scope_note></scope_note>
@@ -89,6 +77,66 @@
         <scope_note></scope_note>
     </dc-type>
 
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>identifier</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>transcript</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>date</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>length</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>place</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>interviewer</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>keywords</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>detailedKeywords</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>period</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>note</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
 
     <dc-type>
         <schema>viadat</schema>
@@ -100,6 +148,20 @@
     <dc-type>
         <schema>viadat</schema>
         <element>output</element>
+        <scope_note></scope_note>
+    </dc-type>
+
+    <dc-type>
+        <schema>viadat</schema>
+        <element>technical</element>
+        <qualifier>type</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
+
+    <dc-type>
+        <schema>viadat</schema>
+        <element>technical</element>
+        <qualifier>note</qualifier>
         <scope_note></scope_note>
     </dc-type>
 </dspace-dc-types>

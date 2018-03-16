@@ -260,6 +260,8 @@
 
 			<!--Step 2 will be to Upload the item -->
 			<step id="upload" />
+
+	        <step id="moredetails" />
       
 			<!--Step 3 will be to Sign off on the License -->
 			<step id="license" />

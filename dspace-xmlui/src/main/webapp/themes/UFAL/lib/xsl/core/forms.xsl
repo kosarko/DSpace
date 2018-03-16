@@ -1215,42 +1215,6 @@
 
 <!-- Special Handling for submissions -->
 
-	<xsl:template match="dri:item[dri:field[@id='aspect.submission.StepTransformer.field.dc_type']]" priority="10">
-                <div>
-                        <xsl:attribute name='class'>
-                                <xsl:if test='dri:field/dri:error'>
-                                        alert alert-error
-                                </xsl:if>
-                        </xsl:attribute>
-                        <xsl:if test='dri:field/dri:error'>
-                                <div style="margin-bottom: 20px">
-                                        <xsl:apply-templates select="dri:field/dri:error/node()" />
-                                </div>
-                        </xsl:if>
-                        <div class="thumbnails clearfix">
-                        <xsl:variable name='id'>
-                                <xsl:value-of select="translate(dri:field/@id, '.', '_')" />
-                        </xsl:variable>
-                        <xsl:for-each select="dri:field/dri:option[not(@returnValue='')]">
-	                        <a href="#" class="col-sm-3 thumbnail text-center">
-	                        		<xsl:attribute name="id">type_<xsl:value-of select="@returnValue" /></xsl:attribute>
-	                                <xsl:attribute name="onclick">$('#<xsl:copy-of select="$id" />').val('<xsl:value-of select="@returnValue"/>');return false;</xsl:attribute>
-	                        <img style="width: 64px; height: 64px">
-	                                <xsl:attribute name="src"><xsl:copy-of select="$theme-path" />/../UFALHome/lib/images/<xsl:value-of select="@returnValue" />.png</xsl:attribute>
-	                        </img>
-	                        <p class="text-center"><xsl:apply-templates select="node()" /></p>
-	                        </a>
-                        </xsl:for-each>
-                        </div>
-                        <div class="hidden">
-                                <xsl:apply-templates select="dri:field" />
-                        </div>
-                        <div class="alert col-xs-12">
-                                <i class="fa fa-info-circle fa-4x pull-left">&#160;</i>
-                                <xsl:apply-templates select="dri:field/dri:help/node()" />
-                        </div>
-                </div>
-        </xsl:template>
 	
         <xsl:template match="dri:list[starts-with(@n, 'accordion')]" priority="10">
                 <div>
