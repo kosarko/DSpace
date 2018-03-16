@@ -75,6 +75,7 @@ public class NarratorStep extends AbstractProcessingStep {
                 }
             }
         }else{
+            submission.clearMetadata("viadat", "narrator", Item.ANY, Item.ANY);
             int stepNumber = subInfo.getStepConfig("narrator").getStepNumber();
             ((WorkspaceItem)subInfo.getSubmissionItem()).setStageReached(stepNumber);
         }

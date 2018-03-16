@@ -138,9 +138,20 @@ public class NarratorStep extends AbstractSubmissionStep {
 
         Item item = submission.getItem();
         String title = item.getName();
+        String project = item.getMetadata("viadat.project.name");
+        String output = item.getMetadata("viadat.output");
+
 
         reviewSection.addLabel(T_title_label);
         reviewSection.addItem(title);
+        reviewSection.addLabel(T_project_label);
+        if(isNotBlank(project)) {
+            reviewSection.addItem(project);
+        }
+        reviewSection.addLabel(T_output_label);
+        if(isNotBlank(output)){
+            reviewSection.addItem(output);
+        }
         return reviewSection;
     }
 }
