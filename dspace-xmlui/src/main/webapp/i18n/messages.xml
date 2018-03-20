@@ -142,6 +142,37 @@
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_branding">Community</message>
     <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.branding">Community</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narrator">Narrator</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorName">Narrator</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorGender">Gender</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorBirthdate">Year of birth</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorDegree">Degree</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorProfession">Profession</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorKeywords">Keywords - narrator</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorConsent">Informed consent</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewTranscript">Transcript</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewDate">Interview date</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewInterviewer">Interviewer</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewKeywords">Keywords - interview</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewDetailedKeywords">Detailed keywords</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewPeriod">Period</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_projectName">Project</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_technicalType">File type</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorName">Narrator</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorGender">Gender</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorBirthdate">Birthdate</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorDegree">Degree</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProfession">Profession</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywords">Keywords - narrator</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorConsent">Informed consent</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewTranscript">Transcript</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDate">Interview date</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewInterviewer">Interviewer</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewKeywords">Keywords - interview</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDetailedKeywords">Detailed keywords</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewPeriod">Period</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.projectName">Project</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.technicalType">File type</message>
 
 
    <!--  some common other possibilities for Advanced Search Fields -->
@@ -220,6 +251,11 @@
     <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.mediatype">Browsing by Medium Type</message>
     <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.mediatype">Browsing by Medium Type</message>
         <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.mediatype.column_heading">Medium Type</message>
+
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narrator.column_heading">Narrator</message>
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narrator">Browsing {0} by Narrator
+		{1}</message>
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narrator">Browsing {0} by Narrator</message>
 
 
 	<!-- org.dspace.app.xmlui.administrative.WithdrawnItems.java -->
@@ -327,6 +363,7 @@
     <message key="xmlui.ArtifactBrowser.Navigation.browse_language">Language</message>
     <message key="xmlui.ArtifactBrowser.Navigation.browse_type">Type</message>
     <message key="xmlui.ArtifactBrowser.Navigation.browse_mediatype">Medium Type</message>
+	<message key="xmlui.ArtifactBrowser.Navigation.browse_narrator">Narrator</message>
 
 	<!-- org.dspace.app.xmlui.artifactbrowser.SimpleSearch.java -->
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.title">Search</message>
@@ -950,6 +987,11 @@
 	<message key="xmlui.Submission.submit.NarratorStep.title_missing">This field is required</message>
 	<message key="xmlui.Submission.submit.NarratorStep.select_help">Select existing narrator or create new record</message>
 	<message key="xmlui.Submission.submit.NarratorStep.select_label">Narrator</message>
+	<message key="xmlui.Submission.submit.NarratorStep.project_help">Project name</message>
+	<message key="xmlui.Submission.submit.NarratorStep.project_label">Project</message>
+	<message key="xmlui.Submission.submit.NarratorStep.output_help">Outputs such as thesis, citations, etc. You
+		can upload particular files in the next step.</message>
+	<message key="xmlui.Submission.submit.NarratorStep.output_label">Outputs</message>
 
     
     <!-- cz.cuni.mff.ufal.UFALLicenceAgreement -->
@@ -1086,11 +1128,11 @@
     <message key="xmlui.Submission.submit.UploadWithEmbargoStep.submit_remove">Remove selected files</message>
     <message key="xmlui.Submission.submit.UploadWithEmbargoStep.submit_policy">Policies</message>
 
-	<message key="xmlui.Submission.submit.UploadStep.desciption.consent">Informed consent</message>
-	<message key="xmlui.Submission.submit.UploadStep.desciption.output">Outputs</message>
-	<message key="xmlui.Submission.submit.UploadStep.desciption.material">Provided materials</message>
-	<message key="xmlui.Submission.submit.UploadStep.desciption.interview">Interview itself</message>
-	<message key="xmlui.Submission.submit.UploadStep.desciption.transcript">Transcript of the interview</message>
+	<message key="xmlui.Submission.submit.UploadStep.consent">Informed consent</message>
+	<message key="xmlui.Submission.submit.UploadStep.output">Outputs</message>
+	<message key="xmlui.Submission.submit.UploadStep.material">Provided materials</message>
+	<message key="xmlui.Submission.submit.UploadStep.interview">Interview itself</message>
+	<message key="xmlui.Submission.submit.UploadStep.transcript">Transcript of the interview</message>
 
 
 	<!-- org.dspace.app.xmlui.Submission.submit.EditFileStep -->
@@ -2966,6 +3008,7 @@
   <message key="xmlui.UFAL.artifactbrowser.filters.selected">Selected Filters</message>
   <message key="xmlui.UFAL.artifactbrowser.search.limit">Limit your search</message>
   <message key="xmlui.UFAL.artifactbrowser.item_list.authors">Author(s):</message>
+	<message key="xmlui.UFAL.artifactbrowser.item_list.narrators">Narrator(s):</message>
 
   <!-- UFAL/lib/xsl/aspect/artifactbrowser/item-view.xsl -->
   <message key="xmlui.UFAL.artifactbrowser.item-download-all-files">Download all files in item ({0})</message>
@@ -3241,6 +3284,89 @@
 	<message key="input_forms.field.dc.relation.isreferencedby.label">Referenced by</message>
 	<message key="input_forms.field.dc.relation.isreferencedby.hint">Link to original paper that references this dataset.</message>
 	<message key="input_forms.field.dc.relation.isreferencedby.regexp-warning">The supplied url must start with http/https</message>
+
+	<message key="input_forms.field.viadat.narrator.name.label">Narrator</message>
+	<message key="input_forms.field.viadat.narrator.name.hint">Enter narrator's name</message>
+	<message key="input_forms.field.viadat.narrator.name.required">The name is required</message>
+	<message key="input_forms.field.viadat.narrator.gender.label">Gender</message>
+	<message key="input_forms.field.viadat.narrator.gender.hint">Narrator's gender</message>
+	<message key="input_forms.field.viadat.narrator.birthdate.label">Birthdate</message>
+	<message key="input_forms.field.viadat.narrator.birthdate.hint">Enter the birthdate in one of the following
+		formats RRRR-MM-DD, RRRR-MM or RRRR</message>
+	<message key="input_forms.field.viadat.narrator.identifier.label">Narrator's ID</message>
+	<message key="input_forms.field.viadat.narrator.identifier.hint">Narrator's ID</message>
+	<message key="input_forms.field.viadat.narrator.identifier.required">The id is required</message>
+	<message key="input_forms.field.viadat.narrator.alias.label">Alternative names</message>
+	<message key="input_forms.field.viadat.narrator.alias.hint">Aliases, artistic names, surnames</message>
+	<message key="input_forms.field.viadat.narrator.degree.label">Degree</message>
+	<message key="input_forms.field.viadat.narrator.degree.hint">Degree</message>
+	<message key="input_forms.field.viadat.narrator.profession.label">Profession</message>
+	<message key="input_forms.field.viadat.narrator.profession.hint">Profession</message>
+	<message key="input_forms.field.viadat.narrator.keywords.label">Keywords</message>
+	<message key="input_forms.field.viadat.narrator.keywords.hint">You can enter the keywords one by one or separated with comma or semicolon. Hints should appear when you start typing</message>
+	<message key="input_forms.field.viadat.narrator.consent.label">Informed consent</message>
+	<message key="input_forms.field.viadat.narrator.consent.hint">The option to upload the consent iteself is in the
+		following steps</message>
+	<message key="input_forms.field.viadat.narrator.characteristics.label">Characteristic</message>
+	<message key="input_forms.field.viadat.narrator.characteristics.hint">Characteristic</message>
+	<message key="input_forms.field.viadat.narrator.contact.label">Contact details</message>
+	<message key="input_forms.field.viadat.narrator.contact.hint">Contact details</message>
+	<message key="input_forms.field.viadat.narrator.note.label">Note</message>
+	<message key="input_forms.field.viadat.narrator.note.hint">Note</message>
+	<message key="input_forms.value_pairs.viadat_gender.male">Male</message>
+	<message key="input_forms.value_pairs.viadat_gender.female">Female</message>
+	<message key="input_forms.value_pairs.viadat_gender.unspecified">Unspecified</message>
+	<message key="input_forms.value_pairs.interview_types.biographical">Biographical</message>
+	<message key="input_forms.value_pairs.interview_types.thematic">Thematic</message>
+	<message key="input_forms.value_pairs.interview_types.biographical_thematic">Biographical-thematic</message>
+	<message key="input_forms.value_pairs.interview_types.other">Other</message>
+	<message key="input_forms.value_pairs.viadat_consent.yes">Yes</message>
+	<message key="input_forms.value_pairs.viadat_consent.no">No</message>
+	<message key="input_forms.value_pairs.viadat_consent.extras">Including extra arrangements</message>
+	<message key="input_forms.field.viadat.interview.type.label">Interview type</message>
+	<message key="input_forms.field.viadat.interview.type.hint">Interview type</message>
+	<message key="input_forms.field.viadat.interview.type.required">The interview type is required</message>
+	<message key="input_forms.field.viadat.interview.identifier.label">Interview ID</message>
+	<message key="input_forms.field.viadat.interview.identifier.hint">Interview ID</message>
+	<message key="input_forms.field.viadat.interview.identifier.required">The interview ID is required</message>
+	<message key="input_forms.field.viadat.interview.transcript.label">Transcript</message>
+	<message key="input_forms.field.viadat.interview.transcript.hint">You can upload the transript in one of
+		the following steps.</message>
+	<message key="input_forms.field.viadat.interview.date.label">Interview date</message>
+	<message key="input_forms.field.viadat.interview.date.hint">The interview date should be in on of the following
+		formats RRRR-MM-DD, RRRR-MM or RRRR</message>
+	<message key="input_forms.field.viadat.interview.length.label">Interview length</message>
+	<message key="input_forms.field.viadat.interview.length.hint">The lenght is expected in the following format
+		HH:MM:SS</message>
+	<message key="input_forms.field.viadat.interview.length.regexp_warn">The length does not match the expected format
+		HH:MM:SS</message>
+	<message key="input_forms.field.viadat.interview.place.label">Place</message>
+	<message key="input_forms.field.viadat.interview.place.hint">Where the interview took place</message>
+	<message key="input_forms.field.viadat.interview.interviewer.label">Interviewer</message>
+	<message key="input_forms.field.viadat.interview.interviewer.hint">The full name of the interviewer.</message>
+	<message key="input_forms.field.viadat.interview.description.label">Description</message>
+	<message key="input_forms.field.viadat.interview.description.hint">Description</message>
+	<message key="input_forms.field.viadat.interview.keywords.label">Keywords</message>
+	<message key="input_forms.field.viadat.interview.keywords.hint">You can enter the keywords one by one or separated with comma or semicolon. Hints should appear when you start typing</message>
+	<message key="input_forms.field.viadat.interview.detailedKeywords.label">Detailed keywords/codes</message>
+	<message key="input_forms.field.viadat.interview.detailedKeywords.hint">You can enter the keywords one by one or separated with comma or semicolon. Hints should appear when you start typing</message>
+	<message key="input_forms.field.viadat.interview.period.label">Period</message>
+	<message key="input_forms.field.viadat.interview.period.hint">Period</message>
+	<message key="input_forms.field.viadat.interview.note.label">Note</message>
+	<message key="input_forms.field.viadat.interview.note.hint">Note</message>
+	<message key="input_forms.value_pairs.interview_transcript.literal">Literal</message>
+	<message key="input_forms.value_pairs.interview_transcript.edited">Edited</message>
+	<message key="input_forms.value_pairs.interview_transcript.approximate">Approximate</message>
+	<message key="input_forms.value_pairs.interview_transcript.no">No</message>
+	<message key="input_forms.field.viadat.technical.type.label">File type</message>
+	<message key="input_forms.field.viadat.technical.type.hint">For example audio, audio-visual, text, etc.</message>
+	<message key="input_forms.field.viadat.technical.type.required">The file type is required</message>
+	<message key="input_forms.field.dc.creator.label">Creator</message>
+	<message key="input_forms.field.dc.creator.hint">The creator or the institution responsible for creating
+		the interview</message>
+	<message key="input_forms.field.viadat.technical.note.label">Note</message>
+	<message key="input_forms.field.viadat.technical.note.hint">Note</message>
+
 
 	<!-- cz.cuni.mff.ufal.ContractPage -->
 	<message key="xmlui.ContractPage.title">Distribution License Agreement</message>

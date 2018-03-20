@@ -348,7 +348,7 @@ public class UploadStep extends AbstractSubmissionStep
 		        desc.setLabel(T_description);
 		        desc.setHelp(T_description_help);
 		        for(String option : new String[]{"consent", "output", "material", "interview", "transcript"}){
-		            desc.addOption(option, message(option));
+                        desc.addOption(option, message("xmlui.Submission.submit.UploadStep." + option));
                 }
 	    		
 		        Button submit = uploadLocal.addItem().addButton("submit_upload_local");

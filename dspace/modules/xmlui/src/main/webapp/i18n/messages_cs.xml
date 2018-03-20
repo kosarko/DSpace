@@ -1114,11 +1114,11 @@
 	<message key="xmlui.Submission.submit.UploadStep.column_checksum">Checksum</message>
 	<message key="xmlui.Submission.submit.UploadStep.column_order">Pořadí</message>
 
-	<message key="xmlui.Submission.submit.UploadStep.desciption.consent">Informovaný souhlas</message>
-	<message key="xmlui.Submission.submit.UploadStep.desciption.output">Výstupy</message>
-	<message key="xmlui.Submission.submit.UploadStep.desciption.material">Poskytnuté materiály</message>
-	<message key="xmlui.Submission.submit.UploadStep.desciption.interview">Samotný rozhovor</message>
-	<message key="xmlui.Submission.submit.UploadStep.desciption.transcript">Přepis rozhovoru</message>
+	<message key="xmlui.Submission.submit.UploadStep.consent">Informovaný souhlas</message>
+	<message key="xmlui.Submission.submit.UploadStep.output">Výstupy</message>
+	<message key="xmlui.Submission.submit.UploadStep.material">Poskytnuté materiály</message>
+	<message key="xmlui.Submission.submit.UploadStep.interview">Samotný rozhovor</message>
+	<message key="xmlui.Submission.submit.UploadStep.transcript">Přepis rozhovoru</message>
 
 	<!-- org.dspace.app.xmlui.Submission.submit.EditFileStep -->
 	<message key="xmlui.Submission.submit.EditFileStep.head">Editovat soubor</message>
@@ -3034,6 +3034,38 @@
     <message key="xmlui.ArtifactBrowser.AbstractSearch.type_advisor_browse">Prohlížení dle vedoucího</message>
     <message key="xmlui.ArtifactBrowser.AbstractSearch.type_department_browse">Prohlížení dle oddělení</message>
     <message key="xmlui.ArtifactBrowser.AbstractSearch.type_dateissued_dt_browse">Prohlížení dle data publikování</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorName">Narátor</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorGender">Pohlaví</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorBirthdate">Rok narození</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorDegree">Titul</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorProfession">Profese</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorKeywords">Klíčová slova - narátor</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorConsent">Informovaný souhlas</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewTranscript">Přepis</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewDate">Datum rozhovoru</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewInterviewer">Tazatel</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewKeywords">Klíčová slova - rozhovor</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewDetailedKeywords">Detailní klíčová slova</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewPeriod">Období</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_projectName">Projekt</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_technicalType">Typ souboru</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorName">Narátor</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorGender">Pohlaví</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorBirthdate">Rok narození</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorDegree">Titul</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProfession">Profese</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywords">Klíčová slova - narátor</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorConsent">Informovaný souhlas</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewTranscript">Přepis</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDate">Datum rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewInterviewer">Tazatel</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewKeywords">Klíčová slova - rozhovor</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDetailedKeywords">Detailní klíčová slova</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewPeriod">Období</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.projectName">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.technicalType">Typ souboru</message>
+
 
     <message key="xmlui.dri2xhtml.structural.pagination-info.nototal">Zobrazují se záznamy {0}-{1}</message>
 
