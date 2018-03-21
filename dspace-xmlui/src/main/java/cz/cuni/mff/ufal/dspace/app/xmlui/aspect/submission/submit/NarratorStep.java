@@ -2,6 +2,7 @@ package cz.cuni.mff.ufal.dspace.app.xmlui.aspect.submission.submit;
 
 import cz.cuni.mff.ufal.Logger;
 import org.dspace.app.xmlui.aspect.submission.AbstractSubmissionStep;
+import org.dspace.app.xmlui.aspect.submission.submit.DescribeStep;
 import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
@@ -84,7 +85,10 @@ public class NarratorStep extends AbstractSubmissionStep {
         }
 
         String project = item.getMetadata("viadat.project.name");
-        Text textProject = form.addItem().addText("submit-project");
+        String fieldName = "submit-project";
+        org.dspace.app.xmlui.wing.element.Item formItem = form.addItem();
+        Text textProject = formItem.addText(fieldName, "autocomplete");
+        DescribeStep.addAutocompleteComponents(fieldName, "solr-projectName_ac", formItem);
         textProject.setLabel(T_project_label);
         textProject.setHelp(T_project_help);
         if(isNotBlank(project)){

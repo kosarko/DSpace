@@ -98,7 +98,7 @@
                     <label>input_forms.field.viadat.narrator.degree.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.narrator.degree.hint</hint>
-                    <autocomplete>solr-viadat.narrator.degree_ac</autocomplete>
+                    <autocomplete>solr-narratorDegree_ac</autocomplete>
                 </field>
 
                 <field>
@@ -108,7 +108,7 @@
                     <label>input_forms.field.viadat.narrator.profession.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.narrator.profession.hint</hint>
-                    <autocomplete>solr-viadat.narrator.profession_ac</autocomplete>
+                    <autocomplete>solr-narratorProfession_ac</autocomplete>
                 </field>
 
                 <field>
@@ -120,7 +120,7 @@
                     <label>input_forms.field.viadat.narrator.keywords.label</label>
                     <input-type>twobox</input-type>
                     <hint>input_forms.field.viadat.narrator.keywords.hint</hint>
-                    <autocomplete>solr-viadat.narrator.keywords_ac</autocomplete>
+                    <autocomplete>solr-narratorKeywords_ac</autocomplete>
                 </field>
 
                 <field>
@@ -140,7 +140,7 @@
                     <label>input_forms.field.viadat.narrator.characteristics.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.narrator.characteristics.hint</hint>
-                    <autocomplete>solr-viadat.narrator.characteristics_ac</autocomplete>
+                    <autocomplete>solr-narratorCharacteristics_ac</autocomplete>
                 </field>
 
                 <field>
@@ -240,6 +240,7 @@
                     <label>input_forms.field.viadat.interview.place.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.interview.place.hint</hint>
+                    <autocomplete>solr-interviewPlace_ac</autocomplete>
                 </field>
 
                 <field>
@@ -250,6 +251,7 @@
                     <label>input_forms.field.viadat.interview.interviewer.label</label>
                     <input-type>name</input-type>
                     <hint>input_forms.field.viadat.interview.interviewer.hint</hint>
+                    <autocomplete>solr-interviewInterviewer_ac</autocomplete>
                 </field>
 
                 <field>
@@ -270,7 +272,7 @@
                     <label>input_forms.field.viadat.interview.keywords.label</label>
                     <input-type>twobox</input-type>
                     <hint>input_forms.field.viadat.interview.keywords.hint</hint>
-                    <autocomplete>solr-viadat.interview.keywords_ac</autocomplete>
+                    <autocomplete>solr-interviewKeywords_ac</autocomplete>
                 </field>
 
                 <field>
@@ -282,7 +284,7 @@
                     <label>input_forms.field.viadat.interview.detailedKeywords.label</label>
                     <input-type>twobox</input-type>
                     <hint>input_forms.field.viadat.interview.detailedKeywords.hint</hint>
-                    <autocomplete>solr-viadat.interview.detailedKeywords_ac</autocomplete>
+                    <autocomplete>solr-interviewDetailedKeywords_ac</autocomplete>
                 </field>
 
                 <field>
@@ -292,7 +294,7 @@
                     <label>input_forms.field.viadat.interview.period.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.interview.period.hint</hint>
-                    <autocomplete>solr-viadat.interview.period_ac</autocomplete>
+                    <autocomplete>solr-interviewPeriod_ac</autocomplete>
                 </field>
 
                 <field>
@@ -325,6 +327,7 @@
                     <label>input_forms.field.viadat.technical.type.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.technical.type.hint</hint>
+                    <autocomplete>solr-technicalType_ac</autocomplete>
                     <required>input_forms.field.viadat.technical.type.required</required>
                 </field>
                 <field>
@@ -333,7 +336,7 @@
                     <label>input_forms.field.dc.creator.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.dc.creator.hint</hint>
-                    <autocomplete>solr-dc.creator_ac</autocomplete>
+                    <autocomplete>solr-creator_ac</autocomplete>
                 </field>
                 <field>
                     <dc-schema>viadat</dc-schema>

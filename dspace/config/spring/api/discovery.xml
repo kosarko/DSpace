@@ -190,12 +190,14 @@
                 <ref bean="searchFacetNarratorProfession" />
                 <ref bean="searchFacetNarratorKeywords" />
                 <ref bean="searchFacetNarratorConsent" />
+                <ref bean="searchFacetNarratorCharacteristics" />
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewDate" />
                 <ref bean="searchFacetInterviewInterviewer" />
                 <ref bean="searchFacetInterviewKeywords" />
                 <ref bean="searchFacetInterviewDetailedKeywords" />
                 <ref bean="searchFacetInterviewPeriod" />
+                <ref bean="searchFacetInterviewPlace" />
                 <ref bean="searchFacetProjectName" />
                 <ref bean="searchFacetTechnicalType" />
                 <ref bean="searchFacetCreator" />
@@ -218,12 +220,14 @@
                 <ref bean="searchFacetNarratorProfession" />
                 <ref bean="searchFacetNarratorKeywords" />
                 <ref bean="searchFacetNarratorConsent" />
+                <ref bean="searchFacetNarratorCharacteristics" />
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewDate" />
                 <ref bean="searchFacetInterviewInterviewer" />
                 <ref bean="searchFacetInterviewKeywords" />
                 <ref bean="searchFacetInterviewDetailedKeywords" />
                 <ref bean="searchFacetInterviewPeriod" />
+                <ref bean="searchFacetInterviewPlace" />
                 <ref bean="searchFacetProjectName" />
                 <ref bean="searchFacetTechnicalType" />
                 <ref bean="searchFacetCreator" />
@@ -372,7 +376,7 @@
     </bean>
     <!--Search facet configuration beans-->
     <bean id="searchFacetCreator" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="author"/>
+        <property name="indexFieldName" value="creator"/>
         <property name="metadataFields">
             <list>
                 <value>dc.creator</value>
@@ -469,6 +473,18 @@
         <property name="fullAutoComplete" value="true"/>
     </bean>
 
+    <bean id="searchFacetNarratorCharacteristics" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narratorCharacteristics"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.characteristics</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="20"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="true"/>
+    </bean>
+
     <bean id="searchFacetInterviewTranscript" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
         <property name="indexFieldName" value="interviewTranscript"/>
         <property name="metadataFields">
@@ -536,6 +552,18 @@
         <property name="metadataFields">
             <list>
                 <value>viadat.interview.period</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="20"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="true"/>
+    </bean>
+
+    <bean id="searchFacetInterviewPlace" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="interviewPlace"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.interview.place</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>

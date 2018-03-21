@@ -1426,7 +1426,8 @@ public class DescribeStep extends AbstractSubmissionStep
         	addAutocompleteComponents(fieldName, autocomplete, item);
 		}
 		
-        protected void addAutocompleteComponents(String fieldName, String autocomplete, org.dspace.app.xmlui.wing.element.Item item) throws WingException {
+        public static void addAutocompleteComponents(String fieldName, String autocomplete, org.dspace.app.xmlui.wing
+                .element.Item item) throws WingException {
         	String[] parts = autocomplete.split("-");
             String url_property = String.format("lr.autocomplete.%s.url", parts[0]);
             //String auto_url = cs.getProperty(url_property);
