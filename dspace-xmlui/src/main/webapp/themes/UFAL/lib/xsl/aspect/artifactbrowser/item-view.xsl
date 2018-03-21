@@ -193,7 +193,7 @@
 										<xsl:attribute name="class"><xsl:text>ds-dc_contributor_author-authority</xsl:text></xsl:attribute>
 									</xsl:if>
 									<a>
-								<xsl:attribute name="href"><xsl:copy-of select="$contextPath"/>/browse?value=<xsl:copy-of select="node()" />&amp;type=author</xsl:attribute>
+								<xsl:attribute name="href"><xsl:copy-of select="$contextPath"/>/browse?value=<xsl:copy-of select="dim:field[@element='narrator'][@qualifier='name']" />&amp;type=narrator</xsl:attribute>
 								<xsl:copy-of select="dim:field[@element='narrator'][@qualifier='name']" />
 								</a>
 								</span>
