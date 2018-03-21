@@ -401,7 +401,7 @@ ufal.submissions = {
                                     ufal.submissions.autocomplete_solr_handle_field(
                                         jQuery(this), url);
                                     break;
-                                case "author_ac":
+                                case "interviewInterviewer_ac":
                                     ufal.submissions.autocomplete_solr_name_field(
                                         jQuery(this), url);
                                     break;
