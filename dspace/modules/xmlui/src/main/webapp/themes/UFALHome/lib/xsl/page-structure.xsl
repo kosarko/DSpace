@@ -484,7 +484,7 @@
         	</div>
         </xsl:if>
 		
-		<img class="artifact-icon pull-right" alt="{dim:field[@element='type'][1]/node()}">
+		<img class="artifact-icon pull-right" alt="{dim:field[@element='type'][1]/node()}" onerror="this.src='{$theme-path}/images/mime/application-x-zerosize.png'">
 			<xsl:attribute name="src">
                                 <xsl:text>themes/UFALHome/lib/images/</xsl:text>
                                 <xsl:value-of
