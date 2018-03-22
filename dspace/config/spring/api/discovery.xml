@@ -96,8 +96,8 @@
         <!--Which sidebar facets are to be displayed-->
         <property name="sidebarFacets">
             <list>
-                <ref bean="searchFilterNarrator" />
-                <ref bean="searchFilterSubject" />
+                <ref bean="searchFilterType" />
+                <ref bean="searchFilterPeriod" />
 		        <ref bean="searchFilterLanguage" />
             </list>
         </property>
@@ -105,13 +105,10 @@
         <property name="searchFilters">
             <list>
                 <ref bean="searchFilterTitle" />
-                <ref bean="searchFilterNarrator" />
-                <ref bean="searchFilterSubject" />
                 <ref bean="searchFilterIssued" />
-                <ref bean="searchFilterRights" />
-		        <ref bean="searchFilterPublisher" />
 		        <ref bean="searchFilterLanguage" />
 		        <ref bean="searchFilterType" />
+                <ref bean="searchFilterPeriod" />
             </list>
         </property>
         <!--The sort filters for the discovery search-->
@@ -277,57 +274,6 @@
 		<property name="fullAutoComplete" value="false"/>
     </bean>
 
-    <bean id="searchFilterAuthor" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="author"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.contributor.author</value>
-                <value>dc.contributor.other</value>
-                <value>dc.creator</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="COUNT"/>
-		<property name="fullAutoComplete" value="true"/>
-    </bean>
-
-    <bean id="searchFilterNarrator" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="narrator"/>
-        <property name="metadataFields">
-            <list>
-                <value>viadat.narrator.name</value>
-                <value>viadat.narrator.alias</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
-    </bean>
-
-    <bean id="searchFilterSubject" class="org.dspace.discovery.configuration.HierarchicalSidebarFacetConfiguration">
-        <property name="indexFieldName" value="subject"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.subject.*</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="splitter" value="::"/>
-		<property name="fullAutoComplete" value="true"/>
-    </bean>
-    <bean id="searchFilterRights" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">	
-        <property name="indexFieldName" value="rights"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.rights.label</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
-    </bean>
-
     <bean id="searchFilterIssued" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
         <property name="indexFieldName" value="dateIssued"/>
         <property name="metadataFields">
@@ -339,17 +285,6 @@
 		<property name="facetLimit" value="5"/>
         <property name="sortOrder" value="VALUE"/>
 		<property name="fullAutoComplete" value="false"/>
-    </bean>
-    <bean id="searchFilterPublisher" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="publisher"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.publisher</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
     </bean>
    <bean id="searchFilterLanguage" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
         <property name="indexFieldName" value="language"/>
@@ -368,6 +303,17 @@
         <property name="metadataFields">
             <list>
                 <value>dc.type</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="false"/>
+    </bean>
+    <bean id="searchFilterPeriod" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="period"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.interview.period</value>
             </list>
         </property>
         <property name="facetLimit" value="5"/>
@@ -588,54 +534,6 @@
         <property name="metadataFields">
             <list>
                 <value>viadat.technical.type</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="20"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
-    </bean>
-
-    <bean id="searchFacetSubject" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="subject"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.subject.*</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="20"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
-    </bean>
-
-    <bean id="searchFacetDateIssued" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="dateIssued"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.date.issued</value>
-            </list>
-        </property>
-        <property name="type" value="date"/>
-        <property name="facetLimit" value="20"/>        
-        <property name="sortOrder" value="VALUE"/>
-    </bean>
-
-    <bean id="searchFacetRights" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="rights"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.rights.label</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="20"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
-    </bean>
-
-    <bean id="searchFacetPublisher" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="publisher"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.publisher</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>
