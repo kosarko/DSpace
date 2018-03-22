@@ -3636,4 +3636,165 @@
 	<message key="xmlui.ContractPage.collection_name">{0}</message>
 	<message key="xmlui.ContractPage.explain_non_localized_license">Smlouva se uzavírá v angličtině a její plné znění naleznete níže. Následující český překlad je pouze orientační. V případě rozporů platí anglická verze. </message>
 
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.column_heading">Název</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.title">Název</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.title">Název</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.title_filter">Název</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_title">Název</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.dateIssued.column_heading">Datum publikace</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.dateIssued">Datum publikace</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.dateIssued">Datum publikace</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.dateIssued_filter">Datum publikace</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_dateIssued">Datum publikace</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.language_filter">Jazyk</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_language">Jazyk</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.type_filter">Typ</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_type">Typ</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.period">Období</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.period.column_heading">Období</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.period">Období</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.period">Období</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_period">Období</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.period_filter">Období</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_period">Období</message>
+
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.creator">Tvůrce</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.creator.column_heading">Tvůrce</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.creator">Tvůrce</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.creator">Tvůrce</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.creator_filter">Tvůrce</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_creator">Tvůrce</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorName.column_heading">Narátor</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorName">Narátor</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorName">Narátor</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorName_filter">Narátor</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorName">Narátor</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorGender.column_heading">Pohlaví</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorGender">Pohlaví</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorGender">Pohlaví</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorGender_filter">Pohlaví</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorGender">Pohlaví</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorBirthdate.column_heading">Datum narození</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorBirthdate">Datum narození</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorBirthdate">Datum narození</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorBirthdate_filter">Datum narození</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorBirthdate">Datum narození</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorDegree.column_heading">Titul</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorDegree">Titul</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorDegree">Titul</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorDegree_filter">Titul</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorDegree">Titul</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorProfession.column_heading">Profese</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorProfession">Profese</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorProfession">Profese</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProfession_filter">Profese</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorProfession">Profese</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywords.column_heading">Klíčová slova - narátor</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywords">Klíčová slova - narátor</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywords">Klíčová slova - narátor</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywords_filter">Klíčová slova - narátor</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorKeywords">Klíčová slova - narátor</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorConsent.column_heading">Informovaný souhlas</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorConsent">Informovaný souhlas</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorConsent">Informovaný souhlas</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorConsent_filter">Informovaný souhlas</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorConsent">Informovaný souhlas</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorCharacteristics">Charakteristika</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorCharacteristics.column_heading">Charakteristika</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorCharacteristics">Charakteristika</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorCharacteristics">Charakteristika</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorCharacteristics">Charakteristika</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorCharacteristics_filter">Charakteristika</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorCharacteristics">Charakteristika</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewTranscript.column_heading">Přepis</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewTranscript">Přepis</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewTranscript">Přepis</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewTranscript_filter">Přepis</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewTranscript">Přepis</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewDate.column_heading">Datum rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewDate">Datum rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewDate">Datum rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDate_filter">Datum rozhovoru</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewDate">Datum rozhovoru</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewInterviewer.column_heading">Tazatel</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewInterviewer">Tazatel</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewInterviewer">Tazatel</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewInterviewer_filter">Tazatel</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewInterviewer">Tazatel</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewKeywords.column_heading">Klíčová slova - rozhovor</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewKeywords">Klíčová slova - rozhovor</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewKeywords">Klíčová slova - rozhovor</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewKeywords_filter">Klíčová slova - rozhovor</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewKeywords">Klíčová slova - rozhovor</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewDetailedKeywords.column_heading">Detailní klíčová slova</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewDetailedKeywords">Detailní klíčová slova</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewDetailedKeywords">Detailní klíčová slova</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDetailedKeywords_filter">Detailní klíčová slova</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewDetailedKeywords">Detailní klíčová slova</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewPeriod.column_heading">Období</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewPeriod">Období</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewPeriod">Období</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewPeriod_filter">Období</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewPeriod">Období</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewPlace">Místo rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewPlace.column_heading">Místo rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewPlace">Místo rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewPlace">Místo rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewPlace">Místo rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewPlace_filter">Místo rozhovoru</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewPlace">Místo rozhovoru</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.projectName.column_heading">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.projectName">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.projectName">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.projectName_filter">Projekt</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_projectName">Projekt</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.technicalType.column_heading">Typ souboru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.technicalType">Typ souboru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.technicalType">Typ souboru</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.technicalType_filter">Typ souboru</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_technicalType">Typ souboru</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.language_filter">Jazyk</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_language">Jazyk</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.type_filter">Typ</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_type">Typ</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.hasfile.column_heading">Obsahuje soubory</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.hasfile">Obsahuje soubory</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.hasfile">Obsahuje soubory</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.hasfile_filter">Obsahuje soubory</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_hasfile">Obsahuje soubory</message>
+
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.branding.column_heading">Komunita</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.branding">Komunita</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.branding">Komunita</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.branding_filter">Komunita</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_branding">Komunita</message>
+
+	<message key="xmlui.ArtifactBrowser.Navigation.browse_keywords">Klíčová slova</message>
+	<message key="xmlui.ArtifactBrowser.Navigation.browse_creator">Tvůrce</message>
+
 </catalogue>
