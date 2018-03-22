@@ -195,6 +195,13 @@
 									<a>
 								<xsl:attribute name="href"><xsl:copy-of select="$contextPath"/>/browse?value=<xsl:copy-of select="dim:field[@element='narrator'][@qualifier='name']" />&amp;type=narrator</xsl:attribute>
 								<xsl:copy-of select="dim:field[@element='narrator'][@qualifier='name']" />
+										<xsl:if
+												test="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='identifier']">
+											<xsl:text> - </xsl:text>
+												<xsl:copy-of
+														select="dim:field[@mdschema='viadat'][@element='narrator'][@qualifier='identifier']" />
+
+										</xsl:if>
 								</a>
 								</span>
 						</xsl:when>
@@ -204,7 +211,23 @@
 					</xsl:choose>
 
 					</dd>
-				</dl>				
+				</dl>
+				<xsl:if test="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias']">
+					<dl id="item-narrator-alias" class="dl-horizontal" style="clear:both;">
+						<dt style="text-align: left">
+							<i class="fa fa-user-secret">&#160;</i>
+							<span><i18n:text>Alias</i18n:text></span>
+						</dt>
+                        <dd style="pading-right: 40px;">
+							<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias']">
+                                <xsl:copy-of select="node()" />
+								<xsl:if test="position() != last()">
+									<xsl:text>; </xsl:text>
+								</xsl:if>
+							</xsl:for-each>
+						</dd>
+					</dl>
+				</xsl:if>
 
 				<xsl:call-template name="itemSummaryView-DIM-fields">
 					<xsl:with-param name="clause" select="($clause + 1)" />
