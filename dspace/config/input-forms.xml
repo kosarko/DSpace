@@ -13,6 +13,8 @@
 
     <form-map>
         <name-map collection-handle="default" form-name="traditional"/>
+        <name-map collection-handle="123456789/2" form-name="narrators"/>
+        <name-map collection-handle="123456789/3" form-name="interviews"/>
     </form-map>
 
 
@@ -34,13 +36,12 @@
 
     <form-definitions>
 
-        <form name="traditional">
+        <form name="narrators">
             <page number="1">
                 <!-- Narrator -->
                 <field>
-                    <dc-schema>viadat</dc-schema>
-                    <dc-element>narrator</dc-element>
-                    <dc-qualifier>name</dc-qualifier>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>title</dc-element>
                     <repeatable>false</repeatable>
                     <label>input_forms.field.viadat.narrator.name.label</label>
                     <input-type>name</input-type>
@@ -161,8 +162,9 @@
                     <hint>input_forms.field.viadat.narrator.note.hint</hint>
                 </field>
             </page>
-
-            <page number="2">
+        </form>
+        <form name="interviews">
+            <page number="1">
 
                 <!-- Interview-->
 
@@ -314,6 +316,17 @@
 
             </page>
             -->
+        </form>
+        <form name="traditional">
+            <page number="1">
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>title</dc-element>
+                    <label>Title</label>
+                    <input-type>onebox</input-type>
+                    <hint>title</hint>
+                </field>
+            </page>
         </form>
 
     </form-definitions>
