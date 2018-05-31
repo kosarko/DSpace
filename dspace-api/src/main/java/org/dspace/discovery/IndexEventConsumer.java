@@ -14,6 +14,9 @@ import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.event.Consumer;
 import org.dspace.event.Event;
+import org.dspace.identifier.IdentifierNotFoundException;
+import org.dspace.identifier.IdentifierNotResolvableException;
+import org.dspace.identifier.IdentifierService;
 import org.dspace.utils.DSpace;
 
 import java.util.HashSet;
@@ -110,6 +113,7 @@ public class IndexEventConsumer implements Consumer {
                 else {
                     log.debug("consume() adding event to update queue: " + event.toString());
                     objectsToUpdate.add(subject);
+                    updateOwner(ctx, st, subject);
                 }
                 break;
 
@@ -125,6 +129,7 @@ public class IndexEventConsumer implements Consumer {
                 else {
                     log.debug("consume() adding event to update queue: " + event.toString());
                     objectsToUpdate.add(object);
+                    updateOwner(ctx, event.getObjectType(), object);
                 }
                 break;
 
@@ -146,6 +151,25 @@ public class IndexEventConsumer implements Consumer {
                                 + " on subject="
                                 + event.getSubjectTypeAsString());
                 break;
+        }
+    }
+
+    private void updateOwner(Context ctx, int dsoType, DSpaceObject dso) {
+        if(dsoType == Constants.ITEM){
+            final String type = dso.getMetadata("dc.type");
+            if("interview".equals(type)){
+                final String narratorUri = dso.getMetadata("dc.relation.ispartof");
+                try {
+                    final IdentifierService identifierService = new DSpace().getSingletonService
+                            (IdentifierService.class);
+                    DSpaceObject owningNarrator = identifierService.resolve(ctx, narratorUri);
+                    if (owningNarrator != null) {
+                        objectsToUpdate.add(owningNarrator);
+                    }
+                }catch (IdentifierNotFoundException | IdentifierNotResolvableException e){
+                    log.error("Failed to resolve " + narratorUri + "\n" + e.getMessage());
+                }
+            }
         }
     }
 

@@ -130,6 +130,7 @@
             <list>
                 <!--Only find items-->
                 <value>search.resourcetype:2</value>
+                <value>dc.type:narrator</value>
             </list>
         </property>
         <!--The configuration for the recent submissions-->
