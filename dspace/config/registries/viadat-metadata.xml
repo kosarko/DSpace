@@ -137,6 +137,12 @@
         <qualifier>note</qualifier>
         <scope_note></scope_note>
     </dc-type>
+    <dc-type>
+        <schema>viadat</schema>
+        <element>interview</element>
+        <qualifier>type</qualifier>
+        <scope_note></scope_note>
+    </dc-type>
 
     <dc-type>
         <schema>viadat</schema>

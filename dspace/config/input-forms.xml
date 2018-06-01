@@ -169,8 +169,9 @@
                 <!-- Interview-->
 
                 <field>
-                    <dc-schema>dc</dc-schema>
-                    <dc-element>type</dc-element>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>interview</dc-element>
+                    <dc-qualifier>type</dc-qualifier>
                     <repeatable>false</repeatable>
                     <label>input_forms.field.viadat.interview.type.label</label>
                     <input-type value-pairs-name="interview_types">dropdown</input-type>
