@@ -30,5 +30,7 @@
 
     <!--<bean class="org.dspace.discovery.SolrServiceIndexOutputPlugin" id="solrServiceIndexOutputPlugin"/>-->
     <bean class="cz.cuni.mff.ufal.dspace.discovery.SolrServiceTweaksPlugin" id="solrServiceTweaksPlugin"/>
-    <bean class="cz.cuni.mff.ufal.dspace.discovery.CopyPartsMetadataIndexPlugin" id="copyPartsMetadataIndexPlugin"/>
+    <bean class="cz.cuni.mff.ufal.dspace.discovery.CopyPartsMetadataIndexPlugin" id="copyPartsMetadataIndexPlugin">
+        <property name="identifierService" ref="org.dspace.identifier.IdentifierService"/>
+    </bean>
 </beans>

@@ -93,6 +93,8 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
     private static final Message T_account_export			 		= message("xmlui.administrative.Navigation.account_export");
 
     private static final Message T_my_account                       = message("xmlui.EPerson.Navigation.my_account");
+    private static final Message T_add_interview                    = message("xmlui.administrative.Navigation" +
+            ".context_add_interview");
 
     /** Cached validity object */
 	private SourceValidity validity;
@@ -243,6 +245,15 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
                     {
                         context.addItem().addXref(contextPath+"/admin/export?itemID="+item.getID(), T_context_export_item );
                         context.addItem().addXref(contextPath+ "/csv/handle/"+dso.getHandle(),T_context_export_metadata );
+                    }
+                    final Collection[] collections = Collection.findAll(this.context);
+                    for (Collection collection : collections){
+                        if(collection.getName().matches("(?i).*interview.*")){
+                            context.addItem().addXref(contextPath + "/handle/" + collection.getHandle() +
+                                            "/submit?itemID=" + item.getID(),
+                                    T_add_interview);
+                            break;
+                        }
                     }
                 }
     	}

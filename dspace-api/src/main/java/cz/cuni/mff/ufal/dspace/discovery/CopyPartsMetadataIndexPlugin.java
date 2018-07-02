@@ -12,20 +12,27 @@ import org.dspace.discovery.SolrServiceIndexPlugin;
 import org.dspace.identifier.IdentifierNotFoundException;
 import org.dspace.identifier.IdentifierNotResolvableException;
 import org.dspace.identifier.IdentifierService;
-import org.dspace.utils.DSpace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
     private static Logger log = LoggerFactory.getLogger(CopyPartsMetadataIndexPlugin.class);
 
-    final IdentifierService identifierService = new DSpace().getSingletonService
-            (IdentifierService.class);
 
+    IdentifierService identifierService;
+
+    @Autowired
+    @Required
+    public void setIdentifierService(IdentifierService identifierService){
+        this.identifierService = identifierService;
+    }
 
     @Override
     public void additionalIndex(final Context context, DSpaceObject dso, SolrInputDocument document) {
@@ -50,9 +57,11 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
                                 return doc;
                             }
                         }.getDocument();
+                        final Collection<String> noCopyFields = document.getFieldNames();
                         for(String name : interviewDoc.getFieldNames())
                         {
-                            if(name.endsWith("_filter")) {
+                            if(!noCopyFields.contains(name) && (name.endsWith("_filter") || name.endsWith("_keyword")
+                                    || name.endsWith("_ac"))) {
                                 for (Object val : interviewDoc.getFieldValues(name)) {
                                     document.addField(name, val);
                                 }

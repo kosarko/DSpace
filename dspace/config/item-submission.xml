@@ -168,6 +168,11 @@
 			<workflow-editable>true</workflow-editable>
 		</step>
 
+	 	<step id="fillIsPartof">
+            <processing-class>cz.cuni.mff.ufal.dspace.submit.step.FillIsPartOfStep</processing-class>
+			<workflow-editable>false</workflow-editable>
+		</step>
+
  </step-definitions>
 
  <!-- The submission-definitions map lays out the detailed definition of   -->
@@ -245,6 +250,7 @@
 			<!-- <step> <processing-class>org.dspace.submit.step.SkipInitialQuestionsStep</processing-class> 
 	  </step> -->
 
+	   		<step id="fillIsPartof" />
 			<!--Step 1 will be to Describe the item. -->
 			<step id="describe" />
 

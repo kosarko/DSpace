@@ -90,10 +90,7 @@
           <!-- Start a new submission to specific collection -->
           <map:match pattern="handle/*/*/submit">
             <map:call function="doSubmission">
-              <!--
-              Commented out to enforce the "select collection" step
               <map:parameter name="handle" value="{1}/{2}"/>
-               -->
             </map:call>
           </map:match>
           

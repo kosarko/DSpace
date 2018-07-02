@@ -13,6 +13,7 @@ import org.dspace.core.ConfigurationManager;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @XmlRootElement(name = "dspaceobject")
+@XmlSeeAlso({Item.class, Collection.class, Community.class})
 public class DSpaceObject {
     private Integer id;
 
@@ -35,7 +37,6 @@ public class DSpaceObject {
     @XmlElement(name = "link", required = true)
     private String link;
 
-    @XmlElement(required = true)
     private ArrayList<String> expand = new ArrayList<String>();
 
     public DSpaceObject() {
@@ -86,6 +87,7 @@ public class DSpaceObject {
     }
 
 
+    @XmlElement(required = true)
     public List<String> getExpand() {
         return expand;
     }

@@ -21,6 +21,7 @@ import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.List;
 import org.dspace.app.xmlui.wing.element.Options;
 import org.dspace.authorize.AuthorizeException;
+import org.dspace.content.Collection;
 import org.xml.sax.SAXException;
 
 /**
@@ -36,7 +37,9 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
 	/** Language Strings **/
     protected static final Message T_submissions = 
         message("xmlui.Submission.Navigation.submissions");
-	
+    protected static final Message T_add_narrator =
+            message("xmlui.Submission.Navigation.add_narrator");
+
 	 /**
      * Generate the unique caching key.
      * This key must be unique inside the space of this component.
@@ -61,7 +64,7 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
 		// Basic navigation skeleton
         options.addList("browse");
         List account = options.addList("account");
-        options.addList("context");
+        List contextList = options.addList("context");
         options.addList("administrative");
     	
 //      This doesn't flow very well, lets remove it and see if anyone misses it.  
@@ -75,7 +78,15 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
 //		        account.addItemXref(submitURL,"Submit to this collection");
 //    		}
 //    	}
-    	
-    	account.addItemXref(contextPath+"/submissions",T_submissions);
+
+        account.addItemXref(contextPath+"/submissions",T_submissions);
+        final Collection[] collections = Collection.findAll(context);
+        for (Collection collection : collections){
+            if(collection.getName().matches("(?i).*narrator.*")){
+                contextList.addItemXref(contextPath + "/handle/" + collection.getHandle() + "/submit",T_add_narrator);
+                break;
+            }
+        }
+
     }
 }

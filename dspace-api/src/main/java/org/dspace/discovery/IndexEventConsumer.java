@@ -44,6 +44,8 @@ public class IndexEventConsumer implements Consumer {
     DSpace dspace = new DSpace();
 
     IndexingService indexer = dspace.getServiceManager().getServiceByName(IndexingService.class.getName(),IndexingService.class);
+    final IdentifierService identifierService = dspace.getServiceManager().getServiceByName(IdentifierService.class
+            .getName(), IdentifierService.class);
 
     public void initialize() throws Exception {
 
@@ -160,8 +162,6 @@ public class IndexEventConsumer implements Consumer {
             if("interview".equals(type)){
                 final String narratorUri = dso.getMetadata("dc.relation.ispartof");
                 try {
-                    final IdentifierService identifierService = new DSpace().getSingletonService
-                            (IdentifierService.class);
                     DSpaceObject owningNarrator = identifierService.resolve(ctx, narratorUri);
                     if (owningNarrator != null) {
                         objectsToUpdate.add(owningNarrator);

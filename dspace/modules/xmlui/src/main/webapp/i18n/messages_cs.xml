@@ -768,6 +768,7 @@
 	
 	<!-- org.dspace.app.xmlui.submission.Navigation -->
 	<message key="xmlui.Submission.Navigation.submissions">Příspěvky</message>
+	<message key="xmlui.Submission.Navigation.add_narrator">Přidat narátora</message>
 
 	
 	<!-- org.dspace.app.xmlui.Submission.submissions -->
@@ -1292,6 +1293,7 @@
 	<message key="xmlui.administrative.Navigation.context_export_collection">Exportovat kolekci</message>
 	<message key="xmlui.administrative.Navigation.context_export_community">Exportovat komunitu</message>
 	<message key="xmlui.administrative.Navigation.context_export_metadata">Exportovat metadata</message>
+	<message key="xmlui.administrative.Navigation.context_add_interview">Přidat rozhovor</message>
 	
 	<!-- Site administrator options -->
 	<message key="xmlui.administrative.Navigation.administrative_head">Správa</message>

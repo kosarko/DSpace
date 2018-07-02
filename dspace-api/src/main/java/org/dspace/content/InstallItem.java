@@ -9,6 +9,7 @@ package org.dspace.content;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.StringTokenizer;
 
 import cz.cuni.mff.ufal.DSpaceApi;
 import cz.cuni.mff.ufal.curation.ProcessBitstreams;
@@ -208,38 +209,8 @@ public class InstallItem
             }
         }
 		// check replaced by
-        Metadatum[] replaces = item.getMetadata("dc", "relation", "replaces", Item.ANY );
-        if ( replaces.length == 1 ) {
-            String handle_prefix = ConfigurationManager.getProperty(
-                "handle.canonical.prefix" );
-            String url_of_replaced = replaces[0].value;
-            String handle_of_replaced = url_of_replaced.replaceAll( handle_prefix, "" );
-            Item replaced_item = (Item) HandleManager.resolveToObject( c, handle_of_replaced );
-            if ( null != replaced_item )
-            {
-                if (!replaced_item.isReplacedBy())
-                {
-                    String url_of_item = String.format(
-                        "%s%s", handle_prefix, item.getHandle());
-                    replaced_item.addMetadata(
-                            MetadataSchema.DC_SCHEMA, "relation", "isreplacedby", Item.ANY, url_of_item);
-                    replaced_item.update();
-
-                    log.info(String.format("Adding isreplacedby to [%s] from [%s]",
-                        replaced_item.getHandle(), item.getHandle()));
-
-                } else {
-                    log.warn(String.format("Not adding isreplacedby to [%s] from [%s] " +
-                            "because a value already exists!",
-                        replaced_item.getHandle(), item.getHandle()));
-                }
-
-            }else {
-                log.warn(String.format("Not adding isreplacedby to [%s] from [%s] " +
-                        "because the replaced item could not be found!",
-                    handle_of_replaced, item.getHandle()));
-            }
-        }
+        checkSymmetricRelation(c, item, "dc.relation.replaces", "dc.relation.isreplacedby", false);
+        checkSymmetricRelation(c, item, "dc.relation.ispartof", "dc.relation.haspart", true);
 
         Context context = new Context(Context.READ_ONLY);
         context.setCurrentUser(null);
@@ -277,6 +248,55 @@ public class InstallItem
 
         // Add provenance description
         item.store_provenance_info(provDescription);
+    }
+
+    private static void checkSymmetricRelation(Context c, Item item, String itemRelation, String otherItemRelation,
+                                               boolean multivalued)
+            throws SQLException, AuthorizeException {
+        Metadatum[] related = item.getMetadataByMetadataString(itemRelation);
+        if ( related.length == 1 ) {
+            String handle_prefix = ConfigurationManager.getProperty("handle.canonical.prefix");
+            String url_of_related = related[0].value;
+            String handle_of_related = url_of_related.replaceAll( handle_prefix, "" );
+            Item related_item = (Item) HandleManager.resolveToObject( c, handle_of_related );
+            if ( null != related_item )
+            {
+                if ( multivalued || related_item.getMetadataByMetadataString(otherItemRelation).length == 0)
+                {
+                    String url_of_item = String.format("%s%s", handle_prefix, item.getHandle());
+                    StringTokenizer dcf = new StringTokenizer(otherItemRelation, ".");
+
+                    String[] tokens = { "", "", "" };
+                    int i = 0;
+                    while(dcf.hasMoreTokens())
+                    {
+                        tokens[i] = dcf.nextToken().trim();
+                        i++;
+                    }
+                    String schema = tokens[0];
+                    String element = tokens[1];
+                    String qualifier = tokens[2];
+                    if("".equals(qualifier)) {
+                        qualifier = null;
+                    }
+                    related_item.addMetadata( schema, element, qualifier, Item.ANY, url_of_item);
+                    related_item.update();
+
+                    log.info(String.format("Adding %s to [%s] from [%s]", otherItemRelation,
+                        related_item.getHandle(), item.getHandle()));
+
+                } else {
+                    log.warn(String.format("Not adding %s to [%s] from [%s] " +
+                            "because a value already exists!", otherItemRelation,
+                        related_item.getHandle(), item.getHandle()));
+                }
+
+            }else {
+                log.warn(String.format("Not adding %s to [%s] from [%s] " +
+                        "because the replaced item could not be found!", otherItemRelation,
+                    handle_of_related, item.getHandle()));
+            }
+        }
     }
 
     /**

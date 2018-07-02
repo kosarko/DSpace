@@ -787,6 +787,7 @@
 
 	<!-- org.dspace.app.xmlui.submission.Navigation -->
 	<message key="xmlui.Submission.Navigation.submissions">Submissions</message>
+	<message key="xmlui.Submission.Navigation.add_narrator">Add Narrator</message>
 
 
 	<!-- org.dspace.app.xmlui.Submission.submissions -->
@@ -1307,6 +1308,7 @@
     <message key="xmlui.administrative.Navigation.context_export_collection">Export Collection</message>
     <message key="xmlui.administrative.Navigation.context_export_community">Export Community</message>
     <message key="xmlui.administrative.Navigation.context_export_metadata">Export Metadata</message>
+	<message key="xmlui.administrative.Navigation.context_add_interview">Add interview</message>
 
 	<!-- Site administrator options -->
 	<message key="xmlui.administrative.Navigation.administrative_head">Administrative</message>
