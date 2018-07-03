@@ -35,6 +35,11 @@ messages = {
     "login-email-subject": "Subject",
     "login-email-body": "Body",
     "download-all-cmdline": "Download instructions for command line"
+    "viadat.interview.identifier": "Identifier",
+    "dc.language.iso": "Language",
+    "viadat.interview.type": "Type",
+    "interviews.heading": "Interviews with this narrator",
+    "narrator.files": "Files provided by narrator"
 };
 
 jQuery.i18n.load('en', messages);

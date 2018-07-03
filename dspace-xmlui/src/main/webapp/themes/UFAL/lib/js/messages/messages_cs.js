@@ -34,7 +34,12 @@ messages = {
     "login-email-to": "Na adresu",
     "login-email-subject": "Předmět",
     "login-email-body": "Zpráva",
-    "download-all-cmdline": "Instrukce pro stažení z příkazové řádky"
+    "download-all-cmdline": "Instrukce pro stažení z příkazové řádky",
+    "viadat.interview.identifier": "Signatura",
+    "dc.language.iso": "Jazyk",
+    "viadat.interview.type": "Typ",
+    "interviews.heading": "Rozhovory s tímto narátorem",
+    "narrator.files": "Soubory poskytnuté narátorem"
 };
 
 jQuery.i18n.load('cs', messages);

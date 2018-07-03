@@ -28,6 +28,8 @@
 			select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim"
 			mode="itemSummaryView-DIM" />
 
+        <div id='interviews'>&#160;</div>
+
 		<!-- Generate the bitstream information from the file section -->
 		<xsl:choose>
 			<xsl:when
@@ -63,6 +65,8 @@
         <!-- Output all of the metadata about the item from the metadata section -->
         <xsl:apply-templates select="mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim"
             mode="itemDetailView-DIM"/>
+
+        <div id='interviews'>&#160;</div>
 
 		<!-- Generate the bitstream information from the file section -->
         <xsl:choose>
@@ -879,15 +883,7 @@
 				<i class="fa fa-paperclip">&#160;</i>
 				<i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-head</i18n:text>			
 			</h4>				
-				<xsl:if test="/mets:METS/@OBJID">							
-					<xsl:variable name="download-all-url"><xsl:value-of select="concat(/mets:METS/@OBJID,'/allzip')" /></xsl:variable>
-					<xsl:call-template name="download-all">
-						<xsl:with-param name="download-all-url" select="$download-all-url" />
-					</xsl:call-template>
-				</xsl:if>						   			
-					
 			<!-- Generate UFAL licenses -->
-			<xsl:apply-templates select="//mets:mdWrap[@OTHERMDTYPE='UFAL_LICENSES']/mets:xmlData/license" />
 			<div class="thumbnails">
 <!-- 			<xsl:choose>
 					If one exists and it's of text/html MIME type, only display the 
@@ -910,6 +906,7 @@
 <!-- 				</xsl:otherwise>
 				</xsl:choose> -->
 			</div>
+			<xsl:apply-templates select="//mets:mdWrap[@OTHERMDTYPE='UFAL_LICENSES']/mets:xmlData/license" />
 		</div>
 	</xsl:template>
 

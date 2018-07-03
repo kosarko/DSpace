@@ -1491,3 +1491,8 @@ div.modal-scrollbar {
     background-color: azure;
     display: block;
 }
+
+.thumbnail:hover{
+    background: rgb(216, 239, 247);
+    cursor: pointer;
+}
