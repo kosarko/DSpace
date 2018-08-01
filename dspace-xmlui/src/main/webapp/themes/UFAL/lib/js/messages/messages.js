@@ -34,7 +34,7 @@ messages = {
     "login-email-to": "To",
     "login-email-subject": "Subject",
     "login-email-body": "Body",
-    "download-all-cmdline": "Download instructions for command line"
+    "download-all-cmdline": "Download instructions for command line",
     "viadat.interview.identifier": "Identifier",
     "dc.language.iso": "Language",
     "viadat.interview.type": "Type",

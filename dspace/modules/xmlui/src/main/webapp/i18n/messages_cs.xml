@@ -3277,15 +3277,20 @@
 	<message key="UFAL.firstpage.title.text">Vítejte v LINDAT/CLARIN - Centru jazykové výzkumné infrastruktury v České republice</message>
 
 	<!-- UFAL/lib/xsl/aspect/artifactbrowser/item-list.xsl -->
-	<message key="xmlui.UFAL.artifactbrowser.item-contains-one-file">Tento záznam obsahuje {0} soubor ({1}).</message>
-	<message key="xmlui.UFAL.artifactbrowser.item-contains-many-files">Tento záznam obsahuje {0} souborů ({1}).</message>
-	<message key="xmlui.UFAL.artifactbrowser.item-contains-no-files">Tento záznam neobsahuje soubory.</message>
+	<message key="xmlui.UFAL.artifactbrowser.narrator.item-contains-one-file">Narátor poskytl {0} soubor ({1}).</message>
+	<message key="xmlui.UFAL.artifactbrowser.narrator.item-contains-many-files">Narátor poskytl {0} souborů ({1}).</message>
+	<message key="xmlui.UFAL.artifactbrowser.narrator.item-contains-no-files">Narátor nepostkytl žádné další soubory.</message>
+	<message key="xmlui.UFAL.artifactbrowser.interview.item-contains-one-file">Rozhovor obsahuje {0} soubor ({1}).</message>
+	<message key="xmlui.UFAL.artifactbrowser.interview.item-contains-many-files">Rozhovor obsahuje {0} souborů ({1}).</message>
+	<message key="xmlui.UFAL.artifactbrowser.interview.item-contains-no-files">Rozhovor neobsahuje žádné soubory.</message>
 	<message key="xmlui.UFAL.artifactbrowser.filters.add_filters">Rozšířené hledání</message>
 	<message key="xmlui.UFAL.artifactbrowser.filters.clear">Zrušit vše</message>
 	<message key="xmlui.UFAL.artifactbrowser.filters.selected">Vybrané filtry</message>
 	<message key="xmlui.UFAL.artifactbrowser.search.limit">Zúžit hledání</message>
 	<message key="xmlui.UFAL.artifactbrowser.item_list.authors">Autoři:</message>
-	<message key="xmlui.UFAL.artifactbrowser.item_list.narrators">Narátor:</message>
+	<message key="xmlui.UFAL.artifactbrowser.item_list.alias">Alias:</message>
+	<message key="xmlui.UFAL.artifactbrowser.interviews-count">Počet rozhovorů s tímto narátorem: {0}</message>
+	<message key="xmlui.UFAL.artifactbrowser.item_list.keywords">Klíčová slova:</message>
 
 
 	<!-- UFAL/lib/xsl/aspect/artifactbrowser/item-view.xsl -->
@@ -3304,6 +3309,9 @@
 	<message key="xmlui.UFAL.artifactbrowser.item_view.preview">Náhled</message>
 	<message key="xmlui.UFAL.artifactbrowser.item_view.file_preview">Náhled souboru</message>
 	<message key="xmlui.UFAL.artifactbrowser.narrator">Narátor</message>
+
+	<!-- Interviews.java -->
+	<message key="xmlui.item_view.Interviews.head"><i class="fa fa-microphone">&#160;</i>Rozhovory s tímto narátorem</message>
 
 	<!-- DisplayShareLink -->
 	<message key="xmlui.aspect.submission.submit.DisplayShareLink.title">Sdílet odkaz</message>

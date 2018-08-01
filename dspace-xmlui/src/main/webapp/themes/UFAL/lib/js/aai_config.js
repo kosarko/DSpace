@@ -6,6 +6,7 @@ jQuery(document).ready(
     function () {
         var opts = (function () {
             var instance = {};
+            instance.autoInitialize = false;
             //if ever port is needed (eg. testing other tomcat) it should be in responseUrl and target
             instance.port = (window.location.port === "" ? "" : ":" + window.location.port);
             instance.host = window.location.protocol + '//' +

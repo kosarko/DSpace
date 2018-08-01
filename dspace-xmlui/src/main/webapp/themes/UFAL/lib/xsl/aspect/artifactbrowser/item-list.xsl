@@ -131,6 +131,8 @@
     </xsl:template>    
 
     <xsl:template match="mets:METS[@LABEL='DSpace Item'][mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']]" mode="summaryList" priority="10">
+        <xsl:variable name="dc_type"
+                      select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='dc' and @element='type']" />
         <li class="item-box">
             <xsl:variable name="itemWithdrawn" select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/@withdrawn" />
     
@@ -152,6 +154,18 @@
                     </xsl:apply-templates>
                     </xsl:when>
             </xsl:choose>
+            <xsl:if
+                    test="$dc_type = 'narrator'">
+                <div class="label label-info" style="marging-bottom: 20px;">
+                    <xsl:variable name="interviews-count"
+                                  select="count(./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='dc' and @element='relation' and @qualifier='haspart'])" />
+                    <i class="fa fa-microphone">&#160;</i>
+                    <i18n:translate>
+                        <i18n:text>xmlui.UFAL.artifactbrowser.interviews-count</i18n:text>
+                        <i18n:param><xsl:value-of select="$interviews-count"/></i18n:param>
+                    </i18n:translate>
+                </div>
+            </xsl:if>
             <div class="label label-info" style="margin-bottom: 20px;">
                 <xsl:variable name="file-size"
                     select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='local' and @element='files' and @qualifier='size']/node()" />
@@ -166,19 +180,20 @@
                 <i18n:translate>
                     <xsl:choose>
                         <xsl:when test="$file-count = 1">
-                            <i18n:text>xmlui.UFAL.artifactbrowser.item-contains-one-file</i18n:text>
+                            <i18n:text>xmlui.UFAL.artifactbrowser.<xsl:value-of select="$dc_type" />.item-contains-one-file</i18n:text>
                         </xsl:when>
                         <xsl:when test="$file-count &gt; 1">
-                            <i18n:text>xmlui.UFAL.artifactbrowser.item-contains-many-files</i18n:text>
+                            <i18n:text>xmlui.UFAL.artifactbrowser.<xsl:value-of select="$dc_type" />.item-contains-many-files</i18n:text>
                         </xsl:when>
                         <xsl:otherwise>
-                            <i18n:text>xmlui.UFAL.artifactbrowser.item-contains-no-files</i18n:text>
+                            <i18n:text>xmlui.UFAL.artifactbrowser.<xsl:value-of select="$dc_type" />.item-contains-no-files</i18n:text>
                         </xsl:otherwise>
                      </xsl:choose>
                      <i18n:param><xsl:value-of select="$file-count"/></i18n:param>
                      <i18n:param><xsl:copy-of select="$formatted-file-size"/></i18n:param>
                 </i18n:translate>
             </div>
+            <!--
             <xsl:if test="mets:amdSec/mets:rightsMD/mets:mdWrap/mets:xmlData/license">
             	<div class="visible-xs" style="height: 20px;">&#160;</div>
                 <div class="item-label {mets:amdSec/mets:rightsMD/mets:mdWrap/mets:xmlData/license/@label}" >
@@ -194,6 +209,7 @@
                     </xsl:for-each>
                 </div>
             </xsl:if>
+            -->
         </li>
         <li style="list-style: none;">
         	<hr/>
@@ -245,80 +261,50 @@
                 </xsl:choose>
             </xsl:element>
         </div>
-        <xsl:if test="dim:field[@element='date' and @qualifier='issued'] or dim:field[@element='publisher']">
-         <div class="publisher-date">
-             <xsl:text>(</xsl:text>
-             <xsl:if test="dim:field[@element='publisher']">
-             	<xsl:for-each select="dim:field[@element='publisher']">
-                    <a class="publisher">
-                        <xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="./node()"/>&amp;type=publisher</xsl:attribute>
-                        <xsl:copy-of select="./node()"/>
-                    </a>
-					<xsl:if
-                        test="count(following-sibling::dim:field[@element='publisher']) != 0">
-                        <xsl:text>; </xsl:text>
-                    </xsl:if>	                
-	             </xsl:for-each>
-	             <xsl:text> / </xsl:text>
-             </xsl:if>
-             <span class="date">	             				
-				<xsl:value-of select="substring(dim:field[@element='date' and @qualifier='issued']/node(),1,10)"/>						            
-			</span>
-             <xsl:text>)</xsl:text>
-         </div>
-        </xsl:if>
         <div class="artifact-info">
             <span class="Z3988 hidden">
                 <xsl:attribute name="title">
                     <xsl:call-template name="renderCOinS"/>
                 </xsl:attribute>
                 &#xFEFF; <!-- non-breaking space to force separating the end tag -->
-            </span>        
-            <div class="author-head">
-               <i18n:text>xmlui.UFAL.artifactbrowser.item_list.narrators</i18n:text>
-            </div>
-            <div class="author">
-                <xsl:choose>
-                    <xsl:when test="dim:field[@element='narrator'][@qualifier='name']">
+            </span>
+            <xsl:if test="dim:field[@element='narrator'][@qualifier='alias']">
+                <div class="author-head">
+                   <i18n:text>xmlui.UFAL.artifactbrowser.item_list.alias</i18n:text>
+                </div>
+                <div class="author">
+                        <xsl:for-each select="dim:field[@element='narrator'][@qualifier='alias']">
                             <span>
                                 <xsl:if test="@authority">
                                     <xsl:attribute name="class"><xsl:text>ds-dc_contributor_author-authority</xsl:text></xsl:attribute>
                                 </xsl:if>
                                 <a>
-									<xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="dim:field[@element='narrator'][@qualifier='name']" />&amp;type=narrator</xsl:attribute>
-									<xsl:copy-of select="dim:field[@element='narrator'][@qualifier='name']" />
-								</a>                                
+                                    <xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="." />&amp;type=narrator_alias</xsl:attribute>
+                                    <xsl:copy-of select="." />
+                                </a>
                             </span>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <i18n:text>xmlui.dri2xhtml.METS-1.0.no-narrator</i18n:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </div>
-        </div>                
-        <!-- xsl:choose>
-            <xsl:when
-                test="dim:field[@element = 'description' and @qualifier='abstract']">
-                <xsl:variable name="abstract"
-                    select="dim:field[@element = 'description' and @qualifier='abstract']/node()" />
-                <div class="artifact-abstract-head">
-                    Description:
+                            <xsl:if test="position() != last()">
+                                <xsl:text>; </xsl:text>
+                            </xsl:if>
+                        </xsl:for-each>
                 </div>
-                <div class="artifact-abstract">
-                    <xsl:value-of select="util:shortenString($abstract, 220, 10)" />
+            </xsl:if>
+            <xsl:if test="dim:field[@element='narrator'][contains(@qualifier, 'keywords')]">
+                <div class="keywords-head">
+                    <i18n:text>xmlui.UFAL.artifactbrowser.item_list.keywords</i18n:text>
                 </div>
-            </xsl:when>
-            <xsl:when test="dim:field[@element = 'description' and not(@qualifier)]">
-                <xsl:variable name="description"
-                    select="dim:field[@element = 'description' and not(@qualifier)]/node()" />
-                <div class="artifact-abstract-head">
-                    Description:
+                <div class="keywords">
+                    <xsl:for-each select="dim:field[@element='narrator'][contains(@qualifier, 'keywords')]">
+                        <span>
+                             <xsl:copy-of select="." />
+                        </span>
+                        <xsl:if test="position() != last()">
+                            <xsl:text>; </xsl:text>
+                        </xsl:if>
+                    </xsl:for-each>
                 </div>
-                <div class="artifact-abstract">
-                    <xsl:value-of select="util:shortenString($description, 220, 10)" />
-                </div>
-            </xsl:when>
-        </xsl:choose-->
+            </xsl:if>
+        </div>
     </xsl:template>
     
     <xsl:template match="dri:list[@n='primary-search']" priority="10">

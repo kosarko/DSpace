@@ -397,6 +397,8 @@
 	</xsl:template>
 
 	<xsl:template match="mets:METS[mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']]" mode="recentList" priority="100">
+		<xsl:variable name="dc_type"
+					  select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='dc' and @element='type']" />
 		<div class="item-box">
 			<xsl:variable name="itemWithdrawn" select="mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/@withdrawn" />
 
@@ -411,31 +413,46 @@
 					</xsl:call-template>
 				</xsl:when>
 			</xsl:choose>
+			<xsl:if
+					test="$dc_type = 'narrator'">
+				<div class="label label-info" style="marging-bottom: 20px;">
+					<xsl:variable name="interviews-count"
+								  select="count(./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='dc' and @element='relation' and @qualifier='haspart'])" />
+					<i class="fa fa-microphone">&#160;</i>
+					<i18n:translate>
+						<i18n:text>xmlui.UFAL.artifactbrowser.interviews-count</i18n:text>
+						<i18n:param><xsl:value-of select="$interviews-count"/></i18n:param>
+					</i18n:translate>
+				</div>
+			</xsl:if>
 			<div class="label label-info" style="margin-bottom: 20px;">
-                <xsl:variable name="file-size" select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='local' and @element='files' and @qualifier='size']/node()" />
-                <xsl:variable name="formatted-file-size">
-                    <xsl:call-template name="format-size">                   
-                        <xsl:with-param name="size" select="$file-size" />
-                    </xsl:call-template>
-                </xsl:variable>
-                <xsl:variable name="file-count" select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='local' and @element='files' and @qualifier='count']/node()" />
-                <i class="fa fa-paperclip">&#160;</i>
-                <i18n:translate>
-                    <xsl:choose>
-                        <xsl:when test="$file-count = 1">
-                            <i18n:text>xmlui.UFAL.artifactbrowser.item-contains-one-file</i18n:text>
-                        </xsl:when>
-                        <xsl:when test="$file-count &gt; 1">
-                            <i18n:text>xmlui.UFAL.artifactbrowser.item-contains-many-files</i18n:text>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <i18n:text>xmlui.UFAL.artifactbrowser.item-contains-no-files</i18n:text>
-                        </xsl:otherwise>
-                     </xsl:choose>
-                     <i18n:param><xsl:value-of select="$file-count"/></i18n:param>
-                     <i18n:param><xsl:copy-of select="$formatted-file-size"/></i18n:param>
-                </i18n:translate>
+				<xsl:variable name="file-size"
+							  select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='local' and @element='files' and @qualifier='size']/node()" />
+				<xsl:variable name="formatted-file-size">
+					<xsl:call-template name="format-size">
+						<xsl:with-param name="size" select="$file-size" />
+					</xsl:call-template>
+				</xsl:variable>
+				<xsl:variable name="file-count"
+							  select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/dim:field[@mdschema='local' and @element='files' and @qualifier='count']/node()" />
+				<i class="fa fa-paperclip">&#160;</i>
+				<i18n:translate>
+					<xsl:choose>
+						<xsl:when test="$file-count = 1">
+							<i18n:text>xmlui.UFAL.artifactbrowser.<xsl:value-of select="$dc_type" />.item-contains-one-file</i18n:text>
+						</xsl:when>
+						<xsl:when test="$file-count &gt; 1">
+							<i18n:text>xmlui.UFAL.artifactbrowser.<xsl:value-of select="$dc_type" />.item-contains-many-files</i18n:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<i18n:text>xmlui.UFAL.artifactbrowser.<xsl:value-of select="$dc_type" />.item-contains-no-files</i18n:text>
+						</xsl:otherwise>
+					</xsl:choose>
+					<i18n:param><xsl:value-of select="$file-count"/></i18n:param>
+					<i18n:param><xsl:copy-of select="$formatted-file-size"/></i18n:param>
+				</i18n:translate>
 			</div>
+            <!--
 			<xsl:if test="mets:amdSec/mets:rightsMD/mets:mdWrap/mets:xmlData/license">
                 <div style="height: 20px;">&#160;</div>
 				<div class="item-label {mets:amdSec/mets:rightsMD/mets:mdWrap/mets:xmlData/license/@label}" >
@@ -451,6 +468,7 @@
 					</xsl:for-each>
 				</div>
 			</xsl:if>
+			-->
 		</div>
 	</xsl:template>
 
@@ -484,7 +502,7 @@
         	</div>
         </xsl:if>
 		
-		<img class="artifact-icon pull-right" alt="{dim:field[@element='type'][1]/node()}">
+		<img class="artifact-icon pull-right" alt="{dim:field[@element='type'][1]/node()}" onerror="this.src='{$theme-path}/images/mime/application-x-zerosize.png'">
 			<xsl:attribute name="src">
                                 <xsl:text>themes/UFALHome/lib/images/</xsl:text>
                                 <xsl:value-of
@@ -508,71 +526,43 @@
 			</xsl:element>
 		</div>
 		<div class="artifact-info">
-			<div class="author-head">
-				<i18n:text i18n:key="homepage.item.authors">Author(s):</i18n:text>
-			</div>
-			<div class="author">
-				<xsl:choose>
-					<xsl:when test="dim:field[@element='contributor'][@qualifier='author' or @qualifier='other']">
-						<xsl:for-each
-							select="dim:field[@element='contributor'][@qualifier='author' or @qualifier='other']">
-							<span>
-								<xsl:if test="@authority">
-									<xsl:attribute name="class"><xsl:text>ds-dc_contributor_author-authority</xsl:text></xsl:attribute>
-								</xsl:if>
-                                <a>
-									<xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="node()" />&amp;type=author</xsl:attribute>
-									<xsl:copy-of select="node()" />
-								</a>                                
-							</span>
-							<xsl:if
-								test="count(following-sibling::dim:field[@element='contributor'][@qualifier='author' or @qualifier='other']) != 0">
-								<xsl:text>; </xsl:text>
+			<xsl:if test="dim:field[@element='narrator'][@qualifier='alias']">
+				<div class="author-head">
+					<i18n:text>xmlui.UFAL.artifactbrowser.item_list.alias</i18n:text>
+				</div>
+				<div class="author">
+					<xsl:for-each select="dim:field[@element='narrator'][@qualifier='alias']">
+						<span>
+							<xsl:if test="@authority">
+								<xsl:attribute name="class"><xsl:text>ds-dc_contributor_author-authority</xsl:text></xsl:attribute>
 							</xsl:if>
-						</xsl:for-each>
-					</xsl:when>
-					<xsl:when test="dim:field[@element='creator']">
-						<xsl:for-each select="dim:field[@element='creator']">
-                            <a>
-                                <xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="node()" />&amp;type=author</xsl:attribute>
-                                <xsl:copy-of select="node()" />
-                            </a>                                
-							<xsl:if
-								test="count(following-sibling::dim:field[@element='creator']) != 0">
-								<xsl:text>; </xsl:text>
-							</xsl:if>
-						</xsl:for-each>
-					</xsl:when>
-					<xsl:otherwise>
-						<i18n:text>xmlui.dri2xhtml.METS-1.0.no-author</i18n:text>
-					</xsl:otherwise>
-				</xsl:choose>
-			</div>
-			<xsl:text> </xsl:text>
+							<a>
+								<xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="." />&amp;type=narrator_alias</xsl:attribute>
+								<xsl:copy-of select="." />
+							</a>
+						</span>
+						<xsl:if test="position() != last()">
+							<xsl:text>; </xsl:text>
+						</xsl:if>
+					</xsl:for-each>
+				</div>
+			</xsl:if>
+			<xsl:if test="dim:field[@element='narrator'][contains(@qualifier, 'keywords')]">
+				<div class="keywords-head">
+					<i18n:text>xmlui.UFAL.artifactbrowser.item_list.keywords</i18n:text>
+				</div>
+				<div class="keywords">
+					<xsl:for-each select="dim:field[@element='narrator'][contains(@qualifier, 'keywords')]">
+						<span>
+							<xsl:copy-of select="." />
+						</span>
+						<xsl:if test="position() != last()">
+							<xsl:text>; </xsl:text>
+						</xsl:if>
+					</xsl:for-each>
+				</div>
+			</xsl:if>
 		</div>
-		<xsl:choose>
-			<xsl:when
-				test="dim:field[@element = 'description' and @qualifier='abstract']">
-				<xsl:variable name="abstract"
-					select="dim:field[@element = 'description' and @qualifier='abstract']/node()" />
-				<div class="artifact-abstract-head">
-					<i18n:text i18n:key="homepage.item.description">Description:</i18n:text>
-				</div>
-				<div class="artifact-abstract">
-					<xsl:value-of select="util:shortenString($abstract, 220, 10)" />
-				</div>
-			</xsl:when>
-			<xsl:when test="dim:field[@element = 'description' and not(@qualifier)]">
-				<xsl:variable name="description"
-					select="dim:field[@element = 'description' and not(@qualifier)]/node()" />
-				<div class="artifact-abstract-head">
-					<i18n:text i18n:key="homepage.item.description">Description:</i18n:text>
-				</div>
-				<div class="artifact-abstract">
-					<xsl:value-of select="util:shortenString($description, 220, 10)" />
-				</div>
-			</xsl:when>
-		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template name="top-items">
@@ -854,46 +844,20 @@
 			<div class="carousel-inner">
 				<div class="item active">
 					<div style="position: relative; height: 180px;">
-						<img style="width: 100px; position: absolute; left: 22%; top: 20%" src="{$context-path}/themes/UFALHome/lib/images/glass.png" />
-						<h3 style="left: 34%; position: absolute; top: 25%;"><i18n:text i18n:key="homepage.carousel.data_tools">Linguistic Data and NLP Tools</i18n:text></h3>
-						<h5 style="left: 40%; position: absolute; top: 15%;"><i18n:text i18n:key="homepage.carousel.find">Find</i18n:text></h5>
-						<h5 style="left: 54%; position: absolute; top: 45%;"><i18n:text i18n:key="homepage.carousel.citation_support">Citation Support (with Persistent IDs)</i18n:text></h5>
-					</div>
-				</div>
-				<div class="item">
-					<div style="position: relative; height: 180px;">
-						<h3 style="left: 40%; position: absolute; top: 10%;"><i18n:text i18n:key="homepage.carousel.deposit">Deposit Free and Safe</i18n:text></h3>
-						<h5 style="left: 28%; position: absolute; top: 30%;"><i18n:text i18n:key="homepage.carousel.license">License of your Choice (Open licenses encouraged)</i18n:text></h5>
-						<h5 style="left: 32%; position: absolute; top: 42%;"><i18n:text i18n:key="homepage.carousel.easy_find">Easy to Find</i18n:text></h5>
-						<h5 style="left: 36%; position: absolute; top: 54%;"><i18n:text i18n:key="homepage.carousel.easy_cite">Easy to Cite</i18n:text></h5>
-					</div>
-				</div>
-				<div class="item">
-					<div style="position: relative; height: 180px;">
-						<div style="position: absolute; width: 65%; top: 20%; left: 20%; line-height: 20px;">
-							<blockquote>
-								<strong>
-									<i class="fa fa-quote-left fa-2x pull-left">&#160;</i>
-									<i18n:text i18n:key="homepage.carousel.quote">“There ought to be only one grand dépôt of art in the world, to
-									which the artist might repair with his works, and on presenting them
-									receive what he required... ”</i18n:text>
-								</strong>
-								<small>Ludwig van Beethoven, 1801</small>
-							</blockquote>
-						</div>
+						<h3 style="left: 34%; position: absolute; top: 25%;"><i18n:text i18n:key="homepage.carousel.head">Repository of the Oral History Center ÚSD&#160;AV&#160;ČR</i18n:text></h3>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-5 col-lg-4 hidden-xs hidden-sm">
 			<div class="row">
-				<div style="height: 160px; position: relative;" class="col-md-7 col-lg-7">
-				  <a href="/lindat">
-			            <img src="{$context-path}/themes/UFAL/images/lindat/lindat-logo.png" style="position: absolute; height: 60%; top: 0px; bottom: 0px; margin: auto;" class="logo" alt="LINDAT/CLARIN logo" /></a>
+				<div style="height: 160px; position: relative;" class="col-md-6 col-lg-6 text-center">
+				  <a href="http://www.coh.usd.cas.cz">
+			            <img src="{$context-path}/themes/UFAL/images/usd/logo_coh.png" style="position: absolute; height: 60%; top: 0px; bottom: 0px; margin: auto;" class="logo" alt="COH logo" /></a>
 				</div>
-		                <div style="height: 160px; position: relative;" class="col-md-5 col-lg-5">
-				    <a href="http://www.clarin.eu/">
-		                    <img src="{$context-path}/themes/UFAL/images/lindat/clarin-logo.png" style="position: absolute; height: 70%; top: 0px; bottom: 0px; margin: auto;" class="logo" alt="LINDAT/CLARIN logo" /></a>
+		                <div style="height: 160px; position: relative;" class="col-md-6 col-lg-6">
+				    <a href="http://www.usd.cas.cz/">
+		                    <img src="{$context-path}/themes/UFAL/images/usd/logo_usd.png" style="position: absolute; height: 60%; top: 0px; bottom: 0px; margin: auto;" class="logo" alt="USD logo" /></a>
 		                </div>
 			</div>
         </div>		

@@ -39,14 +39,14 @@
 				<xsl:if test="not(//dri:div[@n='site-home'])">
 					<li class="always-open hidden-xs">
 						<div style="background-color: #FFFFFF;" class="clearfix">
-							<div class="col-sm-7" style="height: 120px; position: relative;">
-								<a href="/lindat">
-									<img alt="LINDAT/CLARIN logo" class="img-responsive" style="position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px; padding: 20px;" src="{$context-path}/themes/UFAL/images/lindat/lindat-logo.png" />
+							<div class="col-sm-6" style="height: 120px; position: relative;">
+								<a href="http://www.coh.usd.cas.cz">
+									<img alt="COH logo" class="img-responsive" style="position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px; padding: 10px; height: 100%; margin: 0 0 0 auto;" src="{$context-path}/themes/UFAL/images/usd/logo_coh.png" />
 								</a>
 							</div>
-							<div class="col-sm-5 text-center" style="height: 120px; position: relative;">
-								<a href="http://www.clarin.eu/">
-									<img alt="CLARIN logo" class="img-responsive" style="position: absolute; bottom: 0px; left: 0px; right: 0px; padding: 10px;" src="{$context-path}/themes/UFAL/images/lindat/clarin-logo.png" />
+							<div class="col-sm-6 text-center" style="height: 120px; position: relative;">
+								<a href="http://www.usd.cas.cz/">
+									<img alt="USD logo" class="img-responsive" style="position: absolute; bottom: 0px; left: 0px; right: 0px; padding: 10px; height: 100%; margin: 0 auto 0 0;" src="{$context-path}/themes/UFAL/images/usd/logo_usd.png" />
 								</a>
 							</div>
 						</div>					

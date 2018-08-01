@@ -3002,15 +3002,21 @@
   <message key="UFAL.firstpage.title.text">Welcome to LINDAT/CLARIN - Centre for Language Research Infrastructure in the Czech Republic</message>
 
   <!-- UFAL/lib/xsl/aspect/artifactbrowser/item-list.xsl -->
-  <message key="xmlui.UFAL.artifactbrowser.item-contains-one-file">This item contains {0} file ({1}).</message>
-  <message key="xmlui.UFAL.artifactbrowser.item-contains-many-files">This item contains {0} files ({1}).</message>
-  <message key="xmlui.UFAL.artifactbrowser.item-contains-no-files">This item contains no files.</message>
+  <message key="xmlui.UFAL.artifactbrowser.narrator.item-contains-one-file">The narrator provided {0} file ({1}).</message>
+  <message key="xmlui.UFAL.artifactbrowser.narrator.item-contains-many-files">The narrator provided {0} files ({1}).</message>
+  <message key="xmlui.UFAL.artifactbrowser.narrator.item-contains-no-files">The narrator did no provide any additional files.</message>
+	<message key="xmlui.UFAL.artifactbrowser.interview.item-contains-one-file">The interview contains {0} file ({1}).</message>
+	<message key="xmlui.UFAL.artifactbrowser.interview.item-contains-many-files">The interview contains {0} files ({1}).</message>
+	<message key="xmlui.UFAL.artifactbrowser.interview.item-contains-no-files">The interview contains no files.</message>
   <message key="xmlui.UFAL.artifactbrowser.filters.add_filters">Advanced Search</message>
   <message key="xmlui.UFAL.artifactbrowser.filters.clear">Clear All</message>
   <message key="xmlui.UFAL.artifactbrowser.filters.selected">Selected Filters</message>
   <message key="xmlui.UFAL.artifactbrowser.search.limit">Limit your search</message>
   <message key="xmlui.UFAL.artifactbrowser.item_list.authors">Author(s):</message>
-	<message key="xmlui.UFAL.artifactbrowser.item_list.narrators">Narrator(s):</message>
+	<message key="xmlui.UFAL.artifactbrowser.item_list.alias">Alias:</message>
+	<message key="xmlui.UFAL.artifactbrowser.interviews-count">Number of interviews with this narrator: {0}</message>
+	<message key="xmlui.UFAL.artifactbrowser.item_list.keywords">Keywords:</message>
+
 
   <!-- UFAL/lib/xsl/aspect/artifactbrowser/item-view.xsl -->
   <message key="xmlui.UFAL.artifactbrowser.item-download-all-files">Download all files in item ({0})</message>
@@ -3028,6 +3034,10 @@
   <message key="xmlui.UFAL.artifactbrowser.item_view.preview">Preview</message>
   <message key="xmlui.UFAL.artifactbrowser.item_view.file_preview">File Preview</message>
   <message key="xmlui.UFAL.artifactbrowser.narrator">Narrator</message>
+
+	<!-- Interviews.java -->
+	<message key="xmlui.item_view.Interviews.head"><i class="fa fa-microphone">&#160;</i>Interviews with this
+		narrator</message>
 
 
 	<!-- UFAL/lib/xsl/core/navigation.xsl -->

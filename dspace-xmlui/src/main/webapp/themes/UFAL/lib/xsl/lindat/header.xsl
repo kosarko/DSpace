@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Document   : header.xsl
-    Created on : April 14, 2012, 4:48 PM
-    Author     : sedlak
-    Description:
-        Purpose of transformation follows.
 -->
 
 <xsl:stylesheet xmlns:i18n="http://apache.org/cocoon/i18n/2.1"
@@ -25,17 +20,6 @@
     <xsl:output indent="yes" />
 
     <xsl:template name="buildHeader">
-        <xsl:variable name="currentLocale" select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='page'][@qualifier='currentLocale']"/>
-        <xsl:variable name="localizedDiskPath" select="concat($theme-path-on-disk,'/lib/lindat/',$currentLocale,'/header.htm')" />
-        <xsl:variable name="path" select="file:new($localizedDiskPath)"/>
-      <xsl:choose>
-          <xsl:when test="file:isFile($path)">
-              <xsl:copy-of select="document($localizedDiskPath)" />
-          </xsl:when>
-          <xsl:otherwise>
-              <xsl:copy-of select="document('../../lindat/header.htm')" />
-          </xsl:otherwise>
-      </xsl:choose>
     </xsl:template>
 
 </xsl:stylesheet>
