@@ -304,6 +304,16 @@
                     </xsl:for-each>
                 </div>
             </xsl:if>
+            <xsl:if test="dim:field[@element = 'description' and not(@qualifier)]">
+                <xsl:variable name="description"
+                              select="dim:field[@element = 'description' and not(@qualifier)]/node()" />
+                <div class="artifact-abstract-head">
+                    <i18n:text i18n:key="homepage.item.description">Description:</i18n:text>
+                </div>
+                <div class="artifact-abstract">
+                    <xsl:value-of select="util:shortenString($description, 220, 10)" />
+                </div>
+            </xsl:if>
         </div>
     </xsl:template>
     

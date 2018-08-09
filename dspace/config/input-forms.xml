@@ -105,23 +105,25 @@
                 <field>
                     <dc-schema>viadat</dc-schema>
                     <dc-element>narrator</dc-element>
-                    <dc-qualifier>profession</dc-qualifier>
-                    <label>input_forms.field.viadat.narrator.profession.label</label>
+                    <dc-qualifier>keywordsProfession</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <repeatable-parse>true</repeatable-parse>
+                    <label>input_forms.field.viadat.narrator.keywordsProfession.label</label>
                     <input-type>onebox</input-type>
-                    <hint>input_forms.field.viadat.narrator.profession.hint</hint>
-                    <autocomplete>solr-narratorProfession_ac</autocomplete>
+                    <hint>input_forms.field.viadat.narrator.keywords.hint</hint>
+                    <autocomplete>solr-narratorKeywordsProfession_ac</autocomplete>
                 </field>
 
                 <field>
                     <dc-schema>viadat</dc-schema>
                     <dc-element>narrator</dc-element>
-                    <dc-qualifier>keywords</dc-qualifier>
+                    <dc-qualifier>keywordsCharacteristics</dc-qualifier>
                     <repeatable>true</repeatable>
                     <repeatable-parse>true</repeatable-parse>
-                    <label>input_forms.field.viadat.narrator.keywords.label</label>
-                    <input-type>twobox</input-type>
+                    <label>input_forms.field.viadat.narrator.keywordsCharacteristics.label</label>
+                    <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.narrator.keywords.hint</hint>
-                    <autocomplete>solr-narratorKeywords_ac</autocomplete>
+                    <autocomplete>solr-narratorKeywordsCharacteristics_ac</autocomplete>
                 </field>
 
                 <field>
@@ -132,16 +134,6 @@
                     <label>input_forms.field.viadat.narrator.consent.label</label>
                     <input-type value-pairs-name="viadat_consent">dropdown</input-type>
                     <hint>input_forms.field.viadat.narrator.consent.hint</hint>
-                </field>
-
-                <field>
-                    <dc-schema>viadat</dc-schema>
-                    <dc-element>narrator</dc-element>
-                    <dc-qualifier>characteristics</dc-qualifier>
-                    <label>input_forms.field.viadat.narrator.characteristics.label</label>
-                    <input-type>onebox</input-type>
-                    <hint>input_forms.field.viadat.narrator.characteristics.hint</hint>
-                    <autocomplete>solr-narratorCharacteristics_ac</autocomplete>
                 </field>
 
                 <field>
@@ -167,6 +159,16 @@
             <page number="1">
 
                 <!-- Interview-->
+
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>title</dc-element>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.dc.title.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.dc.title.hint</hint>
+                    <required>input_forms.field.dc.title.required</required>
+                </field>
 
                 <field>
                     <dc-schema>viadat</dc-schema>
@@ -243,7 +245,7 @@
                     <label>input_forms.field.viadat.interview.place.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.interview.place.hint</hint>
-                    <autocomplete>solr-interviewPlace_ac</autocomplete>
+                    <autocomplete>solr-interviewPlace_ac?query=type:interview</autocomplete>
                 </field>
 
                 <field>
@@ -254,7 +256,7 @@
                     <label>input_forms.field.viadat.interview.interviewer.label</label>
                     <input-type>name</input-type>
                     <hint>input_forms.field.viadat.interview.interviewer.hint</hint>
-                    <autocomplete>solr-interviewInterviewer_ac</autocomplete>
+                    <autocomplete>solr-interviewInterviewer_ac?query=type:interview</autocomplete>
                 </field>
 
                 <field>
@@ -275,7 +277,7 @@
                     <label>input_forms.field.viadat.interview.keywords.label</label>
                     <input-type>twobox</input-type>
                     <hint>input_forms.field.viadat.interview.keywords.hint</hint>
-                    <autocomplete>solr-interviewKeywords_ac</autocomplete>
+                    <autocomplete>solr-interviewKeywords_ac?query=type:interview</autocomplete>
                 </field>
 
                 <field>
@@ -287,7 +289,7 @@
                     <label>input_forms.field.viadat.interview.detailedKeywords.label</label>
                     <input-type>twobox</input-type>
                     <hint>input_forms.field.viadat.interview.detailedKeywords.hint</hint>
-                    <autocomplete>solr-interviewDetailedKeywords_ac</autocomplete>
+                    <autocomplete>solr-interviewDetailedKeywords_ac?query=type:interview</autocomplete>
                 </field>
 
                 <field>
@@ -297,7 +299,7 @@
                     <label>input_forms.field.viadat.interview.period.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.interview.period.hint</hint>
-                    <autocomplete>solr-interviewPeriod_ac</autocomplete>
+                    <autocomplete>solr-interviewPeriod_ac?query=type:interview</autocomplete>
                 </field>
 
                 <field>

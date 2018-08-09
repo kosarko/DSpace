@@ -3040,8 +3040,7 @@
     <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorGender">Pohlaví</message>
     <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorBirthdate">Rok narození</message>
     <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorDegree">Titul</message>
-    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorProfession">Profese</message>
-    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorKeywords">Klíčová slova - narátor</message>
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorKeywordsProfession">Profese</message>
     <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorConsent">Informovaný souhlas</message>
     <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewTranscript">Přepis</message>
     <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewDate">Datum rozhovoru</message>
@@ -3056,8 +3055,7 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorGender">Pohlaví</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorBirthdate">Rok narození</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorDegree">Titul</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProfession">Profese</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywords">Klíčová slova - narátor</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsProfession">Profese</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorConsent">Informovaný souhlas</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewTranscript">Přepis</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDate">Datum rozhovoru</message>
@@ -3360,7 +3358,7 @@
 	</message>
 	<message key="input_forms.field.dc.type.required">Prosím zvolte typ dat pro váš příspěvek.</message>
 	<message key="input_forms.field.dc.title.label">Název</message>
-	<message key="input_forms.field.dc.title.hint">Uveďte anglický název tohoto příspěvku.</message>
+	<message key="input_forms.field.dc.title.hint">Název příspěvku se používá při zobrazení/procházení.</message>
 	<message key="input_forms.field.dc.title.required">Musíte uvést název.</message>
 	<message key="input_forms.field.dc.source.uri.label">URL projektu</message>
 	<message key="input_forms.field.dc.source.uri.hint">Uveďte URL projektu</message>
@@ -3575,15 +3573,12 @@
 	<message key="input_forms.field.viadat.narrator.alias.hint">Alias, umělecká jména, rodné příjmení</message>
 	<message key="input_forms.field.viadat.narrator.degree.label">Titul</message>
 	<message key="input_forms.field.viadat.narrator.degree.hint">Titul</message>
-	<message key="input_forms.field.viadat.narrator.profession.label">Profese</message>
-	<message key="input_forms.field.viadat.narrator.profession.hint">Profese</message>
-	<message key="input_forms.field.viadat.narrator.keywords.label">Klíčova slova</message>
+	<message key="input_forms.field.viadat.narrator.keywordsProfession.label">Profese</message>
 	<message key="input_forms.field.viadat.narrator.keywords.hint">Klíčová slova buď přidávejte po jednom, nebo je oddělte čárkou, nebo středníkem. Začnete-li psát, objeví se nápověda.</message>
 	<message key="input_forms.field.viadat.narrator.consent.label">Informovaný souhlas</message>
 	<message key="input_forms.field.viadat.narrator.consent.hint">Možnost nahrát soubor s informovaným
 		souhlasem je v dalších krocích</message>
-	<message key="input_forms.field.viadat.narrator.characteristics.label">Charakteristika</message>
-	<message key="input_forms.field.viadat.narrator.characteristics.hint">Charakteristika</message>
+	<message key="input_forms.field.viadat.narrator.keywordsCharacteristics.label">Charakteristika</message>
 	<message key="input_forms.field.viadat.narrator.contact.label">Kontaktní údaje</message>
 	<message key="input_forms.field.viadat.narrator.contact.hint">Kontaktní údaje</message>
 	<message key="input_forms.field.viadat.narrator.note.label">Poznámka</message>
@@ -3704,17 +3699,11 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorDegree_filter">Titul</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_narratorDegree">Titul</message>
 
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorProfession.column_heading">Profese</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorProfession">Profese</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorProfession">Profese</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProfession_filter">Profese</message>
-	<message key="xmlui.Discovery.AbstractSearch.type_narratorProfession">Profese</message>
-
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywords.column_heading">Klíčová slova - narátor</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywords">Klíčová slova - narátor</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywords">Klíčová slova - narátor</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywords_filter">Klíčová slova - narátor</message>
-	<message key="xmlui.Discovery.AbstractSearch.type_narratorKeywords">Klíčová slova - narátor</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywordsProfession.column_heading">Profese</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywordsProfession">Profese</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywordsProfession">Profese</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsProfession_filter">Profese</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorKeywordsProfession">Profese</message>
 
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorConsent.column_heading">Informovaný souhlas</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorConsent">Informovaný souhlas</message>

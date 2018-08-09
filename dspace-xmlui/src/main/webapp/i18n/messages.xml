@@ -146,8 +146,7 @@
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorGender">Gender</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorBirthdate">Year of birth</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorDegree">Degree</message>
-	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorProfession">Profession</message>
-	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorKeywords">Keywords - narrator</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorKeywordsProfession">Profession</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorConsent">Informed consent</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewTranscript">Transcript</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewDate">Interview date</message>
@@ -162,8 +161,7 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorGender">Gender</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorBirthdate">Birthdate</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorDegree">Degree</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProfession">Profession</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywords">Keywords - narrator</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsProfession">Profession</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorConsent">Informed consent</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewTranscript">Transcript</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDate">Interview date</message>
@@ -3068,7 +3066,7 @@
 	</message>
 	<message key="input_forms.field.dc.type.required">Please select a resource type for your submission.</message>
 	<message key="input_forms.field.dc.title.label">Title</message>
-	<message key="input_forms.field.dc.title.hint">Enter the main title of the item in English.</message>
+	<message key="input_forms.field.dc.title.hint">Enter the display name of the item.</message>
 	<message key="input_forms.field.dc.title.required">You must enter a main title for this item.</message>
 	<message key="input_forms.field.dc.source.uri.label">Project URL</message>
 	<message key="input_forms.field.dc.source.uri.hint">Enter the project url.</message>
@@ -3312,15 +3310,12 @@
 	<message key="input_forms.field.viadat.narrator.alias.hint">Aliases, artistic names, surnames</message>
 	<message key="input_forms.field.viadat.narrator.degree.label">Degree</message>
 	<message key="input_forms.field.viadat.narrator.degree.hint">Degree</message>
-	<message key="input_forms.field.viadat.narrator.profession.label">Profession</message>
-	<message key="input_forms.field.viadat.narrator.profession.hint">Profession</message>
-	<message key="input_forms.field.viadat.narrator.keywords.label">Keywords</message>
+	<message key="input_forms.field.viadat.narrator.keywordsProfession.label">Profession</message>
 	<message key="input_forms.field.viadat.narrator.keywords.hint">You can enter the keywords one by one or separated with comma or semicolon. Hints should appear when you start typing</message>
 	<message key="input_forms.field.viadat.narrator.consent.label">Informed consent</message>
 	<message key="input_forms.field.viadat.narrator.consent.hint">The option to upload the consent iteself is in the
 		following steps</message>
-	<message key="input_forms.field.viadat.narrator.characteristics.label">Characteristic</message>
-	<message key="input_forms.field.viadat.narrator.characteristics.hint">Characteristic</message>
+	<message key="input_forms.field.viadat.narrator.keywordsCharacteristics.label">Characteristic</message>
 	<message key="input_forms.field.viadat.narrator.contact.label">Contact details</message>
 	<message key="input_forms.field.viadat.narrator.contact.hint">Contact details</message>
 	<message key="input_forms.field.viadat.narrator.note.label">Note</message>
@@ -3434,26 +3429,24 @@
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorDegree">Degree</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorDegree_filter">Degree</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_narratorDegree">Degree</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorProfession.column_heading">Profession</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorProfession">Profession</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorProfession">Profession</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProfession_filter">Profession</message>
-	<message key="xmlui.Discovery.AbstractSearch.type_narratorProfession">Profession</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywords.column_heading">Keywords - narrator</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywords">Keywords - narrator</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywords">Keywords - narrator</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywords_filter">Keywords - narrator</message>
-	<message key="xmlui.Discovery.AbstractSearch.type_narratorKeywords">Keywords - narrator</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywordsProfession.column_heading">Profession
+	</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywordsProfession">Profession
+	</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywordsProfession">Profession
+	</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsProfession_filter">Profession</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorKeywordsProfession">Profession</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorConsent.column_heading">Informed consent</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorConsent">Informed consent</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorConsent">Informed consent</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorConsent_filter">Informed consent</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_narratorConsent">Informed consent</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorCharacteristics">Characteristics</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorCharacteristics_filter">Characteristics</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorCharacteristics.column_heading">Characteristics</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorCharacteristics">Characteristics</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorCharacteristics">Characteristics</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsCharacteristics">Characteristics</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsCharacteristics_filter">Characteristics</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywordsCharacteristics.column_heading">Characteristics</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywordsCharacteristics">Characteristics </message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywordsCharacteristics">Characteristics </message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorCharacteristics">Characteristics</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorCharacteristics_filter">Characteristics</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_narratorCharacteristics">Characteristics</message>

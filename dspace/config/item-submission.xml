@@ -147,10 +147,8 @@
 		</step>
 
 		<step id="license">
-			<heading>submit.progressbar.license</heading>
-			<processing-class>cz.cuni.mff.ufal.dspace.submit.step.UFALLicenseStep</processing-class>
-			<xmlui-binding>cz.cuni.mff.ufal.dspace.app.xmlui.aspect.submission.submit.UFALLicenseStep</xmlui-binding>
-			<workflow-editable>true</workflow-editable>
+			<processing-class>cz.cuni.mff.ufal.dspace.submit.step.ViadatLicenseStep</processing-class>
+			<workflow-editable>false</workflow-editable>
 		</step>
 
 		<step id="moredetails">

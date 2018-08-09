@@ -354,9 +354,29 @@ jQuery(document)
 		if (anchor === "#fl") {
 			jQuery('html, body').animate(
 				{
-					scrollTop : jQuery(".lindat-footer-main")
+					scrollTop : jQuery("#aspect_submission_StepTransformer_table_submit-upload-summary")
 						.offset().top
 					- jQuery(window).height()
 				}, 200);
 		}
+		// toggle local file upload
+        jQuery("#aspect_submission_StepTransformer_list_submit-upload-local ol").toggle();
+		var upload_local_h3 = jQuery("#aspect_submission_StepTransformer_list_submit-upload-local h3");
+		var h3_caret = jQuery("<i class='fa fa-caret-right' style='padding-left:10px'>&nbsp;</i>");
+		upload_local_h3.append(h3_caret);
+		upload_local_h3.hover(function(){
+			jQuery(this).css("text-decoration", "underline");
+		}, function(){
+            jQuery(this).css("text-decoration", "none");
+		});
+		upload_local_h3.click(function(){
+			jQuery("#aspect_submission_StepTransformer_list_submit-upload-local ol").toggle();
+			if(h3_caret.hasClass("fa-caret-right")){
+				h3_caret.removeClass("fa-caret-right");
+				h3_caret.addClass("fa-caret-down");
+			}else{
+                h3_caret.removeClass("fa-caret-down");
+                h3_caret.addClass("fa-caret-right");
+			}
+		});
 	});

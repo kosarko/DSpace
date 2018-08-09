@@ -43,25 +43,19 @@
     <dc-type>
         <schema>viadat</schema>
         <element>narrator</element>
-        <qualifier>profession</qualifier>
+        <qualifier>keywordsProfession</qualifier>
         <scope_note></scope_note>
     </dc-type>
     <dc-type>
         <schema>viadat</schema>
         <element>narrator</element>
-        <qualifier>keywords</qualifier>
+        <qualifier>keywordsCharacteristics</qualifier>
         <scope_note></scope_note>
     </dc-type>
     <dc-type>
         <schema>viadat</schema>
         <element>narrator</element>
         <qualifier>consent</qualifier>
-        <scope_note></scope_note>
-    </dc-type>
-    <dc-type>
-        <schema>viadat</schema>
-        <element>narrator</element>
-        <qualifier>characteristics</qualifier>
         <scope_note></scope_note>
     </dc-type>
     <dc-type>

@@ -21,9 +21,10 @@ public class Suggestions extends Resource {
     @GET
     @Path("/{facetField}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getSuggestion(@PathParam("facetField") String facetField){
+    public Response getSuggestion(@PathParam("facetField") String facetField, @DefaultValue("*:*") @QueryParam("query")
+            String query){
         DiscoverQuery queryArgs = new DiscoverQuery();
-        queryArgs.setQuery("*:*");
+        queryArgs.setQuery(query);
         int facetLimit = -1;
         //Using the api that's there; we don't actually need "real" DiscoverFacetField object; TYPE_STANDARD should not modify the facetField, but TYPE_AC would add "_ac"
         queryArgs.addFacetField(new DiscoverFacetField(facetField, DiscoveryConfigurationParameters.TYPE_STANDARD, facetLimit, DiscoveryConfigurationParameters.SORT.COUNT));

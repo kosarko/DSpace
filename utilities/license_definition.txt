@@ -25,3 +25,4 @@ Creative Commons - Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)	ht
 Creative Commons - Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)	http://creativecommons.org/licenses/by-nc/4.0/	1	1	2015-04-18 23:09:45.243235	0	\N
 Creative Commons - Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)	http://creativecommons.org/licenses/by-nc-sa/4.0/	1	1	2015-04-18 23:10:47.089326	0	\N
 Creative Commons - Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)	http://creativecommons.org/licenses/by-nc-nd/4.0/	1	1	2015-04-18 23:11:38.296597	0	\N
+VIADAT License	https://ufal.mff.cuni.cz/grants/viadat/license	1	3	2018-04-18 23:11:38.296597	2	\N

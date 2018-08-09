@@ -298,8 +298,11 @@
 
 				<!-- Rest of the Body -->
 				<div class="row contents">
-				
-					<div id="main-contents" class="col-sm-9">																								
+
+					<!-- sidebar -->
+					<xsl:apply-templates select="/dri:document/dri:options" />
+
+					<div id="main-contents" class="col-sm-9">
 						<xsl:choose>
 							<xsl:when test="dri:div[@n='site-home']/dri:div[@n='site-recent-submission']/dri:referenceSet/dri:reference">
 								<xsl:call-template name="recent-submission" />
@@ -315,9 +318,6 @@
 							</xsl:when>
 						</xsl:choose>
 					</div>
-					<!-- sidebar -->
-					<xsl:apply-templates select="/dri:document/dri:options" />
-										
 				</div>
 			</div>
 		</div>
@@ -562,6 +562,17 @@
 					</xsl:for-each>
 				</div>
 			</xsl:if>
+			<xsl:if test="dim:field[@element = 'description' and not(@qualifier)]">
+				<xsl:variable name="description"
+					select="dim:field[@element = 'description' and not(@qualifier)]/node()" />
+				<div class="artifact-abstract-head">
+					<i18n:text i18n:key="homepage.item.description">Description:</i18n:text>
+				</div>
+				<div class="artifact-abstract">
+					<xsl:value-of select="util:shortenString($description, 220, 10)" />
+				</div>
+			</xsl:if>
+		&#160;
 		</div>
 	</xsl:template>
 

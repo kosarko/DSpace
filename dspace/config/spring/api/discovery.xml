@@ -185,10 +185,9 @@
                 <ref bean="searchFacetNarratorGender" />
                 <ref bean="searchFacetNarratorBirthdate" />
                 <ref bean="searchFacetNarratorDegree" />
-                <ref bean="searchFacetNarratorProfession" />
-                <ref bean="searchFacetNarratorKeywords" />
+                <ref bean="searchFacetNarratorKeywordsProfession" />
+                <ref bean="searchFacetNarratorKeywordsCharacteristics" />
                 <ref bean="searchFacetNarratorConsent" />
-                <ref bean="searchFacetNarratorCharacteristics" />
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewDate" />
                 <ref bean="searchFacetInterviewInterviewer" />
@@ -215,10 +214,9 @@
                 <ref bean="searchFacetNarratorGender" />
                 <ref bean="searchFacetNarratorBirthdate" />
                 <ref bean="searchFacetNarratorDegree" />
-                <ref bean="searchFacetNarratorProfession" />
-                <ref bean="searchFacetNarratorKeywords" />
+                <ref bean="searchFacetNarratorKeywordsProfession" />
+                <ref bean="searchFacetNarratorKeywordsCharacteristics" />
                 <ref bean="searchFacetNarratorConsent" />
-                <ref bean="searchFacetNarratorCharacteristics" />
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewDate" />
                 <ref bean="searchFacetInterviewInterviewer" />
@@ -385,11 +383,10 @@
         <property name="fullAutoComplete" value="true"/>
     </bean>
 
-    <bean id="searchFacetNarratorProfession" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="narratorProfession"/>
+    <bean id="searchFacetNarratorKeywordsProfession" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet"> <property name="indexFieldName" value="narratorKeywordsProfession"/>
         <property name="metadataFields">
             <list>
-                <value>viadat.narrator.profession</value>
+                <value>viadat.narrator.keywordsProfession</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>
@@ -397,11 +394,12 @@
         <property name="fullAutoComplete" value="true"/>
     </bean>
 
-    <bean id="searchFacetNarratorKeywords" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="narratorKeywords"/>
+    <bean id="searchFacetNarratorKeywordsCharacteristics"
+          class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narratorKeywordsCharacteristics"/>
         <property name="metadataFields">
             <list>
-                <value>viadat.narrator.keywords</value>
+                <value>viadat.narrator.keywordsCharacteristics</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>
@@ -414,18 +412,6 @@
         <property name="metadataFields">
             <list>
                 <value>viadat.narrator.consent</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="20"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
-    </bean>
-
-    <bean id="searchFacetNarratorCharacteristics" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="narratorCharacteristics"/>
-        <property name="metadataFields">
-            <list>
-                <value>viadat.narrator.characteristics</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>
