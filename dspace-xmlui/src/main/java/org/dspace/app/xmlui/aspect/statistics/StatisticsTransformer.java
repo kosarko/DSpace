@@ -30,10 +30,7 @@ import org.dspace.app.xmlui.wing.element.PageMeta;
 import org.dspace.app.xmlui.wing.element.Row;
 import org.dspace.app.xmlui.wing.element.Table;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.Bitstream;
-import org.dspace.content.Bundle;
-import org.dspace.content.DSpaceObject;
-import org.dspace.content.Metadatum;
+import org.dspace.content.*;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
@@ -44,6 +41,7 @@ import org.dspace.statistics.content.DatasetTypeGenerator;
 import org.dspace.statistics.content.StatisticsDataVisits;
 import org.dspace.statistics.content.StatisticsListing;
 import org.dspace.statistics.content.StatisticsTable;
+import org.dspace.statistics.content.filter.StatisticsFilter;
 import org.dspace.statistics.content.filter.StatisticsSolrDateFilter;
 import org.xml.sax.SAXException;
 /**
@@ -138,7 +136,7 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 	}
 
 	public void renderHome(Body body) throws WingException {
-		
+
 		Division home = body.addDivision("home", "primary repository");
 		Division division = home.addDivision("stats", "secondary stats");
 		division.setHead(T_most_viewed);
@@ -146,7 +144,29 @@ public class StatisticsTransformer extends AbstractDSpaceTransformer {
 
 			/** List of the top 10 items for the entire repository Last week **/
 
-			StatisticsListing statListing = new StatisticsListing(new StatisticsDataVisits());
+			final StatisticsDataVisits statisticsDataVisits = new StatisticsDataVisits();
+			//Top items with narrators only
+			statisticsDataVisits.addFilters(new StatisticsFilter(){
+                                                @Override
+                                                public String toQuery(){
+                                                    String ret = "*:*";
+                                                    try {
+														final Collection[] collections = Collection.findAll(context);
+														for (Collection collection : collections){
+															if("Narrators".equalsIgnoreCase(collection.getName())){
+																ret = "owningColl:" + collection.getID();
+																break;
+															}
+														}
+													}catch (SQLException e){
+                                                    	log.error(e);
+													}
+													return ret;
+                                                }
+                                            }
+			);
+
+			StatisticsListing statListing = new StatisticsListing(statisticsDataVisits);
 			
 			StatisticsSolrDateFilter dateFilter = new StatisticsSolrDateFilter();
 			Calendar cal = new GregorianCalendar();
