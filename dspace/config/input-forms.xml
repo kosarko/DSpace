@@ -90,6 +90,15 @@
                     <hint>input_forms.field.viadat.narrator.identifier.hint</hint>
                     <required>input_forms.field.viadat.narrator.identifier.required</required>
                 </field>
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>project</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>input_forms.field.viadat.narrator.project.label</label>
+                    <input-type>onebox</input-type>
+                    <hint>input_forms.field.viadat.narrator.project.hint</hint>
+                </field>
 
                 <field>
                     <dc-schema>viadat</dc-schema>

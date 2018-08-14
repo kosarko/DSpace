@@ -3639,6 +3639,8 @@
 	<message key="input_forms.field.dc.creator.hint">Tvůrce záznamu nebo instituce</message>
 	<message key="input_forms.field.viadat.technical.note.label">Poznámka</message>
 	<message key="input_forms.field.viadat.technical.note.hint">Poznámka</message>
+	<message key="input_forms.field.viadat.narrator.project.label">Projekt</message>
+	<message key="input_forms.field.viadat.narrator.project.hint">Projekt</message>
 
 
 	<!-- cz.cuni.mff.ufal.ContractPage -->

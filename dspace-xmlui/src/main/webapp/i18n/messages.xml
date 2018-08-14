@@ -3379,6 +3379,8 @@
 		the interview</message>
 	<message key="input_forms.field.viadat.technical.note.label">Note</message>
 	<message key="input_forms.field.viadat.technical.note.hint">Note</message>
+	<message key="input_forms.field.viadat.narrator.project.label">Project</message>
+	<message key="input_forms.field.viadat.narrator.project.hint">Project</message>
 
 
 	<!-- cz.cuni.mff.ufal.ContractPage -->
