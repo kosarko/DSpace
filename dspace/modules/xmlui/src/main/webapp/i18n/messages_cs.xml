@@ -3307,6 +3307,13 @@
 	<message key="xmlui.UFAL.artifactbrowser.item_view.preview">Náhled</message>
 	<message key="xmlui.UFAL.artifactbrowser.item_view.file_preview">Náhled souboru</message>
 	<message key="xmlui.UFAL.artifactbrowser.narrator">Narátor</message>
+    <message key="ufal.item-view.alias">Alias</message>
+    <message key="ufal.item-view.birthdate">Datum narození</message>
+    <message key="ufal.item-view.project">Projekt</message>
+    <message key="ufal.item-view.keywordsCharacteristics">Charakteristika</message>
+    <message key="ufal.item-view.keywordsProfession">Profese</message>
+    <message key="ufal.item-view.consent">Informovaný souhlas</message>
+
 
 	<!-- Interviews.java -->
 	<message key="xmlui.item_view.Interviews.head"><i class="fa fa-microphone">&#160;</i>Rozhovory s tímto narátorem</message>

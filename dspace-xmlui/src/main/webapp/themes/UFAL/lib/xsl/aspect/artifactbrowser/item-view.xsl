@@ -216,23 +216,138 @@
 
 					</dd>
 				</dl>
-				<xsl:if test="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias']">
-					<dl id="item-narrator-alias" class="dl-horizontal" style="clear:both;">
-						<dt style="text-align: left">
-							<i class="fa fa-user-secret">&#160;</i>
-							<span><i18n:text>Alias</i18n:text></span>
-						</dt>
-                        <dd style="pading-right: 40px;">
-							<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias']">
-                                <xsl:copy-of select="node()" />
-								<xsl:if test="position() != last()">
-									<xsl:text>; </xsl:text>
-								</xsl:if>
-							</xsl:for-each>
-						</dd>
-					</dl>
-				</xsl:if>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
 
+			<!-- alias -->
+			<xsl:when test="$clause = 4 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias'])">
+				<dl id="item-narrator-alias" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-user-secret">&#160;</i>
+						<span><i18n:text>ufal.item-view.alias</i18n:text></span>
+					</dt>
+		<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias']">
+			<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+
+			<!-- birthdate -->
+			<xsl:when test="$clause = 5 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='birthdate'])">
+				<dl id="item-narrator-birthdate" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-birthday-cake">&#160;</i>
+						<span><i18n:text>ufal.item-view.birthdate</i18n:text></span>
+					</dt>
+		<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='birthdate']">
+			<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+
+			<!-- project -->
+			<xsl:when test="$clause = 6 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias'])">
+				<dl id="item-narrator-project" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-puzzle-piece">&#160;</i>
+						<span><i18n:text>ufal.item-view.project</i18n:text></span>
+					</dt>
+		<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias']">
+			<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+
+			<!-- keywordsCharacteristics -->
+			<xsl:when test="$clause = 7 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsCharacteristics'])">
+				<dl id="item-narrator-keywordsCharacteristics" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-comment">&#160;</i>
+						<span><i18n:text>ufal.item-view.keywordsCharacteristics</i18n:text></span>
+					</dt>
+		<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsCharacteristics']">
+			<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+
+			<!-- keywords profession -->
+			<xsl:when test="$clause = 8 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsProfession'])">
+				<dl id="item-narrator-keywordsProfession" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-briefcase">&#160;</i>
+						<span><i18n:text>ufal.item-view.keywordsProfession</i18n:text></span>
+					</dt>
+		<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsProfession']">
+			<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+
+			<!-- consent -->
+			<xsl:when test="$clause = 9 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='consent'])">
+				<dl id="item-narrator-consent" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-check-square-o">&#160;</i>
+						<span><i18n:text>ufal.item-view.consent</i18n:text></span>
+					</dt>
+		<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='consent']">
+			<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
 				<xsl:call-template name="itemSummaryView-DIM-fields">
 					<xsl:with-param name="clause" select="($clause + 1)" />
 					<xsl:with-param name="phase" select="$otherPhase" />
@@ -240,7 +355,7 @@
 			</xsl:when>
 
 			<!-- PID row -->
-			<xsl:when test="$clause = 4 and (dim:field[@element='identifier' and @qualifier='uri'])">
+			<xsl:when test="$clause = 10 and (dim:field[@element='identifier' and @qualifier='uri'])">
 				<dl id="item-pid" class="dl-horizontal" style="clear:both;">
                     <dt style="text-align: left">
                         <i class="fa fa-share">&#160;</i>
@@ -264,7 +379,7 @@
 
 			<!-- Project URL(s) row -->
 			<xsl:when
-				test="$clause = 5 and dim:field[@element='source'][@qualifier='uri']">
+				test="$clause = 11 and dim:field[@element='source'][@qualifier='uri']">
 						<dl id="project-url" class="dl-horizontal">
 							<dt style="text-align: left">
 								<i class="fa fa-link">&#160;</i>
@@ -297,7 +412,7 @@
 
 			<!-- Demo URL(s) row -->
 			<xsl:when
-				test="$clause = 6 and dim:field[@mdschema='local' and @element='demo' and @qualifier='uri']">
+				test="$clause = 12 and dim:field[@mdschema='local' and @element='demo' and @qualifier='uri']">
 						<dl id="demo-url" class="dl-horizontal">
 							<dt style="text-align: left">
 								<i class="fa fa-external-link">&#160;</i>
@@ -330,7 +445,7 @@
 
 			<!-- referenced by -->
 			<xsl:when
-					test="$clause = 7 and dim:field[@element='relation'][@qualifier='isreferencedby']">
+					test="$clause = 13 and dim:field[@element='relation'][@qualifier='isreferencedby']">
 				<dl id="relation-isreferencedby" class="dl-horizontal">
 					<dt style="text-align: left">
 						<i class="fa fa-link">&#160;</i>
@@ -363,7 +478,7 @@
 
 			<!-- date.issued row -->
 			<xsl:when
-				test="$clause = 8 and (dim:field[@element='date' and @qualifier='issued'])">
+				test="$clause = 14 and (dim:field[@element='date' and @qualifier='issued'])">
 				<dl id="date-issued" class="dl-horizontal">
 					<dt style="text-align: left">
 						<i class="fa fa-calendar">&#160;</i>					
@@ -387,7 +502,7 @@
 
 			<!-- type row -->
 			<xsl:when
-				test="$clause = 9 and (dim:field[@element='type' and not(@qualifier)])">
+				test="$clause = 15 and (dim:field[@element='type' and not(@qualifier)])">
 					<dl id="item-type" class="dl-horizontal">
 					<dt style="text-align: left">
 						<i class="fa fa-tag">&#160;</i>
@@ -407,7 +522,7 @@
 			</xsl:when>				
 
 			<!-- size row -->
-			<xsl:when test="$clause = 10">
+			<xsl:when test="$clause = 16">
 					<xsl:variable name="sizeInfo">
 						<xsl:choose>
 							<xsl:when test="dim:field[@mdschema='local' and @element='size' and @qualifier='info'][1]/node()">
@@ -450,7 +565,7 @@
 
 			<!-- type languages -->
 			<xsl:when
-				test="$clause = 11 and (dim:field[@element='language' and @qualifier='iso'])">
+				test="$clause = 17 and (dim:field[@element='language' and @qualifier='iso'])">
 					<dl id="item-languages" class="dl-horizontal">
 					<dt style="text-align: left">
 						<i class="fa fa-flag ">&#160;</i>
@@ -489,7 +604,7 @@
 
 			<!-- Abstract row -->
 			<!-- xsl:when
-				test="$clause = 10 and (dim:field[@element='description' and @qualifier='abstract' and descendant::text()])">
+				test="$clause = 16 and (dim:field[@element='description' and @qualifier='abstract' and descendant::text()])">
 				<div class="simple-item-view-description">
 					<h3>
 						<i18n:text>xmlui.dri2xhtml.METS-1.0.item-abstract</i18n:text>
@@ -529,7 +644,7 @@
 
 			<!-- Description row -->
 			<xsl:when
-				test="$clause = 12 and (dim:field[@element='description' and not(@qualifier)])">
+				test="$clause = 18 and (dim:field[@element='description' and not(@qualifier)])">
 				<dl id="item-description" class="dl-horizontal linkify">
 					<dt style="text-align: left">
 						<i class="fa fa-file-text-o">&#160;</i>
@@ -562,7 +677,7 @@
 			
 			<!-- Publisher row -->
 			<xsl:when
-				test="$clause = 13 and (dim:field[@element='publisher' and not(@qualifier)])">
+				test="$clause = 19 and (dim:field[@element='publisher' and not(@qualifier)])">
 				<dl id="item-publisher" class="dl-horizontal">
 					<dt style="text-align: left">
 						<i class="fa fa-copy">&#160;</i>
@@ -594,7 +709,7 @@
 
 			<!-- Sponsors row -->
 			<xsl:when
-				test="$clause = 14 and ((dim:field[@element='sponsor' and not(@qualifier)]) or (dim:field[@element='ResourceInfo#ResourceCreationInfo#FundingInfo#ProjectInfo'] and dim:field[@qualifier='projectName']))">
+				test="$clause = 20 and ((dim:field[@element='sponsor' and not(@qualifier)]) or (dim:field[@element='ResourceInfo#ResourceCreationInfo#FundingInfo#ProjectInfo'] and dim:field[@qualifier='projectName']))">
 				<dl id="item-sponsor" class="dl-horizontal">
 					<dt style="text-align: left">
 						<i class="fa fa-money">&#160;</i>
@@ -665,7 +780,7 @@
 			
 			<!-- Subject keywords -->
 			<xsl:when
-				test="$clause = 15 and (dim:field[@element='subject' and not(@qualifier)])">
+				test="$clause = 21 and (dim:field[@element='subject' and not(@qualifier)])">
 				<dl id="item-subject" class="dl-horizontal">
 					<dt style="text-align: left">
 						<i class="fa fa-tags">&#160;</i>
@@ -691,7 +806,7 @@
 			
 			<!-- Collections -->
   			<xsl:when
-				test="$clause = 16 and $ufal-collection-references">
+				test="$clause = 22 and $ufal-collection-references">
 				<dl id="item-subject" class="dl-horizontal">
 					<dt style="text-align: left">
 						<i class="fa fa-sitemap">&#160;</i>
@@ -716,7 +831,7 @@
 				</xsl:call-template>
 			</xsl:when>
 
-			<xsl:when test="$clause = 17 and $ds_item_view_toggle_url != ''">
+			<xsl:when test="$clause = 23 and $ds_item_view_toggle_url != ''">
 
                 <!-- other versions -->
                 <xsl:choose>
@@ -788,7 +903,7 @@
 			<!-- recurse without changing phase if we didn't output anything -->
 			<xsl:otherwise>
 				<!-- IMPORTANT: This test should be updated if clauses are added! -->
-				<xsl:if test="$clause &lt; 17">
+				<xsl:if test="$clause &lt; 23">
 					<xsl:call-template name="itemSummaryView-DIM-fields">
 						<xsl:with-param name="clause" select="($clause + 1)" />
 						<xsl:with-param name="phase" select="$phase" />

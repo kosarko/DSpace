@@ -3032,6 +3032,12 @@
   <message key="xmlui.UFAL.artifactbrowser.item_view.preview">Preview</message>
   <message key="xmlui.UFAL.artifactbrowser.item_view.file_preview">File Preview</message>
   <message key="xmlui.UFAL.artifactbrowser.narrator">Narrator</message>
+	<message key="ufal.item-view.alias">Alias</message>
+	<message key="ufal.item-view.birthdate">Birthdate</message>
+	<message key="ufal.item-view.project">Project</message>
+	<message key="ufal.item-view.keywordsCharacteristics">Charakteristics</message>
+	<message key="ufal.item-view.keywordsProfession">Profession</message>
+	<message key="ufal.item-view.consent">Informed consent</message>
 
 	<!-- Interviews.java -->
 	<message key="xmlui.item_view.Interviews.head"><i class="fa fa-microphone">&#160;</i>Interviews with this
