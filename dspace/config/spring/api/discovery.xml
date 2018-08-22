@@ -109,6 +109,8 @@
 		        <ref bean="searchFilterLanguage" />
 		        <ref bean="searchFilterType" />
                 <ref bean="searchFilterPeriod" />
+                <ref bean="searchFilterNarratorProject" />
+                <ref bean="searchFilterKeywords" />
             </list>
         </property>
         <!--The sort filters for the discovery search-->
@@ -321,7 +323,7 @@
         <property name="fullAutoComplete" value="false"/>
     </bean>
     <bean id="searchFilterKeywords" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="topic"/>
+        <property name="indexFieldName" value="keywords"/>
         <property name="metadataFields">
             <list>
                 <value>viadat.narrator.keywordsTopic</value>

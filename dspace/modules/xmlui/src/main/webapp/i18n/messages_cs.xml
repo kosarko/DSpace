@@ -3784,6 +3784,21 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.technicalType_filter">Typ souboru</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_technicalType">Typ souboru</message>
 
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_keywords">Klíčová slova</message>
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.keywords.column_heading">Klíčová slova</message>
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.keywords">Klíčová slova</message>
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.keywords">Klíčová slova</message>
+    <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.keywords">Klíčová slova</message>
+
+    <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_project">Projekt</message>
+    <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProject">Projekt</message>
+    
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narrator_alias.column_heading">Alias</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narrator_alias">Alias</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narrator_alias">Alias</message>
+	<message key="xmlui.ArtifactBrowser.Navigation.browse_narrator_alias">Alias</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narrator_alias">Alias</message>
+
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.language_filter">Jazyk</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_language">Jazyk</message>
 
