@@ -96,9 +96,10 @@
         <!--Which sidebar facets are to be displayed-->
         <property name="sidebarFacets">
             <list>
-                <ref bean="searchFilterType" />
+                <ref bean="searchFilterNarratorProject" />
+                <ref bean="searchFilterTopic" />
+                <ref bean="searchFilterProfession" />
                 <ref bean="searchFilterPeriod" />
-		        <ref bean="searchFilterLanguage" />
             </list>
         </property>
         <!--The search filters which can be used on the discovery search page-->
@@ -195,7 +196,7 @@
                 <ref bean="searchFacetInterviewDetailedKeywords" />
                 <ref bean="searchFacetInterviewPeriod" />
                 <ref bean="searchFacetInterviewPlace" />
-                <ref bean="searchFacetProjectName" />
+                <ref bean="searchFacetNarratorProject" />
                 <ref bean="searchFacetTechnicalType" />
                 <ref bean="searchFacetCreator" />
 
@@ -224,7 +225,7 @@
                 <ref bean="searchFacetInterviewDetailedKeywords" />
                 <ref bean="searchFacetInterviewPeriod" />
                 <ref bean="searchFacetInterviewPlace" />
-                <ref bean="searchFacetProjectName" />
+                <ref bean="searchFacetNarratorProject" />
                 <ref bean="searchFacetTechnicalType" />
                 <ref bean="searchFacetCreator" />
 
@@ -314,6 +315,39 @@
         <property name="metadataFields">
             <list>
                 <value>viadat.interview.period</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="false"/>
+    </bean>
+    <bean id="searchFilterTopic" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="topic"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.keywordsTopic</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="false"/>
+    </bean>
+    <bean id="searchFilterProfession" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="profession"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.keywordsProfession</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="false"/>
+    </bean>
+    <bean id="searchFilterNarratorProject" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="project"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.project</value>
             </list>
         </property>
         <property name="facetLimit" value="5"/>
@@ -505,11 +539,11 @@
         <property name="fullAutoComplete" value="true"/>
     </bean>
 
-    <bean id="searchFacetProjectName" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="projectName"/>
+    <bean id="searchFacetNarratorProject" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narratorProject"/>
         <property name="metadataFields">
             <list>
-                <value>viadat.project.name</value>
+                <value>viadat.narrator.project</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>
