@@ -97,8 +97,7 @@
         <property name="sidebarFacets">
             <list>
                 <ref bean="searchFilterNarratorProject" />
-                <ref bean="searchFilterTopic" />
-                <ref bean="searchFilterProfession" />
+                <ref bean="searchFilterKeywords" />
                 <ref bean="searchFilterPeriod" />
             </list>
         </property>
@@ -321,22 +320,14 @@
         <property name="sortOrder" value="COUNT"/>
         <property name="fullAutoComplete" value="false"/>
     </bean>
-    <bean id="searchFilterTopic" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+    <bean id="searchFilterKeywords" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
         <property name="indexFieldName" value="topic"/>
         <property name="metadataFields">
             <list>
                 <value>viadat.narrator.keywordsTopic</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="false"/>
-    </bean>
-    <bean id="searchFilterProfession" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="profession"/>
-        <property name="metadataFields">
-            <list>
                 <value>viadat.narrator.keywordsProfession</value>
+                <value>viadat.interview.keywords</value>
+                <value>viadat.interview.detailedKeywords</value>
             </list>
         </property>
         <property name="facetLimit" value="5"/>

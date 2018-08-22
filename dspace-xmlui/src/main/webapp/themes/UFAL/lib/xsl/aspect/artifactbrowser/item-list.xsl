@@ -296,7 +296,10 @@
                 <div class="keywords">
                     <xsl:for-each select="dim:field[@element='narrator'][contains(@qualifier, 'keywords')]">
                         <span>
-                             <xsl:copy-of select="." />
+                            <a>
+                                <xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="." />&amp;type=keywords</xsl:attribute>
+                                <xsl:copy-of select="." />
+                            </a>
                         </span>
                         <xsl:if test="position() != last()">
                             <xsl:text>; </xsl:text>
