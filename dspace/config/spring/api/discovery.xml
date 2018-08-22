@@ -186,7 +186,7 @@
                 <ref bean="searchFacetNarratorBirthdate" />
                 <ref bean="searchFacetNarratorDegree" />
                 <ref bean="searchFacetNarratorKeywordsProfession" />
-                <ref bean="searchFacetNarratorKeywordsCharacteristics" />
+                <ref bean="searchFacetNarratorKeywordsTopic" />
                 <ref bean="searchFacetNarratorConsent" />
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewDate" />
@@ -215,7 +215,7 @@
                 <ref bean="searchFacetNarratorBirthdate" />
                 <ref bean="searchFacetNarratorDegree" />
                 <ref bean="searchFacetNarratorKeywordsProfession" />
-                <ref bean="searchFacetNarratorKeywordsCharacteristics" />
+                <ref bean="searchFacetNarratorKeywordsTopic" />
                 <ref bean="searchFacetNarratorConsent" />
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewDate" />
@@ -394,12 +394,12 @@
         <property name="fullAutoComplete" value="true"/>
     </bean>
 
-    <bean id="searchFacetNarratorKeywordsCharacteristics"
+    <bean id="searchFacetNarratorKeywordsTopic"
           class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="narratorKeywordsCharacteristics"/>
+        <property name="indexFieldName" value="narratorKeywordsTopic"/>
         <property name="metadataFields">
             <list>
-                <value>viadat.narrator.keywordsCharacteristics</value>
+                <value>viadat.narrator.keywordsTopic</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>

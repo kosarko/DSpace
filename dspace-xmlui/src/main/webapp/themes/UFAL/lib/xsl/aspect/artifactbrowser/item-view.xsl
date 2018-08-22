@@ -288,15 +288,15 @@
 				</xsl:call-template>
 			</xsl:when>
 
-			<!-- keywordsCharacteristics -->
-			<xsl:when test="$clause = 7 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsCharacteristics'])">
-				<dl id="item-narrator-keywordsCharacteristics" class="dl-horizontal" style="clear:both;">
+			<!-- keywordsTopic -->
+			<xsl:when test="$clause = 7 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsTopic'])">
+				<dl id="item-narrator-keywordsTopic" class="dl-horizontal" style="clear:both;">
 					<dt style="text-align: left">
 						<i class="fa fa-comment">&#160;</i>
-						<span><i18n:text>ufal.item-view.keywordsCharacteristics</i18n:text></span>
+						<span><i18n:text>ufal.item-view.keywordsTopic</i18n:text></span>
 					</dt>
 		<dd style="pading-right: 40px;">
-						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsCharacteristics']">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsTopic']">
 			<xsl:copy-of select="node()" />
 							<xsl:if test="position() != last()">
 								<xsl:text>; </xsl:text>

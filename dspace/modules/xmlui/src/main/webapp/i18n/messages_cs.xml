@@ -3310,7 +3310,7 @@
     <message key="ufal.item-view.alias">Alias</message>
     <message key="ufal.item-view.birthdate">Datum narození</message>
     <message key="ufal.item-view.project">Projekt</message>
-    <message key="ufal.item-view.keywordsCharacteristics">Charakteristika</message>
+    <message key="ufal.item-view.keywordsTopic">Téma</message>
     <message key="ufal.item-view.keywordsProfession">Profese</message>
     <message key="ufal.item-view.consent">Informovaný souhlas</message>
 
@@ -3585,7 +3585,7 @@
 	<message key="input_forms.field.viadat.narrator.consent.label">Informovaný souhlas</message>
 	<message key="input_forms.field.viadat.narrator.consent.hint">Možnost nahrát soubor s informovaným
 		souhlasem je v dalších krocích</message>
-	<message key="input_forms.field.viadat.narrator.keywordsCharacteristics.label">Charakteristika</message>
+	<message key="input_forms.field.viadat.narrator.keywordsTopic.label">Téma</message>
 	<message key="input_forms.field.viadat.narrator.contact.label">Kontaktní údaje</message>
 	<message key="input_forms.field.viadat.narrator.contact.hint">Kontaktní údaje</message>
 	<message key="input_forms.field.viadat.narrator.note.label">Poznámka</message>
@@ -3720,13 +3720,13 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorConsent_filter">Informovaný souhlas</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_narratorConsent">Informovaný souhlas</message>
 
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorCharacteristics">Charakteristika</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorCharacteristics.column_heading">Charakteristika</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorCharacteristics">Charakteristika</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorCharacteristics">Charakteristika</message>
-	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorCharacteristics">Charakteristika</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorCharacteristics_filter">Charakteristika</message>
-	<message key="xmlui.Discovery.AbstractSearch.type_narratorCharacteristics">Charakteristika</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorTopic.column_heading">Téma</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorTopic_filter">Téma</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorTopic">Téma</message>
 
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewTranscript.column_heading">Přepis</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewTranscript">Přepis</message>

@@ -49,7 +49,7 @@
     <dc-type>
         <schema>viadat</schema>
         <element>narrator</element>
-        <qualifier>keywordsCharacteristics</qualifier>
+        <qualifier>keywordsTopic</qualifier>
         <scope_note></scope_note>
     </dc-type>
     <dc-type>

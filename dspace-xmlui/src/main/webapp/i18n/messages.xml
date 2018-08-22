@@ -3035,7 +3035,7 @@
 	<message key="ufal.item-view.alias">Alias</message>
 	<message key="ufal.item-view.birthdate">Birthdate</message>
 	<message key="ufal.item-view.project">Project</message>
-	<message key="ufal.item-view.keywordsCharacteristics">Charakteristics</message>
+	<message key="ufal.item-view.keywordsTopic">Charakteristics</message>
 	<message key="ufal.item-view.keywordsProfession">Profession</message>
 	<message key="ufal.item-view.consent">Informed consent</message>
 
@@ -3321,7 +3321,7 @@
 	<message key="input_forms.field.viadat.narrator.consent.label">Informed consent</message>
 	<message key="input_forms.field.viadat.narrator.consent.hint">The option to upload the consent iteself is in the
 		following steps</message>
-	<message key="input_forms.field.viadat.narrator.keywordsCharacteristics.label">Characteristic</message>
+	<message key="input_forms.field.viadat.narrator.keywordsTopic.label">Topic</message>
 	<message key="input_forms.field.viadat.narrator.contact.label">Contact details</message>
 	<message key="input_forms.field.viadat.narrator.contact.hint">Contact details</message>
 	<message key="input_forms.field.viadat.narrator.note.label">Note</message>
@@ -3450,14 +3450,14 @@
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorConsent">Informed consent</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorConsent_filter">Informed consent</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_narratorConsent">Informed consent</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsCharacteristics">Characteristics</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsCharacteristics_filter">Characteristics</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywordsCharacteristics.column_heading">Characteristics</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywordsCharacteristics">Characteristics </message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywordsCharacteristics">Characteristics </message>
-	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorCharacteristics">Characteristics</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorCharacteristics_filter">Characteristics</message>
-	<message key="xmlui.Discovery.AbstractSearch.type_narratorCharacteristics">Characteristics</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsTopic">Topic</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsTopic_filter">Topic</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywordsTopic.column_heading">Topic</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywordsTopic">Topic </message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywordsTopic">Topic </message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorTopic">Topic</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorTopic_filter">Topic</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorTopic">Topic</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewTranscript.column_heading">Transcript</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewTranscript">Transcript</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewTranscript">Transcript</message>

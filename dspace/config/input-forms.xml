@@ -126,13 +126,13 @@
                 <field>
                     <dc-schema>viadat</dc-schema>
                     <dc-element>narrator</dc-element>
-                    <dc-qualifier>keywordsCharacteristics</dc-qualifier>
+                    <dc-qualifier>keywordsTopic</dc-qualifier>
                     <repeatable>true</repeatable>
                     <repeatable-parse>true</repeatable-parse>
-                    <label>input_forms.field.viadat.narrator.keywordsCharacteristics.label</label>
+                    <label>input_forms.field.viadat.narrator.keywordsTopic.label</label>
                     <input-type>onebox</input-type>
                     <hint>input_forms.field.viadat.narrator.keywords.hint</hint>
-                    <autocomplete>solr-narratorKeywordsCharacteristics_ac</autocomplete>
+                    <autocomplete>solr-narratorKeywordsTopic_ac</autocomplete>
                 </field>
 
                 <field>
