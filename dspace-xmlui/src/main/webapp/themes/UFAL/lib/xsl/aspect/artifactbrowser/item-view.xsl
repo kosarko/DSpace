@@ -244,6 +244,30 @@
 				</xsl:call-template>
 			</xsl:when>
 
+			<!-- ///// interview interviewer begin //// -->
+			<!-- interviewer -->
+			<xsl:when test="$clause = 4 and (dim:field[@mdschema='viadat' and @element='interview' and @qualifier='interviewer'])">
+				<dl id="item-interview-interviewer" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-user">&#160;</i>
+						<span><i18n:text>ufal.item-view.interviewer</i18n:text></span>
+					</dt>
+					<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='interview' and @qualifier='interviewer']">
+							<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+			<!-- ///// interview interviewer end //// -->
+
 			<!-- birthdate -->
 			<xsl:when test="$clause = 5 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='birthdate'])">
 				<dl id="item-narrator-birthdate" class="dl-horizontal" style="clear:both;">
@@ -265,6 +289,30 @@
 					<xsl:with-param name="phase" select="$otherPhase" />
 				</xsl:call-template>
 			</xsl:when>
+			<!-- ///// interview date begin //// -->
+			<!-- date -->
+			<xsl:when test="$clause = 5 and (dim:field[@mdschema='viadat' and @element='interview' and @qualifier='date'])">
+				<dl id="item-interview-date" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-calendar">&#160;</i>
+						<span><i18n:text>ufal.item-view.interviewDate</i18n:text></span>
+					</dt>
+					<dd style="pading-right: 40px;">
+						<xsl:for-each
+								select="dim:field[@mdschema='viadat' and @element='interview' and @qualifier='date']">
+							<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+			<!-- ///// interview date end //// -->
 
 			<!-- project -->
 			<xsl:when test="$clause = 6 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias'])">
@@ -288,6 +336,31 @@
 				</xsl:call-template>
 			</xsl:when>
 
+			<!-- ///// interview length begin //// -->
+			<!-- length -->
+			<xsl:when test="$clause = 6 and (dim:field[@mdschema='viadat' and @element='interview' and @qualifier='length'])">
+				<dl id="item-interview-length" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-clock-o">&#160;</i>
+						<span><i18n:text>ufal.item-view.interviewLength</i18n:text></span>
+					</dt>
+					<dd style="pading-right: 40px;">
+						<xsl:for-each
+								select="dim:field[@mdschema='viadat' and @element='interview' and @qualifier='length']">
+							<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+			<!-- ///// interview length end //// -->
+
 			<!-- keywordsTopic -->
 			<xsl:when test="$clause = 7 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsTopic'])">
 				<dl id="item-narrator-keywordsTopic" class="dl-horizontal" style="clear:both;">
@@ -297,10 +370,12 @@
 					</dt>
 		<dd style="pading-right: 40px;">
 						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsTopic']">
-			<xsl:copy-of select="node()" />
-							<xsl:if test="position() != last()">
-								<xsl:text>; </xsl:text>
-							</xsl:if>
+							<span class="tag">
+								<a class="label label-primary">
+									<xsl:attribute name="href"><xsl:copy-of select="$contextPath"/>/discover?filtertype=narratorKeywordsTopic&amp;filter_relational_operator=equals&amp;filter=<xsl:copy-of select="node()"/></xsl:attribute>
+									<xsl:copy-of select="node()" />
+								</a>
+							</span>
 						</xsl:for-each>
 					</dd>
 				</dl>
@@ -319,10 +394,12 @@
 					</dt>
 		<dd style="pading-right: 40px;">
 						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='keywordsProfession']">
-			<xsl:copy-of select="node()" />
-							<xsl:if test="position() != last()">
-								<xsl:text>; </xsl:text>
-							</xsl:if>
+							<span class="tag">
+								<a class="label label-primary">
+									<xsl:attribute name="href"><xsl:copy-of select="$contextPath"/>/discover?filtertype=narratorKeywordsProfession&amp;filter_relational_operator=equals&amp;filter=<xsl:copy-of select="node()"/></xsl:attribute>
+									<xsl:copy-of select="node()" />
+								</a>
+							</span>
 						</xsl:for-each>
 					</dd>
 				</dl>
@@ -331,6 +408,56 @@
 					<xsl:with-param name="phase" select="$otherPhase" />
 				</xsl:call-template>
 			</xsl:when>
+
+			<!-- ///// interview keywords begin //// -->
+			<!-- interview.keywords -->
+			<xsl:when test="$clause = 7 and (dim:field[@mdschema='viadat' and @element='interview' and @qualifier='keywords'])">
+				<dl id="item-interview-keywords" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-comment">&#160;</i>
+						<span><i18n:text>ufal.item-view.interview.keywords</i18n:text></span>
+					</dt>
+					<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='interview' and @qualifier='keywords']">
+							<span class="tag">
+								<a class="label label-primary">
+									<xsl:attribute name="href"><xsl:copy-of select="$contextPath"/>/discover?filtertype=interviewKeywords&amp;filter_relational_operator=equals&amp;filter=<xsl:copy-of select="node()"/></xsl:attribute>
+									<xsl:copy-of select="node()" />
+								</a>
+							</span>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+
+			<!-- interview.detailedKeywords -->
+			<xsl:when test="$clause = 8 and (dim:field[@mdschema='viadat' and @element='interview' and @qualifier='detailedKeywords'])">
+				<dl id="item-interview-detailedKeywords" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-comment">&#160;</i>
+						<span><i18n:text>ufal.item-view.interview.detailedKeywords</i18n:text></span>
+					</dt>
+					<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='interview' and @qualifier='detailedKeywords']">
+							<span class="tag">
+								<a class="label label-primary">
+									<xsl:attribute name="href"><xsl:copy-of select="$contextPath"/>/discover?filtertype=interviewDetailedKeywords&amp;filter_relational_operator=equals&amp;filter=<xsl:copy-of select="node()"/></xsl:attribute>
+									<xsl:copy-of select="node()" />
+								</a>
+							</span>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+			<!-- ///// interview keywords end //// -->
 
 			<!-- consent -->
 			<xsl:when test="$clause = 9 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='consent'])">
@@ -353,6 +480,30 @@
 					<xsl:with-param name="phase" select="$otherPhase" />
 				</xsl:call-template>
 			</xsl:when>
+
+			<!-- ///// interview transcript begin //// -->
+			<!-- transcript -->
+			<xsl:when test="$clause = 9 and (dim:field[@mdschema='viadat' and @element='interview' and @qualifier='transcript'])">
+				<dl id="item-interview-transcript" class="dl-horizontal" style="clear:both;">
+					<dt style="text-align: left">
+						<i class="fa fa-pencil-square-o">&#160;</i>
+						<span><i18n:text>ufal.item-view.transcript</i18n:text></span>
+					</dt>
+					<dd style="pading-right: 40px;">
+						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='interview' and @qualifier='transcript']">
+							<xsl:copy-of select="node()" />
+							<xsl:if test="position() != last()">
+								<xsl:text>; </xsl:text>
+							</xsl:if>
+						</xsl:for-each>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+			<!-- ///// transcript end //// -->
 
 			<!-- PID row -->
 			<xsl:when test="$clause = 10 and (dim:field[@element='identifier' and @qualifier='uri'])">
@@ -500,7 +651,7 @@
 				</xsl:call-template>
 			</xsl:when>
 
-			<!-- type row -->
+			<!-- type row
 			<xsl:when
 				test="$clause = 15 and (dim:field[@element='type' and not(@qualifier)])">
 					<dl id="item-type" class="dl-horizontal">
@@ -519,7 +670,30 @@
 					<xsl:with-param name="clause" select="($clause + 1)" />
 					<xsl:with-param name="phase" select="$otherPhase" />
 				</xsl:call-template>
-			</xsl:when>				
+			</xsl:when>
+			 -->
+			<!-- //// interview type begin //// -->
+			<!-- type -->
+			<xsl:when
+				test="$clause = 15 and (dim:field[@mdschema='viadat' and @element='interview' and @qualifier='type'])">
+					<dl id="interview-type" class="dl-horizontal">
+					<dt style="text-align: left">
+						<i class="fa fa-tag">&#160;</i>
+						<i18n:text>ufal.item-view.interviewType</i18n:text>
+					</dt>
+					<dd>
+						<a>
+							<xsl:attribute name="href"><xsl:copy-of select="$contextPath"/>/discover?filtertype=interviewType&amp;filter_relational_operator=equals&amp;filter=<xsl:copy-of select="dim:field[@mdschema='viadat' and @element='interview' and @qualifier='type']"/></xsl:attribute>
+							<xsl:copy-of select="dim:field[@mdschema='viadat' and @element='interview' and @qualifier='type']" />
+						</a>
+					</dd>
+				</dl>
+				<xsl:call-template name="itemSummaryView-DIM-fields">
+					<xsl:with-param name="clause" select="($clause + 1)" />
+					<xsl:with-param name="phase" select="$otherPhase" />
+				</xsl:call-template>
+			</xsl:when>
+			<!-- //// interview type end //// -->
 
 			<!-- size row -->
 			<xsl:when test="$clause = 16">
@@ -804,7 +978,7 @@
 				</xsl:call-template>
 			</xsl:when>
 			
-			<!-- Collections -->
+			<!-- Collections
   			<xsl:when
 				test="$clause = 22 and $ufal-collection-references">
 				<dl id="item-subject" class="dl-horizontal">
@@ -830,6 +1004,7 @@
 					<xsl:with-param name="phase" select="$otherPhase" />
 				</xsl:call-template>
 			</xsl:when>
+			-->
 
 			<xsl:when test="$clause = 23 and $ds_item_view_toggle_url != ''">
 

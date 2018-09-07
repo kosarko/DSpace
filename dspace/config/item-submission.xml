@@ -17,7 +17,8 @@
  <!-- which does not appear in this map will be associated with the mapping-->
  <!-- for handle "default".                                                -->
  <submission-map>
-   <name-map collection-handle="default" submission-name="traditional" />
+   <name-map collection-handle="default" submission-name="narrator" />
+   <name-map collection-handle="123456789/3" submission-name="interview" />
  </submission-map>
 
 
@@ -228,7 +229,7 @@
  <submission-definitions>
    
    <!--This "traditional" process defines the DEFAULT item submission process-->
-   <submission-process name="traditional">
+   <submission-process name="narrator">
      
      <!--Uncommment to display the SAMPLE step as your first step-->
      <!--<step id="sample"/>-->
@@ -248,7 +249,6 @@
 			<!-- <step> <processing-class>org.dspace.submit.step.SkipInitialQuestionsStep</processing-class> 
 	  </step> -->
 
-	   		<step id="fillIsPartof" />
 			<!--Step 1 will be to Describe the item. -->
 			<step id="describe" />
 
@@ -269,6 +269,16 @@
 			<step id="review" />
      
    </submission-process>
+
+	 <submission-process name="interview">
+
+		 <step id="fillIsPartof" />
+		 <step id="upload" />
+		 <step id="describe" />
+		 <step id="license" />
+		 <step id="review" />
+
+	 </submission-process>
 
  </submission-definitions>
 

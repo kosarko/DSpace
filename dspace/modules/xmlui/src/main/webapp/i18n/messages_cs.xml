@@ -837,7 +837,7 @@
 
 	<!-- submission progress bar messages -->
 	<message key="xmlui.Submission.submit.progressbar.initial-questions">Odpovědi na počáteční otázky</message>
-	<message key="xmlui.Submission.submit.progressbar.describe">Narátor</message>
+	<message key="xmlui.Submission.submit.progressbar.describe">Informace o příspěvku</message>
 	<message key="xmlui.Submission.submit.progressbar.describe2">Rozhovor</message>
 	<message key="xmlui.Submission.submit.progressbar.describe3">Popis</message>
 	<message key="xmlui.Submission.submit.progressbar.access">Přístup</message>
@@ -3792,7 +3792,7 @@
 
     <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_project">Projekt</message>
     <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProject">Projekt</message>
-    
+
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narrator_alias.column_heading">Alias</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narrator_alias">Alias</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narrator_alias">Alias</message>
