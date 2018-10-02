@@ -287,8 +287,8 @@
                 </ms:resourceCreationInfo>
             </xsl:when>
             <xsl:when test="doc:metadata/doc:element[@name='local']/doc:element[@name='sponsor']/doc:element/doc:field[@name='value']">
+                <ms:resourceCreationInfo>
                                 <xsl:for-each select="doc:metadata/doc:element[@name='local']/doc:element[@name='sponsor']/doc:element/doc:field[@name='value']">
-                                    <ms:resourceCreationInfo>
                                                 <ms:fundingProject>
                                                     <ms:projectName>
                                                             <xsl:value-of select="str:split(., '@@')[3]"/>
@@ -297,8 +297,8 @@
                                                             <xsl:value-of select="str:split(., '@@')[4]"/>
                                                     </ms:fundingType>
                                                 </ms:fundingProject>
-                                    </ms:resourceCreationInfo>
                                 </xsl:for-each>
+                </ms:resourceCreationInfo>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:choose>

@@ -7,18 +7,23 @@ import org.dspace.content.DCDate;
 import org.dspace.core.ConfigurationManager;
 import org.dspace.handle.HandlePlugin;
 import org.dspace.rest.Resource;
+import org.dspace.services.ConfigurationService;
 import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.storage.rdbms.TableRow;
 import org.dspace.storage.rdbms.TableRowIterator;
+import org.dspace.utils.DSpace;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Disable
@@ -26,6 +31,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 public class MyHandleResource extends Resource {
     private static Logger log = Logger.getLogger(MyHandleResource.class);
     private static Logger logHandleHistory = Logger.getLogger("HandleHistory");
+    private ConfigurationService configurationService = new DSpace().getConfigurationService();
 
     public enum ORDER {ASC, asc, DESC, desc}
 
@@ -75,8 +81,7 @@ public class MyHandleResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Handle shortenHandle(Handle handle){
         org.dspace.core.Context context = null;
-        if(isNotBlank(handle.url) && !handle.url.contains(HandlePlugin.magicBean)
-                && isNotBlank(handle.title) && isNotBlank(handle.reportemail)){
+        if(validHandleUrl(handle.url) && isNotBlank(handle.title) && isNotBlank(handle.reportemail)){
             try {
                 context = new org.dspace.core.Context();
                 String submitdate = new DCDate(new Date()).toString();
@@ -90,7 +95,48 @@ public class MyHandleResource extends Resource {
                 processException("Could not create handle, SQLException. Message: " + e.getMessage(), context);
             }
         }
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
+        throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).entity(
+                configurationService.getPropertyAsType("lr.shortener.post.error",
+                        "Invalid handle values")).build());
+    }
+
+    private boolean validHandleUrl(String url){
+       if(isBlank(url)){
+           return false;
+       }
+       if(url.contains(HandlePlugin.magicBean)){
+           return false;
+       }
+       try {
+           final URL url_o = new URL(url);
+           final String host = url_o.getHost();
+           //whitelist host
+           if(matchesAnyOf(host, "lr.shortener.post.host.whitelist.regexps")){
+               return true;
+           }
+           //blacklist url
+           if(matchesAnyOf(url, "lr.shortener.post.url.blacklist.regexps")){
+               return false;
+           }
+           //blacklist host
+           if(matchesAnyOf(host, "lr.shortener.post.host.blacklist.regexps")){
+               return false;
+           }
+       }catch (MalformedURLException e){
+           return false;
+       }
+       return true;
+    }
+
+    private boolean matchesAnyOf(String tested, String configPropertyWithPatterns){
+        final String patterns = configurationService.getProperty(configPropertyWithPatterns);
+        String[] list = patterns.split(";");
+        for(String regexp : list){
+            if(tested.matches(regexp.trim())){
+                return true;
+            }
+        }
+        return false;
     }
 
     @PUT

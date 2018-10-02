@@ -739,6 +739,12 @@ def main(args=None):
         base_url = args["base_url"]
 
     val = Validator(base_url)
+    try:
+        import unicodedata
+        val.repository_name = unicodedata.normalize(
+            'NFKD', val.repository_name).encode('ascii', 'ignore')
+    except:
+        pass
     print "Repository: %s" % val.repository_name
 
     # Run checks
