@@ -191,6 +191,7 @@
                 <ref bean="searchFacetNarratorKeywordsTopic" />
                 <ref bean="searchFacetNarratorConsent" />
                 <ref bean="searchFacetInterviewTranscript" />
+                <ref bean="searchFacetInterviewType" />
                 <ref bean="searchFacetInterviewDate" />
                 <ref bean="searchFacetInterviewInterviewer" />
                 <ref bean="searchFacetInterviewKeywords" />
@@ -220,6 +221,7 @@
                 <ref bean="searchFacetNarratorKeywordsTopic" />
                 <ref bean="searchFacetNarratorConsent" />
                 <ref bean="searchFacetInterviewTranscript" />
+                <ref bean="searchFacetInterviewType" />
                 <ref bean="searchFacetInterviewDate" />
                 <ref bean="searchFacetInterviewInterviewer" />
                 <ref bean="searchFacetInterviewKeywords" />
@@ -451,6 +453,18 @@
         <property name="metadataFields">
             <list>
                 <value>viadat.interview.transcript</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="20"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="true"/>
+    </bean>
+
+    <bean id="searchFacetInterviewType" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="interviewType"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.interview.type</value>
             </list>
         </property>
         <property name="facetLimit" value="20"/>

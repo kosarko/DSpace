@@ -201,30 +201,26 @@ class Element:
 
 
 
-DC_ELEMENTS = [Element('dc', 'creator'),
-               #Element('dc', 'identifier', 'uri'),
-               Element('dc', 'description'),
-               Element('dc', 'language', 'iso', generator=IsoLangGenerator()),
-               Element('dc', 'title'),
-               Element('dc', 'type', generator=FixedValueGenerator(['životopisný', 'životopisně-tematický',
-                                                                    'tematický', 'ostatní'])),
-               ]
-
-VIADAT = [
+NARRATOR_ELEMENTS = {'viadat':[
     Element('viadat', 'narrator', 'gender', generator=FixedValueGenerator(['muž', 'žena', 'nespecifikováno'])),
-    Element('viadat', 'narrator', 'name', generator=NameGenerator()),
     Element('viadat', 'narrator', 'birthdate', generator=DateGenerator()),
     Element('viadat', 'narrator', 'identifier', generator=IDGenerator()),
     Element('viadat', 'narrator', 'alias', repeatable=True, generator=NameGenerator()),
     Element('viadat', 'narrator', 'degree', repeatable=True, generator=FixedValueGenerator(['Ing.', 'Mgr.', 'Bc.', 'Mudr.', 'Ph.d.'])),
-    Element('viadat', 'narrator', 'profession'),
-    Element('viadat', 'narrator', 'keywords', repeatable=True, generator=KeyWordGenerator(prefix='nar_')),
-    Element('viadat', 'narrator', 'characteristics'),
+    Element('viadat', 'narrator', 'keywordsProfession', repeatable=True, generator=KeyWordGenerator(prefix='prof_')),
+    Element('viadat', 'narrator', 'keywordsTopic', repeatable=True, generator=KeyWordGenerator(prefix='tema_')),
     Element('viadat', 'narrator', 'contact'),
     Element('viadat', 'narrator', 'consent', generator=FixedValueGenerator(['Ano', 'Ne', 'Včetně dalších '
-                                                                                           'ujednání'])),
+                                                                                         'ujednání'])),
     Element('viadat', 'narrator', 'note'),
-    Element('viadat', 'project', 'name'),
+    Element('viadat', 'narrator', 'project')
+
+], 'dc': [
+    Element('dc', 'title', generator=NameGenerator()),
+    Element('dc', 'type', generator=FixedValueGenerator(['narrator']))
+]}
+
+INTERVIEW_ELEMENTS = {'viadat': [
     Element('viadat', 'interview', 'identifier', generator=IDGenerator()),
     Element('viadat', 'interview', 'transcript', generator=FixedValueGenerator(['Doslovný', 'Redigovaný',
                                                                                 'Orientační', 'Ne'])),
@@ -235,34 +231,56 @@ VIADAT = [
     Element('viadat', 'interview', 'keywords', repeatable=True, generator=KeyWordGenerator(prefix='int_')),
     Element('viadat', 'interview', 'detailedKeywords', repeatable=True, generator=KeyWordGenerator(prefix='det_')),
     Element('viadat', 'interview', 'period'),
-    Element('viadat', 'interview', 'note'),
-    Element('viadat', 'output'),
-    Element('viadat', 'technical', 'note'),
-    Element('viadat', 'technical', 'type', generator=FixedValueGenerator(['audio', 'audio-vizuální', 'text'])),
-]
+    Element('viadat', 'interview', 'type', generator=FixedValueGenerator(['životopisný', 'životopisně-tematický',
+                                                         'tematický', 'ostatní'])),
+    Element('viadat', 'interview', 'note')
+], 'dc': [
+    Element('dc', 'title'),
+    Element('dc', 'type', generator=FixedValueGenerator(['interview'])),
+    Element('dc', 'description'),
+    Element('dc', 'language', 'iso', generator=IsoLangGenerator())
 
-file_to_elements = {'dublin_core.xml': DC_ELEMENTS, 'metadata_viadat.xml': VIADAT }
+]}
 
-gender = 'nespecifikováno'
-
-for metadata_file in ['dublin_core.xml', 'metadata_viadat.xml']: #, 'metadata_local.xml']:
-    elements = file_to_elements[metadata_file]
-    schema = elements[0].schema
-    dublin_core = ET.Element('dublin_core', attrib={'schema': schema})
-    for element in elements:
-        repeat = 1 if not element.repeatable else randint(1,5)
-        # XXX
-        element.generator.gender = gender
-        for i in range(0,repeat):
-            dcvalue = ET.SubElement(dublin_core, 'dcvalue', attrib={'element': element.element, 'qualifier':
-                element.qualifier})
-            dcvalue.text = element.generator.generate().decode('utf-8')
-            if dcvalue.text in [u'muž', u'žena', u'nespecifikováno']:
-                gender = dcvalue.text
+# TODO all the fields!
+    # Element('dc', 'creator')
+    # Element('viadat', 'output'),
+    # Element('viadat', 'technical', 'note'),
+    # Element('viadat', 'technical', 'type', generator=FixedValueGenerator(['audio', 'audio-vizuální', 'text'])),
 
 
-    tree = ET.ElementTree(dublin_core)
-    tree.write(metadata_file, encoding='utf-8')
+file_to_elements = {'dublin_core.xml': 'dc', 'metadata_viadat.xml': 'viadat' }
+
+
+def gen_item(fields):
+    gender = 'nespecifikováno'
+    for metadata_file in ['dublin_core.xml', 'metadata_viadat.xml']: #, 'metadata_local.xml']:
+        elements = fields[file_to_elements[metadata_file]]
+        schema = elements[0].schema
+        dublin_core = ET.Element('dublin_core', attrib={'schema': schema})
+        for element in elements:
+            repeat = 1 if not element.repeatable else randint(1,5)
+            # XXX
+            element.generator.gender = gender
+            for i in range(0,repeat):
+                dcvalue = ET.SubElement(dublin_core, 'dcvalue', attrib={'element': element.element, 'qualifier':
+                    element.qualifier})
+                dcvalue.text = element.generator.generate().decode('utf-8')
+                if dcvalue.text in [u'muž', u'žena', u'nespecifikováno']:
+                    gender = dcvalue.text
+
+        tree = ET.ElementTree(dublin_core)
+        tree.write(metadata_file, encoding='utf-8')
+
+
+if __name__ == '__main__':
+    import sys
+    if sys.argv[1] == 'narrator':
+        gen_item(NARRATOR_ELEMENTS)
+    elif sys.argv[1] == 'interview':
+        gen_item(INTERVIEW_ELEMENTS)
+    else:
+        sys.exit('Unknown type {}'.format(sys.argv[1]))
 
 
 # for 1 to examples_count do

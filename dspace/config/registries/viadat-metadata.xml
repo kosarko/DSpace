@@ -7,12 +7,6 @@
     <dc-type>
         <schema>viadat</schema>
         <element>narrator</element>
-        <qualifier>name</qualifier>
-        <scope_note></scope_note>
-    </dc-type>
-    <dc-type>
-        <schema>viadat</schema>
-        <element>narrator</element>
         <qualifier>gender</qualifier>
         <scope_note></scope_note>
     </dc-type>

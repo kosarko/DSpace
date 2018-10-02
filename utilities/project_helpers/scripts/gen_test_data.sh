@@ -7,11 +7,17 @@ SCRIPT_DIR=$(dirname $(readlink -e $0))
 
 mkdir -p $TARGET_DIR
 cd $TARGET_DIR
+MAPPING_FILE=narrator2interviews.txt
+> $MAPPING_FILE
 
-for i in `seq 1 $N`;do
-    mkdir $i;
+COUNTER=0
+gen_item() {
+    COUNTER=$((COUNTER+1))
+    i=$COUNTER
+    type=$1
+    mkdir $i
     pushd $i
-    python $SCRIPT_DIR/gen_test_data.py
+    python $SCRIPT_DIR/gen_test_data.py $type
     for x in `ls *.xml`;do
         xmllint --format $x > $x.tmp
         mv $x.tmp $x
@@ -27,4 +33,15 @@ for i in `seq 1 $N`;do
         touch $f
     done
     popd
+}
+
+for i in `seq 1 $N`;do
+    gen_item narrator
+    mapping="${COUNTER}:"
+    N_INTERVIEWS=`shuf -i0-3 -n1`
+    for j in `seq 1 $N_INTERVIEWS`; do
+        gen_item interview
+        mapping+="${COUNTER},"
+    done
+    echo "$mapping" | sed -e 's/,$//' >> $MAPPING_FILE
 done
