@@ -14,7 +14,7 @@ class FixedValueGenerator(object):
 
 class PlaceGenerator(FixedValueGenerator):
     def __init__(self):
-        super(PlaceGenerator, self).__init__(['Praha', 'Brno', 'Ostrava', 'Kladno', 'Plzeň', 'Horní dolní'])
+        super(PlaceGenerator, self).__init__([u'Praha', u'Brno', u'Ostrava', u'Kladno', u'Plzeň', u'Horní dolní'])
 
 
 class DateGenerator:
@@ -22,7 +22,7 @@ class DateGenerator:
         year = randint(1900, 2018)
         month = randint(1,12)
         day = randint(1, 28)
-        return '{year:04d}-{month:02d}-{day:02d}'.format(year=year, month=month, day=day)
+        return u'{year:04d}-{month:02d}-{day:02d}'.format(year=year, month=month, day=day)
 
 
 class LengthGenerator:
@@ -30,147 +30,146 @@ class LengthGenerator:
         hours = randint(0,99)
         minutes = randint(0,59)
         seconds = randint(0,59)
-        return '{hours:02d}:{minutes:02d}:{seconds:02d}'.format(hours=hours, minutes=minutes, seconds=seconds)
+        return u'{hours:02d}:{minutes:02d}:{seconds:02d}'.format(hours=hours, minutes=minutes, seconds=seconds)
 
 class IDGenerator:
     def generate(self):
-        return 'xyz-{id:08d}'.format(id=randint(1,10000000))
+        return u'xyz-{id:08d}'.format(id=randint(1,10000000))
 
 
 class IsoLangGenerator(FixedValueGenerator):
     def __init__(self):
-        super(IsoLangGenerator, self).__init__(['ces', 'wtf', 'eng', 'svk'])
+        super(IsoLangGenerator, self).__init__([u'ces', u'wtf', u'eng', u'svk'])
 
 
 class NameGenerator:
-    maleNameGenerator = FixedValueGenerator(['Jiří',
-                                             'Jan',
-                                             'Petr',
-                                             'Josef',
-                                             'Pavel',
-                                             'Jaroslav',
-                                             'Martin',
-                                             'Tomáš',
-                                             'Miroslav',
-                                             'František',
-                                             'Zdeněk',
-                                             'Václav',
-                                             'Michal',
-                                             'Karel',
-                                             'Milan',
-                                             'Vladimír',
-                                             'Lukáš',
-                                             'David',
-                                             'Jakub',
-                                             'Ladislav',
-                                             'Stanislav',
-                                             'Roman',
-                                             'Ondřej',
-                                             'Antonín',
-                                             'Radek',
-                                             'Marek',
-                                             'Daniel',
-                                             'Vojtěch',
-                                             'Miloslav',
-                                             'Filip',
+    maleNameGenerator = FixedValueGenerator([u'Jiří',
+                                             u'Jan',
+                                             u'Petr',
+                                             u'Josef',
+                                             u'Pavel',
+                                             u'Jaroslav',
+                                             u'Martin',
+                                             u'Tomáš',
+                                             u'Miroslav',
+                                             u'František',
+                                             u'Zdeněk',
+                                             u'Václav',
+                                             u'Michal',
+                                             u'Karel',
+                                             u'Milan',
+                                             u'Vladimír',
+                                             u'Lukáš',
+                                             u'David',
+                                             u'Jakub',
+                                             u'Ladislav',
+                                             u'Stanislav',
+                                             u'Roman',
+                                             u'Ondřej',
+                                             u'Antonín',
+                                             u'Radek',
+                                             u'Marek',
+                                             u'Daniel',
+                                             u'Vojtěch',
+                                             u'Miloslav',
+                                             u'Filip',
                                              ])
-    maleSurnameGenerator = FixedValueGenerator(['Novák',
-                                                'Svoboda',
-                                                'Novotný',
-                                                'Dvořák',
-                                                'Černý',
-                                                'Procházka',
-                                                'Kučera',
-                                                'Veselý',
-                                                'Horák',
-                                                'Němec',
-                                                'Pokorný',
-                                                'Marek',
-                                                'Pospíšil',
-                                                'Hájek',
-                                                'Jelínek',
-                                                'Král',
-                                                'Růžička',
-                                                'Beneš',
-                                                'Fiala',
-                                                'Sedláček',
-                                                'Doležal',
-                                                'Zeman',
-                                                'Nguyen',
+    maleSurnameGenerator = FixedValueGenerator([u'Novák',
+                                                u'Svoboda',
+                                                u'Novotný',
+                                                u'Dvořák',
+                                                u'Černý',
+                                                u'Procházka',
+                                                u'Kučera',
+                                                u'Veselý',
+                                                u'Horák',
+                                                u'Němec',
+                                                u'Pokorný',
+                                                u'Marek',
+                                                u'Pospíšil',
+                                                u'Hájek',
+                                                u'Jelínek',
+                                                u'Král',
+                                                u'Růžička',
+                                                u'Beneš',
+                                                u'Fiala',
+                                                u'Sedláček',
+                                                u'Doležal',
+                                                u'Zeman',
+                                                u'Nguyen',
                                                 ])
     femaleNameGenerator = FixedValueGenerator([
-        'Marie',
-        'Jana',
-        'Eva',
-        'Hana',
-        'Anna',
-        'Lenka',
-        'Kateřina',
-        'Věra',
-        'Lucie',
-        'Alena',
-        'Petra',
-        'Jaroslava',
-        'Veronika',
-        'Martina',
-        'Jitka',
-        'Tereza',
-        'Ludmila',
-        'Helena',
-        'Michaela',
-        'Zdeňka',
-        'Ivana',
-        'Jarmila',
-        'Monika',
-        'Zuzana',
-        'Jiřina',
-        'Markéta',
-        'Eliška',
-        'Marcela',
-        'Barbora',
-        'Dagmar',
+        u'Marie',
+        u'Jana',
+        u'Eva',
+        u'Hana',
+        u'Anna',
+        u'Lenka',
+        u'Kateřina',
+        u'Věra',
+        u'Lucie',
+        u'Alena',
+        u'Petra',
+        u'Jaroslava',
+        u'Veronika',
+        u'Martina',
+        u'Jitka',
+        u'Tereza',
+        u'Ludmila',
+        u'Helena',
+        u'Michaela',
+        u'Zdeňka',
+        u'Ivana',
+        u'Jarmila',
+        u'Monika',
+        u'Zuzana',
+        u'Jiřina',
+        u'Markéta',
+        u'Eliška',
+        u'Marcela',
+        u'Barbora',
+        u'Dagmar',
     ])
     femaleSurnameGenerator = FixedValueGenerator([
-        'Nováková',
-        'Svobodová',
-        'Novotná',
-        'Dvořáková',
-        'Černá',
-        'Procházková',
-        'Kučerová',
-        'Veselá',
-        'Horáková',
-        'Němcová',
-        'Pokorná',
-        'Marková',
-        'Pospíšilová',
-        'Hájková',
-        'Jelínková',
-        'Králová',
-        'Růžičková',
-        'Benešová',
-        'Fialová',
-        'Sedláčková',
-        'Doležalová',
-        'Zemanová',
-        'Nguyen',
+        u'Nováková',
+        u'Svobodová',
+        u'Novotná',
+        u'Dvořáková',
+        u'Černá',
+        u'Procházková',
+        u'Kučerová',
+        u'Veselá',
+        u'Horáková',
+        u'Němcová',
+        u'Pokorná',
+        u'Marková',
+        u'Pospíšilová',
+        u'Hájková',
+        u'Jelínková',
+        u'Králová',
+        u'Růžičková',
+        u'Benešová',
+        u'Fialová',
+        u'Sedláčková',
+        u'Doležalová',
+        u'Zemanová',
+        u'Nguyen',
     ])
 
-    def __init__(self, gender='nespescifikováno'):
+    def __init__(self, gender=u'nespescifikováno'):
         self.gender = gender
-
 
     def generate(self):
         if self.gender == u'žena':
-            return NameGenerator.femaleSurnameGenerator.generate() + ', ' + NameGenerator.femaleNameGenerator.generate()
+            return NameGenerator.femaleSurnameGenerator.generate() + u', ' + NameGenerator.femaleNameGenerator.generate()
         else:
-            return NameGenerator.maleSurnameGenerator.generate() + ', ' + NameGenerator.maleNameGenerator.generate()
+            return NameGenerator.maleSurnameGenerator.generate() + u', ' + NameGenerator.maleNameGenerator.generate()
 
 
 class KeyWordGenerator(FixedValueGenerator):
     def __init__(self, prefix):
         self.prefix = prefix
-        super(KeyWordGenerator, self).__init__(['klíč', 'slovo', 'klíčové slovo'])
+        super(KeyWordGenerator, self).__init__([u'klíč', u'slovo', u'klíčové slovo'])
 
     def generate(self):
         return self.prefix + super(KeyWordGenerator, self).generate() + str(randint(1,10))
@@ -179,7 +178,7 @@ class KeyWordGenerator(FixedValueGenerator):
 
 
 class DefaultValueGenerator:
-    def __init__(self, element='none'):
+    def __init__(self, element=u'none'):
         self.element = element
 
     def generate(self):
@@ -189,7 +188,7 @@ class DefaultValueGenerator:
 
 
 class Element:
-    def __init__(self, schema, element, qualifier='none', repeatable=False, language='en_US',
+    def __init__(self, schema, element, qualifier=u'none', repeatable=False, language=u'en_US',
                  generator=None):
         self.schema = schema
         self.element = element
@@ -201,44 +200,44 @@ class Element:
 
 
 
-NARRATOR_ELEMENTS = {'viadat':[
-    Element('viadat', 'narrator', 'gender', generator=FixedValueGenerator(['muž', 'žena', 'nespecifikováno'])),
-    Element('viadat', 'narrator', 'birthdate', generator=DateGenerator()),
-    Element('viadat', 'narrator', 'identifier', generator=IDGenerator()),
-    Element('viadat', 'narrator', 'alias', repeatable=True, generator=NameGenerator()),
-    Element('viadat', 'narrator', 'degree', repeatable=True, generator=FixedValueGenerator(['Ing.', 'Mgr.', 'Bc.', 'Mudr.', 'Ph.d.'])),
-    Element('viadat', 'narrator', 'keywordsProfession', repeatable=True, generator=KeyWordGenerator(prefix='prof_')),
-    Element('viadat', 'narrator', 'keywordsTopic', repeatable=True, generator=KeyWordGenerator(prefix='tema_')),
-    Element('viadat', 'narrator', 'contact'),
-    Element('viadat', 'narrator', 'consent', generator=FixedValueGenerator(['Ano', 'Ne', 'Včetně dalších '
-                                                                                         'ujednání'])),
-    Element('viadat', 'narrator', 'note'),
-    Element('viadat', 'narrator', 'project')
+NARRATOR_ELEMENTS = {u'viadat':[
+    Element(u'viadat', u'narrator', u'gender', generator=FixedValueGenerator([u'muž', u'žena', u'nespecifikováno'])),
+    Element(u'viadat', u'narrator', u'birthdate', generator=DateGenerator()),
+    Element(u'viadat', u'narrator', u'identifier', generator=IDGenerator()),
+    Element(u'viadat', u'narrator', u'alias', repeatable=True, generator=NameGenerator()),
+    Element(u'viadat', u'narrator', u'degree', repeatable=True, generator=FixedValueGenerator([u'Ing.', u'Mgr.', u'Bc.', u'Mudr.', u'Ph.d.'])),
+    Element(u'viadat', u'narrator', u'keywordsProfession', repeatable=True, generator=KeyWordGenerator(prefix=u'prof_')),
+    Element(u'viadat', u'narrator', u'keywordsTopic', repeatable=True, generator=KeyWordGenerator(prefix=u'tema_')),
+    Element(u'viadat', u'narrator', u'contact'),
+    Element(u'viadat', u'narrator', u'consent', generator=FixedValueGenerator([u'Ano', u'Ne', u'Včetně dalších '
+                                                                                         u'ujednání'])),
+    Element(u'viadat', u'narrator', u'note'),
+    Element(u'viadat', u'narrator', u'project')
 
-], 'dc': [
-    Element('dc', 'title', generator=NameGenerator()),
-    Element('dc', 'type', generator=FixedValueGenerator(['narrator']))
+], u'dc': [
+    Element(u'dc', u'title', generator=NameGenerator()),
+    Element(u'dc', u'type', generator=FixedValueGenerator([u'narrator']))
 ]}
 
-INTERVIEW_ELEMENTS = {'viadat': [
-    Element('viadat', 'interview', 'identifier', generator=IDGenerator()),
-    Element('viadat', 'interview', 'transcript', generator=FixedValueGenerator(['Doslovný', 'Redigovaný',
-                                                                                'Orientační', 'Ne'])),
-    Element('viadat', 'interview', 'date', generator=DateGenerator()),
-    Element('viadat', 'interview', 'length', generator=LengthGenerator()),
-    Element('viadat', 'interview', 'place', generator=PlaceGenerator()),
-    Element('viadat', 'interview', 'interviewer', generator=NameGenerator()),
-    Element('viadat', 'interview', 'keywords', repeatable=True, generator=KeyWordGenerator(prefix='int_')),
-    Element('viadat', 'interview', 'detailedKeywords', repeatable=True, generator=KeyWordGenerator(prefix='det_')),
-    Element('viadat', 'interview', 'period'),
-    Element('viadat', 'interview', 'type', generator=FixedValueGenerator(['životopisný', 'životopisně-tematický',
-                                                         'tematický', 'ostatní'])),
-    Element('viadat', 'interview', 'note')
-], 'dc': [
-    Element('dc', 'title'),
-    Element('dc', 'type', generator=FixedValueGenerator(['interview'])),
-    Element('dc', 'description'),
-    Element('dc', 'language', 'iso', generator=IsoLangGenerator())
+INTERVIEW_ELEMENTS = {u'viadat': [
+    Element(u'viadat', u'interview', u'identifier', generator=IDGenerator()),
+    Element(u'viadat', u'interview', u'transcript', generator=FixedValueGenerator([u'Doslovný', u'Redigovaný',
+                                                                                u'Orientační', u'Ne'])),
+    Element(u'viadat', u'interview', u'date', generator=DateGenerator()),
+    Element(u'viadat', u'interview', u'length', generator=LengthGenerator()),
+    Element(u'viadat', u'interview', u'place', generator=PlaceGenerator()),
+    Element(u'viadat', u'interview', u'interviewer', generator=NameGenerator()),
+    Element(u'viadat', u'interview', u'keywords', repeatable=True, generator=KeyWordGenerator(prefix=u'int_')),
+    Element(u'viadat', u'interview', u'detailedKeywords', repeatable=True, generator=KeyWordGenerator(prefix=u'det_')),
+    Element(u'viadat', u'interview', u'period'),
+    Element(u'viadat', u'interview', u'type', generator=FixedValueGenerator([u'životopisný', u'životopisně-tematický',
+                                                         u'tematický', u'ostatní'])),
+    Element(u'viadat', u'interview', u'note')
+], u'dc': [
+    Element(u'dc', u'title'),
+    Element(u'dc', u'type', generator=FixedValueGenerator([u'interview'])),
+    Element(u'dc', u'description'),
+    Element(u'dc', u'language', u'iso', generator=IsoLangGenerator())
 
 ]}
 
@@ -249,38 +248,38 @@ INTERVIEW_ELEMENTS = {'viadat': [
     # Element('viadat', 'technical', 'type', generator=FixedValueGenerator(['audio', 'audio-vizuální', 'text'])),
 
 
-file_to_elements = {'dublin_core.xml': 'dc', 'metadata_viadat.xml': 'viadat' }
+file_to_elements = {u'dublin_core.xml': u'dc', u'metadata_viadat.xml': u'viadat' }
 
 
 def gen_item(fields):
-    gender = 'nespecifikováno'
-    for metadata_file in ['dublin_core.xml', 'metadata_viadat.xml']: #, 'metadata_local.xml']:
+    gender = u'nespecifikováno'
+    for metadata_file in [u'dublin_core.xml', u'metadata_viadat.xml']: #, u'metadata_local.xml']:
         elements = fields[file_to_elements[metadata_file]]
         schema = elements[0].schema
-        dublin_core = ET.Element('dublin_core', attrib={'schema': schema})
+        dublin_core = ET.Element(u'dublin_core', attrib={u'schema': schema})
         for element in elements:
             repeat = 1 if not element.repeatable else randint(1,5)
             # XXX
             element.generator.gender = gender
             for i in range(0,repeat):
-                dcvalue = ET.SubElement(dublin_core, 'dcvalue', attrib={'element': element.element, 'qualifier':
+                dcvalue = ET.SubElement(dublin_core, u'dcvalue', attrib={u'element': element.element, u'qualifier':
                     element.qualifier})
-                dcvalue.text = element.generator.generate().decode('utf-8')
+                dcvalue.text = element.generator.generate()
                 if dcvalue.text in [u'muž', u'žena', u'nespecifikováno']:
                     gender = dcvalue.text
 
         tree = ET.ElementTree(dublin_core)
-        tree.write(metadata_file, encoding='utf-8')
+        tree.write(metadata_file, encoding='utf-8', xml_declaration=True)
 
 
 if __name__ == '__main__':
     import sys
-    if sys.argv[1] == 'narrator':
+    if sys.argv[1] == u'narrator':
         gen_item(NARRATOR_ELEMENTS)
-    elif sys.argv[1] == 'interview':
+    elif sys.argv[1] == u'interview':
         gen_item(INTERVIEW_ELEMENTS)
     else:
-        sys.exit('Unknown type {}'.format(sys.argv[1]))
+        sys.exit(u'Unknown type {}'.format(sys.argv[1]))
 
 
 # for 1 to examples_count do

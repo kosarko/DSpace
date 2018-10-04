@@ -11,6 +11,17 @@ MAPPING_FILE=narrator2interviews.txt
 > $MAPPING_FILE
 
 COUNTER=0
+add_contents(){
+    flip=$(shuf -i0-1 -n1)
+    if [ $flip -gt 0 ]; then
+        content_line=$1
+        filename=`echo $content_line | cut -f1`
+        echo -e $content_line >> contents
+        touch $filename
+    fi
+
+}
+
 gen_item() {
     COUNTER=$((COUNTER+1))
     i=$COUNTER
@@ -23,18 +34,20 @@ gen_item() {
         mv $x.tmp $x
     done
     echo "The real license would be here." > license.txt
-    echo -e "rozhovor.mpg\tbundle:ORIGINAL\tprimary:true\tdescription:interview" > contents
-    echo -e "prepis.txt\tbundle:ORIGINAL\tdescription:transcript" >> contents
-    echo -e "souhlas.doc\tbundle:ORIGINAL\tdescription:consent" >> contents
-    echo -e "photo.jpg\tbundle:ORIGINAL\tdescription:material" >> contents
-    echo -e "thesis.pdf\tbundle:ORIGINAL\tdescription:output" >> contents
-    echo -e "license.txt\tbundle:LICENSE" >> contents
+    echo -e "license.txt\tbundle:LICENSE" > contents
+    if [ "$type" = "narrator" ]; then
+        add_contents "souhlas.doc\tbundle:ORIGINAL\tdescription:consent"
+        add_contents "photo.jpg\tbundle:ORIGINAL\tdescription:material"
+        add_contents "thesis.pdf\tbundle:ORIGINAL\tdescription:output"
+    elif [ "$type" = "interview" ]; then
+        add_contents "rozhovor.mpg\tbundle:ORIGINAL\tprimary:true\tdescription:interview"
+        add_contents "prepis.txt\tbundle:ORIGINAL\tdescription:transcript"
+    fi
     for f in rozhovor.mpg prepis.txt souhlas.doc photo.jpg thesis.pdf;do
         touch $f
     done
     popd
 }
-
 for i in `seq 1 $N`;do
     gen_item narrator
     mapping="${COUNTER}:"
