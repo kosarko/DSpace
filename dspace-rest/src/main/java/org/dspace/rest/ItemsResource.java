@@ -479,6 +479,7 @@ public class ItemsResource extends Resource
             // Set bitstream name and description
             if (name != null)
             {
+                dspaceBitstream.setName(name);
                 BitstreamFormat bitstreamFormat = null;
                 if(fileMimeType != null){
                     bitstreamFormat = BitstreamFormat.findByMIMEType(context, fileMimeType);
@@ -488,7 +489,6 @@ public class ItemsResource extends Resource
                 }
                 //null bitstreamFormat results in unknown
                 dspaceBitstream.setFormat(bitstreamFormat);
-                dspaceBitstream.setName(name);
             }
             if (description != null)
             {
