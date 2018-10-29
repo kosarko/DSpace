@@ -315,14 +315,16 @@
 			<!-- ///// interview date end //// -->
 
 			<!-- project -->
-			<xsl:when test="$clause = 6 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias'])">
+			<xsl:when
+					test="$clause = 6 and (dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='project'])">
 				<dl id="item-narrator-project" class="dl-horizontal" style="clear:both;">
 					<dt style="text-align: left">
 						<i class="fa fa-puzzle-piece">&#160;</i>
 						<span><i18n:text>ufal.item-view.project</i18n:text></span>
 					</dt>
 		<dd style="pading-right: 40px;">
-						<xsl:for-each select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='alias']">
+						<xsl:for-each
+								select="dim:field[@mdschema='viadat' and @element='narrator' and @qualifier='project']">
 			<xsl:copy-of select="node()" />
 							<xsl:if test="position() != last()">
 								<xsl:text>; </xsl:text>

@@ -167,6 +167,9 @@
    <message key="xmlui.ArtifactBrowser.AdvancedSearch.or">NEBO</message>
    <message key="xmlui.ArtifactBrowser.AdvancedSearch.not">NE</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narrator">Narátor</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewType">Druh rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorKeywordsTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorProject">Projekt</message>
 
 	
 	<!-- org.dspace.app.xmlui.artifactbrowser.ConfigureableBrowse.java -->
@@ -3065,6 +3068,8 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewPeriod">Období</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.projectName">Projekt</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.technicalType">Typ souboru</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewType">Druh rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.project">Projekt</message>
 
 
     <message key="xmlui.dri2xhtml.structural.pagination-info.nototal">Zobrazují se záznamy {0}-{1}</message>
@@ -3075,6 +3080,7 @@
     <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.subject_filter">Předmět</message>
     <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.dateIssued.year">Datum publikování</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.rights_filter">Práva</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_keywords">Klíčová slova</message>
 
 
     <message key="xmlui.Discovery.AbstractSearch.startswith">Začíná písmeny</message>
@@ -3313,6 +3319,13 @@
     <message key="ufal.item-view.keywordsTopic">Téma</message>
     <message key="ufal.item-view.keywordsProfession">Profese</message>
     <message key="ufal.item-view.consent">Informovaný souhlas</message>
+	<message key="ufal.item-view.interviewDate">Datum rozhovoru</message>
+	<message key="ufal.item-view.interview.detailedKeywords">Detailní klíčová slova</message>
+	<message key="ufal.item-view.interviewer">Tazatel</message>
+	<message key="ufal.item-view.interview.keywords">Klíčová slova</message>
+	<message key="ufal.item-view.interviewLength">Délka rozhovoru</message>
+	<message key="ufal.item-view.interviewType">Druh rozhovoru</message>
+	<message key="ufal.item-view.transcript">Přepis</message>
 
 
 	<!-- Interviews.java -->
@@ -3819,5 +3832,28 @@
 
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_keywords">Klíčová slova</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_creator">Tvůrce</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.keywords_filter">Klíčová slova</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.project.column_heading">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.project">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.project">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.project_filter">Projekt</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_project">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywordsTopic.column_heading">Téma</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywordsTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywordsTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsTopic_filter">Téma</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorKeywordsTopic">Téma</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewType.column_heading">Druh rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewType">Druh rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewType">Druh rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewType_filter">Druh rozhovoru</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewType">Druh rozhovoru</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorProject.column_heading">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorProject">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorProject">Projekt</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProject_filter">Projekt</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorProject">Projekt</message>
 
 </catalogue>

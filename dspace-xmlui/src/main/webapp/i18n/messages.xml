@@ -156,6 +156,9 @@
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewPeriod">Period</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_projectName">Project</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_technicalType">File type</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewType">Interview type</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorKeywordsTopic">Topic</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorProject">Project</message>
 
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorName">Narrator</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorGender">Gender</message>
@@ -171,6 +174,8 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewPeriod">Period</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.projectName">Project</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.technicalType">File type</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewType">Interview type</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.project">Project</message>
 
 
    <!--  some common other possibilities for Advanced Search Fields -->
@@ -3038,6 +3043,13 @@
 	<message key="ufal.item-view.keywordsTopic">Charakteristics</message>
 	<message key="ufal.item-view.keywordsProfession">Profession</message>
 	<message key="ufal.item-view.consent">Informed consent</message>
+	<message key="ufal.item-view.interviewDate">Interview date</message>
+	<message key="ufal.item-view.interview.detailedKeywords">Detailed keywords</message>
+	<message key="ufal.item-view.interviewer">Interviewer</message>
+	<message key="ufal.item-view.interview.keywords">Keywords</message>
+	<message key="ufal.item-view.interviewLength">Interview length</message>
+	<message key="ufal.item-view.interviewType">Interview type</message>
+	<message key="ufal.item-view.transcript">Transcript</message>
 
 	<!-- Interviews.java -->
 	<message key="xmlui.item_view.Interviews.head"><i class="fa fa-microphone">&#160;</i>Interviews with this
@@ -3530,6 +3542,29 @@
 	<message key="xmlui.Discovery.AbstractSearch.type_branding">Community</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_keywords">Keywords</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_creator">Creator</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_keywords">Keywords</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.keywords_filter">Keywords</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.project.column_heading">Project</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.project">Project</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.project">Project</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.project_filter">Project</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_project">Project</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsTopic">Topic</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorKeywordsTopic.column_heading">Topic</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorKeywordsTopic">Topic</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorKeywordsTopic">Topic</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorKeywordsTopic_filter">Topic</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorKeywordsTopic">Topic</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewType.column_heading">Interview type</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewType">Interview type</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewType">Interview type</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewType_filter">Interview type</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewType">Interview type</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorProject.column_heading">Project</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorProject">Project</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorProject">Project</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProject_filter">Project</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorProject">Project</message>
 
 	<message key="homepage.item.narrators">Narrator:</message>
 
