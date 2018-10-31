@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Required;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
@@ -39,6 +40,12 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
        if(dso.getType() == Constants.ITEM){
             final Item item = (Item)dso;
             if("narrator".equals(item.getMetadata("dc.type"))){
+                /* Don't want to copy solr fields that are normally present, just want to add _filter, _keyword, _ac
+                of the associated interviews.
+                When more than one interview, document.getFieldNames contains the _filter etc of the first interview
+                added. Keep a copy of the fields before we add anything.
+                */
+                final Collection<String> noCopyFields = new HashSet<>(document.getFieldNames());
                 final Metadatum[] interviews = item.getMetadataByMetadataString("dc.relation.haspart");
                 for (Metadatum md : interviews){
                     final String interviewURI = md.value;
@@ -57,7 +64,6 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
                                 return doc;
                             }
                         }.getDocument();
-                        final Collection<String> noCopyFields = document.getFieldNames();
                         for(String name : interviewDoc.getFieldNames())
                         {
                             if(!noCopyFields.contains(name) && (name.endsWith("_filter") || name.endsWith("_keyword")
