@@ -216,7 +216,10 @@ NARRATOR_ELEMENTS = {u'viadat':[
 
 ], u'dc': [
     Element(u'dc', u'title', generator=NameGenerator()),
-    Element(u'dc', u'type', generator=FixedValueGenerator([u'narrator']))
+    Element(u'dc', u'type', generator=FixedValueGenerator([u'narrator'])),
+    Element(u'dc', u'rights', u'uri', generator=FixedValueGenerator([ u'https://ufal.mff.cuni.cz/grants/viadat/license'])),
+    Element(u'dc', u'rights', generator=FixedValueGenerator([u'VIADAT License'])),
+    Element(u'dc', u'rights', u'label', generator=FixedValueGenerator([u'RES']))
 ]}
 
 INTERVIEW_ELEMENTS = {u'viadat': [
@@ -237,7 +240,10 @@ INTERVIEW_ELEMENTS = {u'viadat': [
     Element(u'dc', u'title'),
     Element(u'dc', u'type', generator=FixedValueGenerator([u'interview'])),
     Element(u'dc', u'description'),
-    Element(u'dc', u'language', u'iso', generator=IsoLangGenerator())
+    Element(u'dc', u'language', u'iso', generator=IsoLangGenerator()),
+    Element(u'dc', u'rights', u'uri', generator=FixedValueGenerator([u'https://ufal.mff.cuni.cz/grants/viadat/license'])),
+    Element(u'dc', u'rights', generator=FixedValueGenerator([u'VIADAT License'])),
+    Element(u'dc', u'rights', u'label', generator=FixedValueGenerator([u'RES']))
 
 ]}
 
