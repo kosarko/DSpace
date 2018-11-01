@@ -3326,6 +3326,9 @@
 	<message key="ufal.item-view.interviewLength">Délka rozhovoru</message>
 	<message key="ufal.item-view.interviewType">Druh rozhovoru</message>
 	<message key="ufal.item-view.transcript">Přepis</message>
+	<message key="ufal.item-view.place">Místo</message>
+	<message key="ufal.item-view.interview.note">Poznámka</message>
+	<message key="ufal.item-view.interviewPeriod">Období</message>
 
 
 	<!-- Interviews.java -->

@@ -3050,6 +3050,9 @@
 	<message key="ufal.item-view.interviewLength">Interview length</message>
 	<message key="ufal.item-view.interviewType">Interview type</message>
 	<message key="ufal.item-view.transcript">Transcript</message>
+	<message key="ufal.item-view.place">Place</message>
+	<message key="ufal.item-view.interview.note">Note</message>
+	<message key="ufal.item-view.interviewPeriod">Period</message>
 
 	<!-- Interviews.java -->
 	<message key="xmlui.item_view.Interviews.head"><i class="fa fa-microphone">&#160;</i>Interviews with this
