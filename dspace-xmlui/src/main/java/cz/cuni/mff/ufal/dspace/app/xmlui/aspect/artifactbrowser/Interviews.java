@@ -4,6 +4,7 @@ import cz.cuni.mff.ufal.Logger;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.HandleUtil;
 import org.dspace.app.xmlui.wing.Message;
+import org.dspace.app.xmlui.wing.ObjectManager;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.Body;
 import org.dspace.app.xmlui.wing.element.Division;
@@ -13,6 +14,8 @@ import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
 import org.dspace.content.Metadatum;
 import org.dspace.identifier.IdentifierException;
+import org.dspace.identifier.IdentifierNotFoundException;
+import org.dspace.identifier.IdentifierNotResolvableException;
 import org.dspace.identifier.IdentifierService;
 import org.dspace.utils.DSpace;
 import org.xml.sax.SAXException;
@@ -43,6 +46,17 @@ public class Interviews extends AbstractDSpaceTransformer {
                     DSpaceObject relatedDso = identifierService.resolve(context, md.value);
                     set.addReference(relatedDso);
                 }catch (IdentifierException e){
+                    log.error(e);
+                }
+            }
+            final Metadatum[] ispartof = dso.getMetadataByMetadataString("dc.relation.ispartof");
+            if(ispartof.length > 0){
+                final ObjectManager objectManager = getObjectManager();
+                try {
+                    final DSpaceObject parent = identifierService.resolve(context, ispartof[0].value);
+                    body.addDivision("item-interviews-back").addPara().addXref(contextPath + "/handle/" + parent.getHandle(),
+                            "<<< " + parent.getName());
+                } catch (IdentifierNotFoundException | IdentifierNotResolvableException e) {
                     log.error(e);
                 }
             }
