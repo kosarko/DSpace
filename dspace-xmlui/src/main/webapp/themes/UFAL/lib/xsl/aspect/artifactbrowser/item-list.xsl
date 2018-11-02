@@ -289,12 +289,12 @@
                         </xsl:for-each>
                 </div>
             </xsl:if>
-            <xsl:if test="dim:field[@element='narrator'][contains(@qualifier, 'keywords')]">
+            <xsl:if test="dim:field[@element='narrator' or @element='interview'][contains(translate(@qualifier, $uppercase, $smallcase), 'keywords')]">
                 <div class="keywords-head">
                     <i18n:text>xmlui.UFAL.artifactbrowser.item_list.keywords</i18n:text>
                 </div>
                 <div class="keywords">
-                    <xsl:for-each select="dim:field[@element='narrator'][contains(@qualifier, 'keywords')]">
+                    <xsl:for-each select="dim:field[@element='narrator' or @element='interview'][contains(translate(@qualifier, $uppercase, $smallcase), 'keywords')]">
                         <span>
                             <a>
                                 <xsl:attribute name="href"><xsl:copy-of select="$context-path"/>/browse?value=<xsl:copy-of select="." />&amp;type=keywords</xsl:attribute>
