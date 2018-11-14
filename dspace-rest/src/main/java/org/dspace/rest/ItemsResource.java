@@ -439,6 +439,8 @@ public class ItemsResource extends Resource
             @QueryParam("groupId") Integer groupId, @QueryParam("year") Integer year, @QueryParam("month") Integer month,
             @QueryParam("day") Integer day, @QueryParam("userIP") String user_ip, @QueryParam("userAgent") String user_agent,
             @QueryParam("file_mime_type") String fileMimeType,
+            @QueryParam("primary") boolean primary,
+            @QueryParam("bundle_name") @DefaultValue("ORIGINAL") String bundle_name,
             @QueryParam("xforwardedfor") String xforwardedfor, @Context HttpHeaders headers, @Context HttpServletRequest request)
             throws WebApplicationException
     {
@@ -458,7 +460,7 @@ public class ItemsResource extends Resource
             log.trace("Creating bitstream in item.");
             org.dspace.content.Bundle bundle = null;
             org.dspace.content.Bitstream dspaceBitstream = null;
-            Bundle[] bundles = dspaceItem.getBundles("ORIGINAL");
+            Bundle[] bundles = dspaceItem.getBundles(bundle_name);
 			if(bundles != null && bundles.length != 0)
 			{
 				bundle = bundles[0]; // There should be only one bundle ORIGINAL.
@@ -466,7 +468,8 @@ public class ItemsResource extends Resource
             if (bundle == null)
             {
                 log.trace("Creating bundle in item.");
-                dspaceBitstream = dspaceItem.createSingleBitstream(inputStream);
+                dspaceBitstream = dspaceItem.createSingleBitstream(inputStream, bundle_name);
+                bundle = dspaceItem.getBundles(bundle_name)[0];
             }
             else
             {
@@ -498,6 +501,10 @@ public class ItemsResource extends Resource
             //or we would need to add/remove ResourcePolicy (as in WorkspaceItem...AuthorizeManager.addPolicy(c, i, Constants.WRITE, e, ResourcePolicy.TYPE_SUBMISSION);)
             context.turnOffAuthorisationSystem();
             dspaceBitstream.update();
+            if(primary){
+                bundle.setPrimaryBitstreamID(dspaceBitstream.getID());
+                bundle.update();
+            }
             context.restoreAuthSystemState();
 
             // Create policy for bitstream
