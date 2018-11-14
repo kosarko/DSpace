@@ -19,12 +19,6 @@
     <dc-type>
         <schema>viadat</schema>
         <element>narrator</element>
-        <qualifier>identifier</qualifier>
-        <scope_note></scope_note>
-    </dc-type>
-    <dc-type>
-        <schema>viadat</schema>
-        <element>narrator</element>
         <qualifier>alias</qualifier>
         <scope_note></scope_note>
     </dc-type>
@@ -71,12 +65,6 @@
         <scope_note></scope_note>
     </dc-type>
 
-    <dc-type>
-        <schema>viadat</schema>
-        <element>interview</element>
-        <qualifier>identifier</qualifier>
-        <scope_note></scope_note>
-    </dc-type>
     <dc-type>
         <schema>viadat</schema>
         <element>interview</element>

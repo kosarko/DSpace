@@ -15,7 +15,7 @@ add_contents(){
     flip=$(shuf -i0-1 -n1)
     if [ $flip -gt 0 ]; then
         content_line=$1
-        filename=`echo $content_line | cut -f1`
+        filename=`echo -e $content_line | cut -f1`
         echo -e $content_line >> contents
         touch $filename
     fi
@@ -43,9 +43,6 @@ gen_item() {
         add_contents "rozhovor.mpg\tbundle:ORIGINAL\tprimary:true\tdescription:interview"
         add_contents "prepis.txt\tbundle:ORIGINAL\tdescription:transcript"
     fi
-    for f in rozhovor.mpg prepis.txt souhlas.doc photo.jpg thesis.pdf;do
-        touch $f
-    done
     popd
 }
 for i in `seq 1 $N`;do

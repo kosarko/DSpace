@@ -50,7 +50,12 @@ public class InstallItem
     public static Item installItem(Context c, InProgressSubmission is)
             throws SQLException, IOException, AuthorizeException
     {
-        return installItem(c, is, null);
+        final Item item = is.getItem();
+        final Metadatum[] metadata = item.getMetadataByMetadataString("dc.identifier");
+        final String viadat_id = (metadata != null && metadata.length == 1) ? metadata[0].value : null;
+        final String prefix =
+                cz.cuni.mff.ufal.dspace.handle.PIDConfiguration.getPIDCommunityConfiguration(item).getPrefix();
+        return installItem(c, is, prefix + "/" + viadat_id);
     }
 
     /**

@@ -81,9 +81,8 @@
                 </field>
 
                 <field>
-                    <dc-schema>viadat</dc-schema>
-                    <dc-element>narrator</dc-element>
-                    <dc-qualifier>identifier</dc-qualifier>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>identifier</dc-element>
                     <repeatable>false</repeatable>
                     <label>input_forms.field.viadat.narrator.identifier.label</label>
                     <input-type>onebox</input-type>
@@ -203,9 +202,8 @@
                 </field>
 
                 <field>
-                    <dc-schema>viadat</dc-schema>
-                    <dc-element>interview</dc-element>
-                    <dc-qualifier>identifier</dc-qualifier>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>identifier</dc-element>
                     <repeatable>false</repeatable>
                     <label>input_forms.field.viadat.interview.identifier.label</label>
                     <input-type>onebox</input-type>

@@ -368,8 +368,16 @@ public class CollectionsResource extends Resource
             workspaceItem.update();
 
             IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
+            final org.dspace.content.Metadatum[] metadata = dspaceItem.getMetadataByMetadataString("dc.identifier");
+            final String viadat_id = (metadata != null && metadata.length == 1) ? metadata[0].value : null;
+            final String prefix =
+                    cz.cuni.mff.ufal.dspace.handle.PIDConfiguration.getPIDCommunityConfiguration(dspaceItem).getPrefix();
             context.turnOffAuthorisationSystem();
-            identifierService.reserve(context, dspaceItem);
+            if(viadat_id != null && viadat_id.trim().length() > 0){
+                identifierService.register(context, dspaceItem, prefix + "/" + viadat_id);
+            }else {
+                identifierService.reserve(context, dspaceItem);
+            }
             dspaceItem.update();
             context.restoreAuthSystemState();
 

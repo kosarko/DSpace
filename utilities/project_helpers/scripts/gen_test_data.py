@@ -203,7 +203,6 @@ class Element:
 NARRATOR_ELEMENTS = {u'viadat':[
     Element(u'viadat', u'narrator', u'gender', generator=FixedValueGenerator([u'muž', u'žena', u'nespecifikováno'])),
     Element(u'viadat', u'narrator', u'birthdate', generator=DateGenerator()),
-    Element(u'viadat', u'narrator', u'identifier', generator=IDGenerator()),
     Element(u'viadat', u'narrator', u'alias', repeatable=True, generator=NameGenerator()),
     Element(u'viadat', u'narrator', u'degree', repeatable=True, generator=FixedValueGenerator([u'Ing.', u'Mgr.', u'Bc.', u'Mudr.', u'Ph.d.'])),
     Element(u'viadat', u'narrator', u'keywordsProfession', repeatable=True, generator=KeyWordGenerator(prefix=u'prof_')),
@@ -216,6 +215,7 @@ NARRATOR_ELEMENTS = {u'viadat':[
 
 ], u'dc': [
     Element(u'dc', u'title', generator=NameGenerator()),
+    Element(u'dc', u'identifier', generator=IDGenerator()),
     Element(u'dc', u'type', generator=FixedValueGenerator([u'narrator'])),
     Element(u'dc', u'rights', u'uri', generator=FixedValueGenerator([ u'https://ufal.mff.cuni.cz/grants/viadat/license'])),
     Element(u'dc', u'rights', generator=FixedValueGenerator([u'VIADAT License'])),
@@ -223,7 +223,6 @@ NARRATOR_ELEMENTS = {u'viadat':[
 ]}
 
 INTERVIEW_ELEMENTS = {u'viadat': [
-    Element(u'viadat', u'interview', u'identifier', generator=IDGenerator()),
     Element(u'viadat', u'interview', u'transcript', generator=FixedValueGenerator([u'Doslovný', u'Redigovaný',
                                                                                 u'Orientační', u'Ne'])),
     Element(u'viadat', u'interview', u'date', generator=DateGenerator()),
@@ -238,6 +237,7 @@ INTERVIEW_ELEMENTS = {u'viadat': [
     Element(u'viadat', u'interview', u'note')
 ], u'dc': [
     Element(u'dc', u'title'),
+    Element(u'dc', u'identifier', generator=IDGenerator()),
     Element(u'dc', u'type', generator=FixedValueGenerator([u'interview'])),
     Element(u'dc', u'description'),
     Element(u'dc', u'language', u'iso', generator=IsoLangGenerator()),
