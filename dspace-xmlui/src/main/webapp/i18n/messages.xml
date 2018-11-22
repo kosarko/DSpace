@@ -1151,6 +1151,10 @@
 	<message key="xmlui.Submission.submit.EditFileStep.info2">If the format is not in the above list, <strong>select "format not in list" above</strong> and describe the file's format in the box below.</message>
 	<message key="xmlui.Submission.submit.EditFileStep.format_user">Other Format</message>
 	<message key="xmlui.Submission.submit.EditFileStep.format_user_help">The application's name you used to create the file, and the version number (for example, "<i>ACMESoft SuperApp version 1.5</i>").</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_creator">Creator</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_creator_help">Creator of recording or institution</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note">Note</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note_help">Note to the recording</message>
 
     <!-- org.dspace.app.xmlui.Submission.submit.EditBitstreamPolicies -->
     <message key="xmlui.Submission.submit.EditBitstreamPolicies.head">Bitstream Access</message>
@@ -2746,6 +2750,9 @@
 	<message key="xmlui.dri2xhtml.METS-1.0.header-qdc-terms">Dublin Core terms</message>
 
         <message key="xmlui.dri2xhtml.METS-1.0.blocked">Blocked</message>
+
+	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.note">Note</message>
+	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.creator">Creator</message>
 
 
 	<!-- Special pioneer model related text, wherever it might end up -->

@@ -1136,6 +1136,10 @@
 	<message key="xmlui.Submission.submit.EditFileStep.info2">Není-li formát ve výše uvedeném seznamu, <strong>vyberte „Formát není v seznamu“ výše</strong> a popište formát souboru ve spodním poli.</message>
 	<message key="xmlui.Submission.submit.EditFileStep.format_user">Jiný formát</message>
 	<message key="xmlui.Submission.submit.EditFileStep.format_user_help">Název aplikace, kterou jste použili k vytvoření souboru, a číslo verze (např. „<i>ACMESoft SuperApp verze 1.5</i>“).</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_creator">Tvůrce</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_creator_help">Tvůrce záznamu nebo instituce</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note">Poznámka</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note_help">Poznámka k nahrávce</message>
 
 
         <!-- org.dspace.app.xmlui.Submission.submit.EditBitstreamPolicies -->
@@ -2732,7 +2736,10 @@
 	<message key="xmlui.dri2xhtml.METS-1.0.header-qdc-terms">Termíny Dublin Core</message>
 	
         <message key="xmlui.dri2xhtml.METS-1.0.blocked">Zablokované</message>
-	
+
+	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.note">Poznámka</message>
+	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.creator">Tvůrce záznamu</message>
+
 	<!-- Special pioneer model related text, wherever it might end up -->
 	<message key="xmlui.dri2xhtml.pioneer.preview">Náhled</message>
 	<message key="xmlui.dri2xhtml.pioneer.date">Datum</message>

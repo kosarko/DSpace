@@ -1327,8 +1327,7 @@
 					
 					<xsl:for-each select="mets:Local/*[local-name()!='file' and local-name()!='redirectToURL' ]">
 						<dt>
-							<xsl:value-of
-									select="local-name()" />
+							<i18n:text>xmlui.dri2xhtml.METS-1.0.metadata.bitstream.<xsl:value-of select="local-name()" /></i18n:text>
 						</dt>
 						<dd>
 							<xsl:value-of

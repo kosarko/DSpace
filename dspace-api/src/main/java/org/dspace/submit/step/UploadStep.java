@@ -424,6 +424,22 @@ public class UploadStep extends AbstractProcessingStep
             }
         }*/
 
+        // -----
+        // Are there any bitstream metadata fields
+        // ------
+        Enumeration<String> bitstreamMetadata = request.getParameterNames();
+        while(bitstreamMetadata.hasMoreElements()) {
+            String bm = bitstreamMetadata.nextElement();
+            if (bm.startsWith("bitstream_metadata_") && !bm.contains("-")) {
+                String field = bm.substring("bitstream_metadata_".length());
+                String[] parts = field.split("\\.", 3);
+                subInfo.getBitstream().clearMetadata(parts[0], parts[1], parts[2] != null ? parts[2] : null, Item.ANY);
+                subInfo.getBitstream().addMetadata(parts[0], parts[1], parts[2] != null ? parts[2] : null, Item.ANY,
+                        request.getParameter(bm));
+                subInfo.getBitstream().update();
+            }
+        }
+
         // ---------------------------------------------------
         // Step #6: Determine if there is an error because no
         // files have been uploaded.

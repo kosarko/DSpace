@@ -470,6 +470,8 @@ public class UploadStep extends AbstractSubmissionStep
 	            //checksumCell.addContent(algorithm + ":" + checksum);
 		      row.addCell("checksum_cell",null,"checksum_cell").addContent(algorithm + ":" + checksum);
 		      row.addCell().addText("order_"+id,"order-box").setValue(""+index++);
+              Button edit = row.addCell().addButton("submit_edit_"+id);
+              edit.setValue(T_submit_edit);
             }
 
             if (!disableFileEditing)

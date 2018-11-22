@@ -18,11 +18,7 @@ import org.dspace.app.xmlui.utils.UIException;
 import org.dspace.app.xmlui.aspect.submission.AbstractStep;
 import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
-import org.dspace.app.xmlui.wing.element.Body;
-import org.dspace.app.xmlui.wing.element.Division;
-import org.dspace.app.xmlui.wing.element.List;
-import org.dspace.app.xmlui.wing.element.Select;
-import org.dspace.app.xmlui.wing.element.Text;
+import org.dspace.app.xmlui.wing.element.*;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Bitstream;
 import org.dspace.content.BitstreamFormat;
@@ -30,6 +26,8 @@ import org.dspace.content.Collection;
 import org.dspace.content.FormatIdentifier;
 import org.dspace.core.ConfigurationManager;
 import org.xml.sax.SAXException;
+
+import static org.dspace.app.xmlui.aspect.submission.submit.DescribeStep.addAutocompleteComponents;
 
 /**
  * This is a sub step of the Upload step during item submission. This 
@@ -76,6 +74,14 @@ public class EditFileStep extends AbstractStep
         message("xmlui.general.save");
     protected static final Message T_submit_cancel = 
         message("xmlui.general.cancel");
+    protected static final Message T_bitstream_creator =
+            message("xmlui.Submission.submit.EditFileStep.bitstream_creator");
+    protected static final Message T_bitstream_creator_help =
+            message("xmlui.Submission.submit.EditFileStep.bitstream_creator_help");
+    protected static final Message T_bitstream_note =
+            message("xmlui.Submission.submit.EditFileStep.bitstream_note");
+    protected static final Message T_bitstream_note_help =
+            message("xmlui.Submission.submit.EditFileStep.bitstream_note_help");
 
     /** The bitstream we are editing */
 	private Bitstream bitstream;
@@ -193,7 +199,24 @@ public class EditFileStep extends AbstractStep
         userFormat.setLabel(T_format_user);
         userFormat.setHelp(T_format_user_help);
         userFormat.setValue(bitstream.getUserFormatDescription());
-        
+
+        final Item creatorItem = edit.addItem();
+        final String creator_field = "local.bitstream.creator";
+        final String bitstreamCreatorFormName = "bitstream_metadata_" + creator_field;
+        final Text bitstreamCreator = creatorItem.addText(bitstreamCreatorFormName, "autocomplete");
+        bitstreamCreator.setLabel(T_bitstream_creator);
+        bitstreamCreator.setHelp(T_bitstream_creator_help);
+        bitstreamCreator.setValue(bitstream.getMetadata(creator_field));
+        addAutocompleteComponents(bitstreamCreatorFormName, "solr-bitstream_" + creator_field,
+                creatorItem);
+
+        final String note_field = "local.bitstream.note";
+        final TextArea bitstreamNote = edit.addItem().addTextArea("bitstream_metadata_" + note_field);
+        bitstreamNote.setLabel(T_bitstream_note);
+        bitstreamNote.setHelp(T_bitstream_note_help);
+        bitstreamNote.setValue(bitstream.getMetadata(note_field));
+
+
         // add ID of bitstream we're editing
         div.addHidden("bitstream_id").setValue(bitstream.getID()); 
         

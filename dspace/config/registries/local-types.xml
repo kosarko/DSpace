@@ -113,6 +113,18 @@
     </dc-type>
     <dc-type>
         <schema>local</schema>
+        <element>bitstream</element>
+        <qualifier>note</qualifier>
+        <scope_note>Viadat note for recording</scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>local</schema>
+        <element>bitstream</element>
+        <qualifier>creator</qualifier>
+        <scope_note>Viadat creator of recording</scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>local</schema>
         <element>withdrawn</element>
         <qualifier>reason</qualifier>
         <scope_note>Store the withdrawal reason in addition to provenance</scope_note>
