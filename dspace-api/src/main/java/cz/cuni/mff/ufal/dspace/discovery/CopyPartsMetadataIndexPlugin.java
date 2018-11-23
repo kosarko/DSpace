@@ -51,19 +51,7 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
                     final String interviewURI = md.value;
                     try{
                         final Item interview = (Item)identifierService.resolve(context, interviewURI);
-                        final SolrInputDocument interviewDoc = new SolrServiceImpl(){
-                            SolrInputDocument doc;
-
-                            @Override
-                            protected void writeDocument(SolrInputDocument doc, List<BitstreamContentStream> streams) throws IOException {
-                                this.doc = doc;
-                            }
-
-                            public SolrInputDocument getDocument() throws IOException, SQLException {
-                                this.buildDocument(context, interview);
-                                return doc;
-                            }
-                        }.getDocument();
+                        final SolrInputDocument interviewDoc = new MySolrServiceImpl(context, interview).getDocument();
                         for(String name : interviewDoc.getFieldNames())
                         {
                             if(!noCopyFields.contains(name) && (name.endsWith("_filter") || name.endsWith("_keyword")
@@ -83,5 +71,26 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
             }
 
        }
+    }
+
+    static class MySolrServiceImpl extends SolrServiceImpl {
+        private final Context context;
+        private final Item interview;
+        SolrInputDocument doc;
+
+        public MySolrServiceImpl(Context context, Item interview) {
+            this.context = context;
+            this.interview = interview;
+        }
+
+        @Override
+        protected void writeDocument(SolrInputDocument doc, List<BitstreamContentStream> streams) throws IOException {
+            this.doc = doc;
+        }
+
+        public SolrInputDocument getDocument() throws IOException, SQLException {
+            this.buildDocument(context, interview);
+            return doc;
+        }
     }
 }

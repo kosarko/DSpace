@@ -22,10 +22,13 @@ import org.dspace.discovery.configuration.DiscoveryConfiguration;
 import org.dspace.discovery.configuration.DiscoveryConfigurationParameters;
 import org.dspace.discovery.configuration.DiscoverySearchFilter;
 import org.dspace.discovery.configuration.DiscoverySearchFilterFacet;
+import org.dspace.identifier.IdentifierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.ufal.IsoLangCodes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Keeps most of our search query/index tweaks
@@ -38,6 +41,14 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
 {
     private static final Logger log = LoggerFactory
             .getLogger(SolrServiceTweaksPlugin.class);
+
+    private IdentifierService identifierService;
+
+    @Autowired
+    @Required
+    public void setIdentifierService(IdentifierService identifierService){
+        this.identifierService = identifierService;
+    }
 
     @Override
     public void additionalSearchParameters(Context context,
@@ -245,6 +256,10 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
             String title = item.getName();
             String handle = item.getHandle();
             document.addField("handle_title_ac", handle + ":" + title);
+
+            final CopyPartsMetadataIndexPlugin copyPartsMetadataIndexPlugin = new CopyPartsMetadataIndexPlugin();
+            copyPartsMetadataIndexPlugin.setIdentifierService(identifierService);
+            copyPartsMetadataIndexPlugin.additionalIndex(context, dso, document);
         }
     }
 }
