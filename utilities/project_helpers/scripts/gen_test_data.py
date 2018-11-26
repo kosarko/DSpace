@@ -259,7 +259,8 @@ file_to_elements = {u'dublin_core.xml': u'dc', u'metadata_viadat.xml': u'viadat'
 
 def gen_item(fields):
     gender = u'nespecifikováno'
-    for metadata_file in [u'dublin_core.xml', u'metadata_viadat.xml']: #, u'metadata_local.xml']:
+    # viadat must go first to generate the gender
+    for metadata_file in [ u'metadata_viadat.xml', u'dublin_core.xml']: #, u'metadata_local.xml']:
         elements = fields[file_to_elements[metadata_file]]
         schema = elements[0].schema
         dublin_core = ET.Element(u'dublin_core', attrib={u'schema': schema})
