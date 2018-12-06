@@ -169,10 +169,38 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
         // FIXME Exception handling
         try
         {
+            Collection narrators = null;
+            Collection interviews = null;
+
+            for(Collection col : Collection.findAll(context)){
+                if(col.getName().toLowerCase().equals("narrators")){
+                    narrators = col;
+                }else if(col.getName().toLowerCase().equals("interviews")){
+                    interviews = col;
+                }
+            }
+
             // Get a Map of all the browse tables
             BrowseIndex[] bis = BrowseIndex.getBrowseIndices();
             for (BrowseIndex bix : bis)
             {
+                String bixLcName = bix.getName().toLowerCase();
+                if(bixLcName.startsWith("narrator")){
+                    if(narrators != null){
+                        browseURL = contextPath + "/handle/" + narrators.getHandle() + "/browse";
+                    }else{
+                        throw new UIException("Unable to get browse index for collection narrator");
+                    }
+                }else if(bixLcName.startsWith("interview")){
+                    if(narrators != null){
+                        browseURL = contextPath + "/handle/" + interviews.getHandle() + "/browse";
+                    }else{
+                        throw new UIException("Unable to get browse index for collection interviews");
+                    }
+                }else{
+                    browseURL = contextPath + "/browse";
+                }
+
                 // Create a Map of the query parameters for this link
                 Map<String, String> queryParams = new HashMap<String, String>();
 
@@ -186,6 +214,9 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
         catch (BrowseException bex)
         {
             throw new UIException("Unable to get browse indicies", bex);
+        }
+        catch (SQLException e){
+            throw new UIException("Unable to get browse index for collection", e);
         }
     }
 

@@ -361,6 +361,8 @@
     <message key="xmlui.ArtifactBrowser.Navigation.browse_rights">Rights Label</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.head_this_collection">This Collection</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.head_this_community">This Community</message>
+	<message key="xmlui.ArtifactBrowser.Navigation.browse_interviewdateissued">Interviews by issue date</message>
+	<message key="xmlui.ArtifactBrowser.Navigation.browse_narratordateissued">Narrators by issue date</message>
 
     <message key="xmlui.ArtifactBrowser.Navigation.browse_publisher">Publisher</message>
     <message key="xmlui.ArtifactBrowser.Navigation.browse_language">Language</message>
@@ -3535,11 +3537,11 @@
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.keywords">Keywords</message>
 	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_project">Project</message>
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProject">Project</message>
-    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narrator_alias.column_heading">Alias</message>
-    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narrator_alias">Alias</message>
-    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narrator_alias">Alias</message>
-    <message key="xmlui.ArtifactBrowser.Navigation.browse_narrator_alias">Alias</message>
-    <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narrator_alias">Alias</message>
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorName.column_heading">Name (Alias)</message>
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorName">Name (Alias)</message>
+    <message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorName">Name (Alias)</message>
+    <message key="xmlui.ArtifactBrowser.Navigation.browse_narratorName">Name (Alias)</message>
+    <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorName">Name (Alias)</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.hasfile.column_heading">Contain Files</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.hasfile">Contain Files</message>
 	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.hasfile">Contain Files</message>

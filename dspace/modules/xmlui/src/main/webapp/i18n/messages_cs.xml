@@ -345,6 +345,8 @@
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_rights">Dle práv</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.head_this_collection">Tato kolekce</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.head_this_community">Tato komunita</message>
+    <message key="xmlui.ArtifactBrowser.Navigation.browse_interviewdateissued">Rozhovory dle data publikování</message>
+    <message key="xmlui.ArtifactBrowser.Navigation.browse_narratordateissued">Narátory dle data publikování</message>
 
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_publisher">Vydavatel</message>
 	<message key="xmlui.ArtifactBrowser.Navigation.browse_language">Jazyk</message>
@@ -3816,11 +3818,11 @@
     <message key="xmlui.ArtifactBrowser.AdvancedSearch.type_project">Projekt</message>
     <message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorProject">Projekt</message>
 
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narrator_alias.column_heading">Alias</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narrator_alias">Alias</message>
-	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narrator_alias">Alias</message>
-	<message key="xmlui.ArtifactBrowser.Navigation.browse_narrator_alias">Alias</message>
-	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narrator_alias">Alias</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorName.column_heading">Jména (Alias)</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorName">Jména (Alias)</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorName">Jména (Alias)</message>
+	<message key="xmlui.ArtifactBrowser.Navigation.browse_narratorName">Jména (Alias)</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorName">Jména (Alias)</message>
 
 	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.language_filter">Jazyk</message>
 	<message key="xmlui.Discovery.AbstractSearch.type_language">Jazyk</message>
