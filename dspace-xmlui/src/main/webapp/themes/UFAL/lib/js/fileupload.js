@@ -167,8 +167,7 @@ function createFileUploadDialog(files, describe) {
 	jModal.find("#js-ok-button").click(function() {
 		jModal.modal('toggle');
 		// location.reload(true);
-		jQuery("#aspect_submission_StepTransformer_field_submit_jump_3_1")
-			.click();
+		jQuery("li.active input[name*='submit_jump']").click();
 	});
 	jModal.on('hide.bs.modal',function() {
 		xhrs.forEach(function(xhr) {
