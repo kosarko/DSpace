@@ -3,10 +3,12 @@ package cz.cuni.mff.ufal.dspace.discovery;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.dspace.content.Bitstream;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
 import org.dspace.content.Metadatum;
@@ -25,16 +27,13 @@ import org.springframework.beans.factory.annotation.Required;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
     private static Logger log = LoggerFactory.getLogger(CopyPartsMetadataIndexPlugin.class);
 
 
-    IdentifierService identifierService;
+    private IdentifierService identifierService;
 
     @Autowired
     @Required
@@ -47,11 +46,14 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
        if(dso.getType() == Constants.ITEM){
             final Item item = (Item)dso;
             if("narrator".equals(item.getMetadata("dc.type"))){
+                log.debug("===Indexing narrator " + item.getName());
                 /* In here we copy interview's solr fields to narrator's document. We don't want to copy solr fields
                 that are normally present (we'd have multiple titles, handles, types..), just want to add _filter,
                 _keyword, _ac of the associated interviews.
                 sharedIndex handles the case where both narrator and interview have the field and we must make sure
-                it's copied over
+                it's copied over (e.g. when creating keywords index from various md fields).
+                Filter/facet for dc.title contains only narrator names, noCopyFields prevents merging title_keywords
+                from interviews.
                 */
                 Set<String> sharedIndex = sharedIndex(item);
                 /* When more than one interview, document.getFieldNames contains the _filter etc of the first interview
@@ -79,7 +81,16 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
                         log.error("Failed to get solr document for " + interviewURI + "\n" + e.getMessage());
                     }
                 }
+                log.debug("Final narrator document: {}" , document);
+            }else{
+                log.debug("===Indexing " + item.getMetadata("dc.type"));
             }
+
+           try {
+               indexBitstreamMetadata(context, item, document);
+           } catch (SQLException e) {
+               log.error("Failed to index bitstream metadata.", e);
+           }
 
        }
     }
@@ -96,9 +107,7 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
                     String metadataFields = StringUtils.join(searchFilter.getMetadataFields(), ",");
                     if(metadataFields.contains("narrator") && metadataFields.contains("interview")){
                         String name = searchFilter.getIndexFieldName();
-                        for(String n : new String[]{name, name + "_ac", name + "_filter", name + "_keyword"}) {
-                            sharedIndex.add(n);
-                        }
+                        Collections.addAll(sharedIndex, name, name + "_ac", name + "_filter", name + "_keyword");
                     }
                 }
             }
@@ -117,26 +126,54 @@ public class CopyPartsMetadataIndexPlugin implements SolrServiceIndexPlugin {
         return (copy || shared) && !browseIndex && indexField;
     }
 
+    private void indexBitstreamMetadata(Context context, Item item, SolrInputDocument document) throws SQLException {
+        Bitstream[] bitstreams = item.getNonInternalBitstreams();
+        for(Bitstream bitstream : bitstreams){
+            List<Metadatum> metadata = bitstream.getMetadata("local", "bitstream", Item.ANY, Item.ANY, Item.ANY);
+            for(Metadatum md : metadata){
+                String field = md.schema + "." + md.element;
+                if(md.qualifier != null && !md.qualifier.isEmpty()){
+                    field += "." + md.qualifier;
+                }
+                document.addField(field, md.value);
+            }
+        }
+    }
+
     static class MySolrServiceImpl extends SolrServiceImpl {
         private final Context context;
         private final Item interview;
 
-        public MySolrServiceImpl(Context context, Item interview) {
+        MySolrServiceImpl(Context context, Item interview) {
             this.context = context;
             this.interview = interview;
         }
 
         public SolrDocument getDocument() throws IOException, SQLException, SolrServerException {
+            HttpSolrServer solr = getSolr();
+            solr.commit();
             SolrQuery solrQuery = new SolrQuery();
             solrQuery.setQuery("handle:\"" + interview.getHandle() + "\"");
-            QueryResponse rsp = getSolr().query(solrQuery);
+            QueryResponse rsp = solr.query(solrQuery);
             SolrDocumentList docs = rsp.getResults();
             if(docs.isEmpty()){
+                log.debug("===Indexing interview ({}->{}), it was not in solr", interview.getHandle(),
+                        interview.getName());
                 this.buildDocument(context, interview);
-                rsp = getSolr().query(solrQuery);
+                solr.commit();
+                rsp = solr.query(solrQuery);
                 docs = rsp.getResults();
             }
-            return docs.get(0);
+            // we have the partof identifier but the item has not been created yet
+            if(docs.isEmpty()){
+                log.debug("===Indexing narrator interview ({}->{}) NOT PRESENT.", interview.getHandle(),
+                        interview.getName());
+                return new SolrDocument();
+            }else{
+                log.debug("===Indexing narrator fetching interview " + docs.get(0).getFieldValue("dc.title"));
+                log.debug("Fetched interview document: {}" , docs.get(0));
+                return docs.get(0);
+            }
         }
     }
 }

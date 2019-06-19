@@ -18,6 +18,7 @@ add_contents(){
         filename=`echo -e $content_line | cut -f1`
         echo -e $content_line >> contents
         touch $filename
+        python $SCRIPT_DIR/gen_test_data.py bitstream $filename
     fi
 
 }
@@ -29,10 +30,6 @@ gen_item() {
     mkdir $i
     pushd $i
     python $SCRIPT_DIR/gen_test_data.py $type
-    for x in `ls *.xml`;do
-        xmllint --format $x > $x.tmp
-        mv $x.tmp $x
-    done
     echo "The real license would be here." > license.txt
     echo -e "license.txt\tbundle:LICENSE" > contents
     if [ "$type" = "narrator" ]; then
@@ -43,6 +40,10 @@ gen_item() {
         add_contents "rozhovor.mpg\tbundle:ORIGINAL\tprimary:true\tdescription:interview"
         add_contents "prepis.txt\tbundle:ORIGINAL\tdescription:transcript"
     fi
+    for x in `ls *.xml`;do
+        xmllint --format $x > $x.tmp
+        mv $x.tmp $x
+    done
     popd
 }
 for i in `seq 1 $N`;do

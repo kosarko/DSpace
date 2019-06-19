@@ -678,6 +678,7 @@
    <copyField source="dc.subject*" dest="search_text"/>
    <copyField source="*_comp" dest="search_text"/>
    <copyField source="viadat.*" dest="search_text"/>
+    <copyField source="local.bitstream.*" dest="search_text"/>
 
    <!-- Above, multiple source fields are copied to the [text] field.
 	  Another way to map multiple source fields to the same

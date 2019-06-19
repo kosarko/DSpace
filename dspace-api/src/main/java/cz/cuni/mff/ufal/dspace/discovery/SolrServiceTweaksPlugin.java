@@ -1,13 +1,11 @@
 package cz.cuni.mff.ufal.dspace.discovery;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrInputDocument;
+import org.dspace.content.Bitstream;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
 import org.dspace.content.Metadatum;
@@ -86,21 +84,27 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
             {
                 discoveryConfigurations = SearchUtils
                         .getAllDiscoveryConfigurations(item);
+                // metadataField to list of filters
                 Map<String, List<DiscoverySearchFilter>> searchFilters = new HashMap<String, List<DiscoverySearchFilter>>();
+                Map<String, List<DiscoverySearchFilter>> bitstreamSearchFilters = new HashMap<>();
                 // read config
                 // partly yanked from SolrServiceImpl
+                // go through configurations
                 for (DiscoveryConfiguration discoveryConfiguration : discoveryConfigurations)
                 {
+                    // go through filters in configuration
                     for (int i = 0; i < discoveryConfiguration
                             .getSearchFilters().size(); i++)
                     {
                         DiscoverySearchFilter discoverySearchFilter = discoveryConfiguration
                                 .getSearchFilters().get(i);
+                        // go through metadata fields the filter uses
                         for (int j = 0; j < discoverySearchFilter
                                 .getMetadataFields().size(); j++)
                         {
                             String metadataField = discoverySearchFilter
                                     .getMetadataFields().get(j);
+                            // list of filters for metadataField
                             List<DiscoverySearchFilter> resultingList;
                             String type = discoverySearchFilter.getType();
                             // Process only our new types
@@ -109,42 +113,34 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
                             {
                                 if (searchFilters.get(metadataField) != null)
                                 {
-                                    resultingList = searchFilters
-                                            .get(metadataField);
+                                    resultingList = searchFilters.get(metadataField);
                                 }
                                 else
                                 {
-                                    // New metadata field, create a new list for
-                                    // it
+                                    // New metadata field, create a new list for it
                                     resultingList = new ArrayList<DiscoverySearchFilter>();
                                 }
                                 resultingList.add(discoverySearchFilter);
 
                                 searchFilters.put(metadataField, resultingList);
                             }
+                            else if (type.equals(DiscoveryConfigurationParameters.TYPE_BITSTREAM))
+                            {
+                                if(bitstreamSearchFilters.get(metadataField) != null){
+                                    resultingList = searchFilters.get(metadataField);
+                                } else{
+                                    resultingList = new ArrayList<>();
+                                }
+                                resultingList.add(discoverySearchFilter);
+                                bitstreamSearchFilters.put(metadataField, resultingList);
+                            }
                         }
                     }
                 }
-                
-                for (Map.Entry<String, List<DiscoverySearchFilter>> entry : searchFilters
-                        .entrySet())
-                {
-                	//clear any input document fields we are about to add lower
-                    //String metadataField = entry.getKey();
-                    List<DiscoverySearchFilter> filters = entry.getValue();
-                    for (DiscoverySearchFilter filter : filters)
-                    {
-                    	String name = filter.getIndexFieldName();
-                    	String[] names = {name, name + "_filter", name + "_keyword",
-                    			name + "_ac"};
-                    	for(String fieldName : names){
-                    		document.removeField(fieldName);
-                    	}
-                    }
-                }
+                //clear any input document fields we are about to add lower
+                clearFieldsWeAreAdding(document, searchFilters, bitstreamSearchFilters);
 
-                for (Map.Entry<String, List<DiscoverySearchFilter>> entry : searchFilters
-                        .entrySet())
+                for (Map.Entry<String, List<DiscoverySearchFilter>> entry : searchFilters .entrySet())
                 {
                     String metadataField = entry.getKey();
                     List<DiscoverySearchFilter> filters = entry.getValue();
@@ -228,6 +224,26 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
                         }
                     }
                 }
+
+                for (Map.Entry<String, List<DiscoverySearchFilter>> entry : bitstreamSearchFilters.entrySet()){
+                    String mdField = entry.getKey();
+                    List<DiscoverySearchFilter> filters = entry.getValue();
+                    List<Metadatum> mds = new LinkedList<>();
+                    for(Bitstream bitstream : item.getNonInternalBitstreams()){
+                       mds.addAll(bitstream.getMetadata(mdField, Item.ANY));
+                    }
+                    for (DiscoverySearchFilter filter : filters) {
+                        for (Metadatum md : mds) {
+                            String name = filter.getIndexFieldName();
+                            String[] names = {name, name + "_filter", name + "_keyword",
+                                    name + "_ac"};
+                            for (String fieldName : names) {
+                                document.addField(fieldName, md.value);
+                            }
+
+                        }
+                    }
+                }
             }
             catch (SQLException e)
             {
@@ -256,6 +272,23 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
             final CopyPartsMetadataIndexPlugin copyPartsMetadataIndexPlugin = new CopyPartsMetadataIndexPlugin();
             copyPartsMetadataIndexPlugin.setIdentifierService(identifierService);
             copyPartsMetadataIndexPlugin.additionalIndex(context, dso, document);
+        }
+    }
+
+    private void clearFieldsWeAreAdding(SolrInputDocument document, Map<String, List<DiscoverySearchFilter>>... maps){
+        for (Map<String, List<DiscoverySearchFilter>> mdFieldToFilters : maps) {
+            for (Map.Entry<String, List<DiscoverySearchFilter>> entry : mdFieldToFilters.entrySet()) {
+                //String metadataField = entry.getKey();
+                List<DiscoverySearchFilter> filters = entry.getValue();
+                for (DiscoverySearchFilter filter : filters) {
+                    String name = filter.getIndexFieldName();
+                    String[] names = {name, name + "_filter", name + "_keyword",
+                            name + "_ac"};
+                    for (String fieldName : names) {
+                        document.removeField(fieldName);
+                    }
+                }
+            }
         }
     }
 }

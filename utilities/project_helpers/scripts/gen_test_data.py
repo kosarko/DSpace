@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
 from random import randint
+import lorem
 
 
 class FixedValueGenerator(object):
@@ -185,6 +186,22 @@ class DefaultValueGenerator:
         return self.element + str(randint(1,10000))
 
 
+class LoremIpsumGenerator:
+    def __init__(self, what=u'para'):
+        self.what = what
+
+    def generate(self):
+        if self.what == 'para':
+            return lorem.paragraph()
+        elif self.what == 'sent':
+            return lorem.sentence()
+        elif self.what == 'text':
+            return lorem.text()
+        else:
+            raise Exception('Neither para, sent, nor text. Don\'t know what todo')
+
+
+
 
 
 class Element:
@@ -211,7 +228,9 @@ NARRATOR_ELEMENTS = {u'viadat':[
     Element(u'viadat', u'narrator', u'consent', generator=FixedValueGenerator([u'Ano', u'Ne', u'Včetně dalších '
                                                                                          u'ujednání'])),
     Element(u'viadat', u'narrator', u'note'),
-    Element(u'viadat', u'narrator', u'project')
+    Element(u'viadat', u'narrator', u'outputs'),
+    Element(u'viadat', u'narrator', u'materials'),
+    Element(u'viadat', u'narrator', u'project', generator=FixedValueGenerator(['eu-fp-' +str(i) for i in range(1, 16)]))
 
 ], u'dc': [
     Element(u'dc', u'title', generator=NameGenerator()),
@@ -231,15 +250,15 @@ INTERVIEW_ELEMENTS = {u'viadat': [
     Element(u'viadat', u'interview', u'interviewer', generator=NameGenerator()),
     Element(u'viadat', u'interview', u'keywords', repeatable=True, generator=KeyWordGenerator(prefix=u'int_')),
     Element(u'viadat', u'interview', u'detailedKeywords', repeatable=True, generator=KeyWordGenerator(prefix=u'det_')),
-    Element(u'viadat', u'interview', u'period'),
+    Element(u'viadat', u'interview', u'period', generator=FixedValueGenerator([u'Machine Age', u'Age of Oil', u'World War I', u'Interwar Period', u'Roaring Twenties', u'Great Depression', u'World War II', u'The Forties', u'The Fifties', u'The Sixties', u'The Seventies', u'The Eighties', u'The Nineties', u'The Two Thousands', u'The Tens', u'The Twenties', u'Jet Age', u'Atomic Age', u'The Nuclear Age', u'Digital Revolution', u'Space Age', u'Information Age', u'The Multimedia Age', u'The Social Age', u'The Big Data age', u'Post-war era', u'Cold War', u'Korean War', u'Vietnam War', u'Bosnian War', u'War on Terrorism', u'War in Afghanistan', u'War in Iraq'])),
     Element(u'viadat', u'interview', u'type', generator=FixedValueGenerator([u'životopisný', u'životopisně-tematický',
                                                          u'tematický', u'ostatní'])),
-    Element(u'viadat', u'interview', u'note')
+    Element(u'viadat', u'interview', u'note', generator=LoremIpsumGenerator())
 ], u'dc': [
     Element(u'dc', u'title'),
     Element(u'dc', u'identifier', generator=IDGenerator()),
     Element(u'dc', u'type', generator=FixedValueGenerator([u'interview'])),
-    Element(u'dc', u'description'),
+    Element(u'dc', u'description', generator=LoremIpsumGenerator()),
     Element(u'dc', u'language', u'iso', generator=IsoLangGenerator()),
     Element(u'dc', u'rights', u'uri', generator=FixedValueGenerator([u'https://ufal.mff.cuni.cz/grants/viadat/license'])),
     Element(u'dc', u'rights', generator=FixedValueGenerator([u'VIADAT License'])),
@@ -247,20 +266,20 @@ INTERVIEW_ELEMENTS = {u'viadat': [
 
 ]}
 
-# TODO all the fields!
-    # Element('dc', 'creator')
-    # Element('viadat', 'output'),
-    # Element('viadat', 'technical', 'note'),
-    # Element('viadat', 'technical', 'type', generator=FixedValueGenerator(['audio', 'audio-vizuální', 'text'])),
+BITSTREAM_ELEMENTS = {u'local': [
+    Element(u'local', u'bitstream', u'creator', generator=NameGenerator()),
+    Element(u'local', u'bitstream', u'note', generator=LoremIpsumGenerator()),
+    Element(u'local', u'bitstream', u'type', generator=FixedValueGenerator([u'audio', u'audio-vizuální', u'text']))
+]}
 
 
 file_to_elements = {u'dublin_core.xml': u'dc', u'metadata_viadat.xml': u'viadat' }
 
 
-def gen_item(fields):
+def gen_item(fields, files=None):
     gender = u'nespecifikováno'
     # viadat must go first to generate the gender
-    for metadata_file in [ u'metadata_viadat.xml', u'dublin_core.xml']: #, u'metadata_local.xml']:
+    for metadata_file in files:
         elements = fields[file_to_elements[metadata_file]]
         schema = elements[0].schema
         dublin_core = ET.Element(u'dublin_core', attrib={u'schema': schema})
@@ -280,11 +299,16 @@ def gen_item(fields):
 
 
 if __name__ == '__main__':
+    files = [ u'metadata_viadat.xml', u'dublin_core.xml'] #, u'metadata_local.xml']
     import sys
     if sys.argv[1] == u'narrator':
-        gen_item(NARRATOR_ELEMENTS)
+        gen_item(NARRATOR_ELEMENTS, files)
     elif sys.argv[1] == u'interview':
-        gen_item(INTERVIEW_ELEMENTS)
+        gen_item(INTERVIEW_ELEMENTS, files)
+    elif sys.argv[1] == u'bitstream':
+        file_name = sys.argv[2] + u'_metadata_local.xml'
+        file_to_elements = {file_name: u'local'}
+        gen_item(BITSTREAM_ELEMENTS, [file_name])
     else:
         sys.exit(u'Unknown type {}'.format(sys.argv[1]))
 

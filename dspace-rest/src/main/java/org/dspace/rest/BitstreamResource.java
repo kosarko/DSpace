@@ -38,6 +38,7 @@ import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.BitstreamFormat;
 import org.dspace.eperson.Group;
 import org.dspace.rest.common.Bitstream;
+import org.dspace.rest.common.MetadataEntry;
 import org.dspace.rest.common.ResourcePolicy;
 import org.dspace.rest.exceptions.ContextException;
 import org.dspace.storage.bitstore.BitstreamStorageManager;
@@ -102,7 +103,7 @@ public class BitstreamResource extends Resource
             writeStats(dspaceBitstream, UsageEvent.Action.VIEW, user_ip, user_agent, xforwardedfor, headers,
                     request, context);
 
-            bitstream = new Bitstream(dspaceBitstream, expand);
+            bitstream = new Bitstream(dspaceBitstream, expand, context);
             context.complete();
             log.trace("Bitsream(id=" + bitstreamId + ") was successfully read.");
 
@@ -153,7 +154,7 @@ public class BitstreamResource extends Resource
             org.dspace.content.Bitstream dspaceBitstream = findBitstream(context, bitstreamId, org.dspace.core.Constants.READ);
             AuthorizeManager.getPolicies(context, dspaceBitstream);
 
-            policies = new Bitstream(dspaceBitstream,"policies").getPolicies();
+            policies = new Bitstream(dspaceBitstream,"policies", context).getPolicies();
 
             context.complete();
             log.trace("Policies for bitstream(id=" + bitstreamId + ") was successfully read.");
@@ -229,7 +230,7 @@ public class BitstreamResource extends Resource
                     if (dspaceBitstreams[i].getParentObject() != null)
                     { // To eliminate bitstreams which cause exception, because of
                       // reading under administrator permissions
-                        bitstreams.add(new Bitstream(dspaceBitstreams[i], expand));
+                        bitstreams.add(new Bitstream(dspaceBitstreams[i], expand, context));
                         writeStats(dspaceBitstreams[i], UsageEvent.Action.VIEW, user_ip, user_agent,
                                 xforwardedfor, headers, request, context);
                     }
@@ -831,5 +832,168 @@ public class BitstreamResource extends Resource
             processException("Something went wrong while finding bitstream. SQLException, Message:" + e, context);
         }
         return bitstream;
+    }
+
+    @GET
+    @Path("/{bitstream_id}/metadata")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public MetadataEntry[] getItemMetadata(@PathParam("bitstream_id") Integer bitstreamId, @QueryParam("userIP") String user_ip,
+                                           @QueryParam("userAgent") String user_agent, @QueryParam("xforwardedfor") String xforwardedfor,
+                                           @Context HttpHeaders headers, @Context HttpServletRequest request) throws WebApplicationException
+    {
+
+        log.info("Reading bitstream(id=" + bitstreamId + ") metadata.");
+        org.dspace.core.Context context = null;
+        List<MetadataEntry> metadata = null;
+
+        try
+        {
+            context = createContext(headers);
+            org.dspace.content.Bitstream dspaceBitstream = findBitstream(context, bitstreamId, org.dspace.core.Constants.READ);
+
+            writeStats(dspaceBitstream, UsageEvent.Action.VIEW, user_ip, user_agent, xforwardedfor, headers, request, context);
+
+            metadata = new org.dspace.rest.common.Bitstream(dspaceBitstream, "metadata", context).getMetadata();
+            context.complete();
+        }
+        catch (SQLException e)
+        {
+            processException("Could not read bitstream(id=" + bitstreamId + "), SQLException. Message: " + e, context);
+        }
+        catch (ContextException e)
+        {
+            processException("Could not read bitstream(id=" + bitstreamId + "), ContextException. Message: " + e.getMessage(),
+                    context);
+        }
+        finally
+        {
+            processFinally(context);
+        }
+
+        log.trace("Bitstream(id=" + bitstreamId + ") metadata were successfully read.");
+        return metadata.toArray(new MetadataEntry[0]);
+    }
+
+    @POST
+    @Path("/{bitstream_id}/metadata")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response addItemMetadata(@PathParam("bitstream_id") Integer bitstreamId,
+                                    List<org.dspace.rest.common.MetadataEntry> metadata,
+                                    @QueryParam("userIP") String user_ip, @QueryParam("userAgent") String user_agent,
+                                    @QueryParam("xforwardedfor") String xforwardedfor, @Context HttpHeaders headers, @Context HttpServletRequest request)
+            throws WebApplicationException
+    {
+
+        log.info("Adding metadata to bitstream(id=" + bitstreamId + ").");
+        org.dspace.core.Context context = null;
+
+        try
+        {
+            context = createContext(headers);
+            org.dspace.content.Bitstream dspaceBitstream = findBitstream(context, bitstreamId, org.dspace.core.Constants.WRITE);
+
+            writeStats(dspaceBitstream, UsageEvent.Action.UPDATE, user_ip, user_agent, xforwardedfor, headers, request,
+                    context);
+
+            for (MetadataEntry entry : metadata)
+            {
+                // TODO Test with Java split
+                String data[] = mySplit(entry.getKey()); // Done by my split, because of java split was not function.
+                if ((data.length >= 2) && (data.length <= 3))
+                {
+                    dspaceBitstream.addMetadata(data[0], data[1], data[2], entry.getLanguage(), entry.getValue());
+                }
+            }
+            dspaceBitstream.update();
+            context.complete();
+
+        }
+        catch (SQLException e)
+        {
+            processException("Could not write metadata to bitstream(id=" + bitstreamId + "), SQLException. Message: " + e, context);
+        }
+        catch (AuthorizeException e)
+        {
+            processException("Could not write metadata to bitstream(id=" + bitstreamId + "), AuthorizeException. Message: " + e, context);
+        }
+        catch (ContextException e)
+        {
+            processException("Could not write metadata to bitstream(id=" + bitstreamId + "), ContextException. Message: " + e.getMessage(),
+                    context);
+        }
+        finally
+        {
+            processFinally(context);
+        }
+
+        log.info("Metadata to bitstream(id=" + bitstreamId + ") were successfully added.");
+        return Response.status(Status.OK).build();
+    }
+
+    @PUT
+    @Path("/{bitstream_id}/metadata")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public Response updateItemMetadata(@PathParam("bitstream_id") Integer bitstreamId, MetadataEntry[] metadata,
+                                       @QueryParam("userIP") String user_ip, @QueryParam("userAgent") String user_agent,
+                                       @QueryParam("xforwardedfor") String xforwardedfor, @Context HttpHeaders headers, @Context HttpServletRequest request)
+            throws WebApplicationException
+    {
+
+        log.info("Updating metadata in bitstream(id=" + bitstreamId + ").");
+        org.dspace.core.Context context = null;
+
+        try
+        {
+            context = createContext(headers);
+            org.dspace.content.Bitstream dspaceBitstream = findBitstream(context, bitstreamId,
+                    org.dspace.core.Constants.WRITE);
+
+            writeStats(dspaceBitstream, UsageEvent.Action.UPDATE, user_ip, user_agent, xforwardedfor, headers, request,
+                    context);
+
+            log.trace("Deleting original metadata from bitstream.");
+            for (MetadataEntry entry : metadata)
+            {
+                String data[] = mySplit(entry.getKey());
+                if ((data.length >= 2) && (data.length <= 3))
+                {
+                    dspaceBitstream.clearMetadata(data[0], data[1], data[2], org.dspace.content.Item.ANY);
+                }
+            }
+
+            log.trace("Adding new metadata to bitstream.");
+            for (MetadataEntry entry : metadata)
+            {
+                String data[] = mySplit(entry.getKey());
+                if ((data.length >= 2) && (data.length <= 3))
+                {
+                    dspaceBitstream.addMetadata(data[0], data[1], data[2], entry.getLanguage(), entry.getValue());
+                }
+            }
+
+            dspaceBitstream.update();
+            context.complete();
+
+        }
+        catch (SQLException e)
+        {
+            processException("Could not update metadata in bitstream(id=" + bitstreamId + "), SQLException. Message: " + e, context);
+        }
+        catch (AuthorizeException e)
+        {
+            processException("Could not update metadata in bitstream(id=" + bitstreamId + "), AuthorizeException. Message: " + e, context);
+        }
+        catch (ContextException e)
+        {
+            processException(
+                    "Could not update metadata in bitstream(id=" + bitstreamId + "), ContextException. Message: " + e.getMessage(), context);
+        }
+        finally
+        {
+            processFinally(context);
+        }
+
+        log.info("Metadata of bitstream(id=" + bitstreamId + ") were successfully updated.");
+        return Response.status(Status.OK).build();
     }
 }

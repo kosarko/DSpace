@@ -20,6 +20,7 @@ import org.dspace.identifier.IdentifierService;
 import org.dspace.utils.DSpace;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -61,7 +62,7 @@ public class IndexEventConsumer implements Consumer {
     public void consume(Context ctx, Event event) throws Exception {
 
         if (objectsToUpdate == null) {
-            objectsToUpdate = new HashSet<DSpaceObject>();
+            objectsToUpdate = new LinkedHashSet<DSpaceObject>();
             handlesToDelete = new HashSet<String>();
         }
 

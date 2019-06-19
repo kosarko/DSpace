@@ -1157,6 +1157,8 @@
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_creator_help">Creator of recording or institution</message>
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note">Note</message>
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note_help">Note to the recording</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_type">File type</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_type">Type of file eg. audio, audio-visual, text etc.</message>
 
     <!-- org.dspace.app.xmlui.Submission.submit.EditBitstreamPolicies -->
     <message key="xmlui.Submission.submit.EditBitstreamPolicies.head">Bitstream Access</message>
@@ -2755,6 +2757,7 @@
 
 	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.note">Note</message>
 	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.creator">Creator</message>
+	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.type">Type</message>
 
 
 	<!-- Special pioneer model related text, wherever it might end up -->
@@ -3350,6 +3353,10 @@
 	<message key="input_forms.field.viadat.narrator.contact.hint">Contact details</message>
 	<message key="input_forms.field.viadat.narrator.note.label">Note</message>
 	<message key="input_forms.field.viadat.narrator.note.hint">Note</message>
+	<message key="input_forms.field.viadat.narrator.outputs.label">Outputs</message>
+	<message key="input_forms.field.viadat.narrator.outputs.hint">You can upload files on the next page</message>
+	<message key="input_forms.field.viadat.narrator.materials.label">Materials</message>
+	<message key="input_forms.field.viadat.narrator.materials.hint">You can upload files on the next page</message>
 	<message key="input_forms.value_pairs.viadat_gender.male">Male</message>
 	<message key="input_forms.value_pairs.viadat_gender.female">Female</message>
 	<message key="input_forms.value_pairs.viadat_gender.unspecified">Unspecified</message>

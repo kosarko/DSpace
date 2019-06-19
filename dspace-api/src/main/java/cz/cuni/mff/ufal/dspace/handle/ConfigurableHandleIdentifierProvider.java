@@ -91,23 +91,22 @@ public class ConfigurableHandleIdentifierProvider extends IdentifierProvider {
     @Override
     public boolean supports(String identifier)
     {
-        for(String prefix : supportedPrefixes){
-            if(identifier.startsWith(prefix))
-            {
-                return true;
+        if(identifier != null) {
+            for (String prefix : supportedPrefixes) {
+                if (identifier.startsWith(prefix)) {
+                    return true;
+                }
+            }
+
+            try {
+                String outOfUrl = retrieveHandleOutOfUrl(identifier);
+                if (outOfUrl != null) {
+                    return true;
+                }
+            } catch (SQLException e) {
+                log.error(e.getMessage(), e);
             }
         }
-
-        try {
-            String outOfUrl = retrieveHandleOutOfUrl(identifier);
-            if(outOfUrl != null)
-            {
-                return true;
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-        }
-
         return false;
     }
 

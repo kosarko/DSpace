@@ -100,7 +100,7 @@ public class Community extends DSpaceObject{
 
         if(expandFields.contains("logo") || expandFields.contains("all")) {
             if(community.getLogo() != null) {
-                logo = new Bitstream(community.getLogo(), null);
+                logo = new Bitstream(community.getLogo(), null, context);
             }
         } else {
             this.addExpand("logo");

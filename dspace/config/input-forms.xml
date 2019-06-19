@@ -161,6 +161,24 @@
                     <input-type>textarea</input-type>
                     <hint>input_forms.field.viadat.narrator.note.hint</hint>
                 </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>outputs</dc-qualifier>
+                    <label>input_forms.field.viadat.narrator.outputs.label</label>
+                    <input-type>textarea</input-type>
+                    <hint>input_forms.field.viadat.narrator.outputs.hint</hint>
+                </field>
+
+                <field>
+                    <dc-schema>viadat</dc-schema>
+                    <dc-element>narrator</dc-element>
+                    <dc-qualifier>materials</dc-qualifier>
+                    <label>input_forms.field.viadat.narrator.materials.label</label>
+                    <input-type>textarea</input-type>
+                    <hint>input_forms.field.viadat.narrator.materials.hint</hint>
+                </field>
             </page>
         </form>
         <form name="interviews">
@@ -340,39 +358,6 @@
         </form>
 
     </form-definitions>
-    <form-definitions-extra>
-        <form name="traditional">
-            <page number="1">
-                <field>
-                    <dc-schema>viadat</dc-schema>
-                    <dc-element>technical</dc-element>
-                    <dc-qualifier>type</dc-qualifier>
-                    <label>input_forms.field.viadat.technical.type.label</label>
-                    <input-type>onebox</input-type>
-                    <hint>input_forms.field.viadat.technical.type.hint</hint>
-                    <autocomplete>solr-technicalType_ac</autocomplete>
-                    <required>input_forms.field.viadat.technical.type.required</required>
-                </field>
-                <field>
-                    <dc-schema>dc</dc-schema>
-                    <dc-element>creator</dc-element>
-                    <label>input_forms.field.dc.creator.label</label>
-                    <input-type>onebox</input-type>
-                    <hint>input_forms.field.dc.creator.hint</hint>
-                    <autocomplete>solr-creator_ac</autocomplete>
-                </field>
-                <field>
-                    <dc-schema>viadat</dc-schema>
-                    <dc-element>technical</dc-element>
-                    <dc-qualifier>note</dc-qualifier>
-                    <label>input_forms.field.viadat.technical.note.label</label>
-                    <input-type>textarea</input-type>
-                    <hint>input_forms.field.viadat.technical.note.hint</hint>
-                </field>
-            </page>
-        </form>
-    </form-definitions-extra>
-
     <!-- form-value-pairs populate dropdown and qualdrop-value lists.          -->
     <!-- The form-value-pairs element holds child elements named 'value-pairs' -->
     <!-- A 'value-pairs' element has a value-pairs-name and a dc-term          -->

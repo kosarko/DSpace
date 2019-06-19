@@ -15,8 +15,11 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.dspace.app.util.MetadataExposure;
 import org.dspace.content.Bundle;
+import org.dspace.content.Metadatum;
 import org.dspace.core.Constants;
+import org.dspace.core.Context;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,17 +43,19 @@ public class Bitstream extends DSpaceObject {
     private Integer sequenceId;
     
     private ResourcePolicy[] policies = null;
+
+    private List<MetadataEntry> metadata;
     
     public Bitstream() {
 
     }
 
-    public Bitstream(org.dspace.content.Bitstream bitstream, String expand) throws SQLException{
+    public Bitstream(org.dspace.content.Bitstream bitstream, String expand, Context context) throws SQLException{
         super(bitstream);
-        setup(bitstream, expand);
+        setup(bitstream, expand, context);
     }
 
-    public void setup(org.dspace.content.Bitstream bitstream, String expand) throws SQLException{
+    public void setup(org.dspace.content.Bitstream bitstream, String expand, Context context) throws SQLException{
         List<String> expandFields = new ArrayList<String>();
         if(expand != null) {
             expandFields = Arrays.asList(expand.split(","));
@@ -96,6 +101,19 @@ public class Bitstream extends DSpaceObject {
 			policies = tempPolicies.toArray(new ResourcePolicy[0]);
         } else {
             this.addExpand("policies");
+        }
+
+        if(expandFields.contains("metadata") || expandFields.contains("all")) {
+            metadata = new ArrayList<MetadataEntry>();
+            Metadatum[] dcvs = bitstream.getMetadata(org.dspace.content.Item.ANY, org.dspace.content.Item.ANY,
+                    org.dspace.content.Item.ANY, org.dspace.content.Item.ANY);
+            for (Metadatum dcv : dcvs) {
+                if (!MetadataExposure.isHidden(context, dcv.schema, dcv.element, dcv.qualifier)) {
+                    metadata.add(new MetadataEntry(dcv.getField(), dcv.value, dcv.language));
+                }
+            }
+        } else {
+            this.addExpand("metadata");
         }
 
         if(!expandFields.contains("all")) {
@@ -182,6 +200,13 @@ public class Bitstream extends DSpaceObject {
 	public void setPolicies(ResourcePolicy[] policies) {
 		this.policies = policies;
 	}
-    
-    
+
+
+    public List<MetadataEntry> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(List<MetadataEntry> metadata){
+        this.metadata = metadata;
+    }
 }

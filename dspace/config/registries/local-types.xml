@@ -125,6 +125,12 @@
     </dc-type>
     <dc-type>
         <schema>local</schema>
+        <element>bitstream</element>
+        <qualifier>type</qualifier>
+        <scope_note>File type eg. audio, audio-visual, text etc.</scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>local</schema>
         <element>withdrawn</element>
         <qualifier>reason</qualifier>
         <scope_note>Store the withdrawal reason in addition to provenance</scope_note>

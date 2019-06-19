@@ -82,6 +82,10 @@ public class EditFileStep extends AbstractStep
             message("xmlui.Submission.submit.EditFileStep.bitstream_note");
     protected static final Message T_bitstream_note_help =
             message("xmlui.Submission.submit.EditFileStep.bitstream_note_help");
+    protected static final Message T_bitstream_type =
+            message("xmlui.Submission.submit.EditFileStep.bitstream_type");
+    protected static final Message T_bitstream_type_help =
+            message("xmlui.Submission.submit.EditFileStep.bitstream_type_help");
 
     /** The bitstream we are editing */
 	private Bitstream bitstream;
@@ -200,15 +204,8 @@ public class EditFileStep extends AbstractStep
         userFormat.setHelp(T_format_user_help);
         userFormat.setValue(bitstream.getUserFormatDescription());
 
-        final Item creatorItem = edit.addItem();
-        final String creator_field = "local.bitstream.creator";
-        final String bitstreamCreatorFormName = "bitstream_metadata_" + creator_field;
-        final Text bitstreamCreator = creatorItem.addText(bitstreamCreatorFormName, "autocomplete");
-        bitstreamCreator.setLabel(T_bitstream_creator);
-        bitstreamCreator.setHelp(T_bitstream_creator_help);
-        bitstreamCreator.setValue(bitstream.getMetadata(creator_field));
-        addAutocompleteComponents(bitstreamCreatorFormName, "solr-bitstream_" + creator_field,
-                creatorItem);
+        createTextWithAutocomplete(edit, "local.bitstream.type", T_bitstream_type, T_bitstream_type_help);
+        createTextWithAutocomplete(edit, "locatl.bitstream.creator", T_bitstream_creator, T_bitstream_creator_help);
 
         final String note_field = "local.bitstream.note";
         final TextArea bitstreamNote = edit.addItem().addTextArea("bitstream_metadata_" + note_field);
@@ -225,6 +222,17 @@ public class EditFileStep extends AbstractStep
         actions.addButton("submit_save").setValue(T_submit_save);
 		actions.addButton("submit_edit_cancel").setValue(T_submit_cancel);
         
+    }
+
+    private void createTextWithAutocomplete(List edit, String mdFieldName, Message label, Message help) throws WingException {
+        final Item item = edit.addItem();
+        final String formName = "bitstream_metadata_" + mdFieldName;
+        final Text text = item.addText(formName, "autocomplete");
+        text.setLabel(label);
+        text.setHelp(help);
+        text.setValue(bitstream.getMetadata(mdFieldName));
+        addAutocompleteComponents(formName, "solr-bitstream_" + mdFieldName, item);
+
     }
     
 }

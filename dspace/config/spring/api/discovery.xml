@@ -107,7 +107,6 @@
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterIssued" />
 		        <ref bean="searchFilterLanguage" />
-		        <ref bean="searchFilterType" />
                 <ref bean="searchFilterPeriod" />
                 <ref bean="searchFilterNarratorProject" />
                 <ref bean="searchFilterKeywords" />
@@ -205,9 +204,7 @@
         <property name="sidebarFacets">
             <list>
 		        <ref bean="searchFacetLanguage" />
-		        <ref bean="searchFacetType" />
 		        <ref bean="searchFacetFile" />
-		        <ref bean="searchFacetBranding" />
                 <ref bean="searchFacetNarratorName" />
                 <ref bean="searchFacetNarratorGender" />
                 <ref bean="searchFacetNarratorBirthdate" />
@@ -224,9 +221,6 @@
                 <ref bean="searchFacetInterviewPeriod" />
                 <ref bean="searchFacetInterviewPlace" />
                 <ref bean="searchFacetNarratorProject" />
-                <ref bean="searchFacetTechnicalType" />
-                <ref bean="searchFacetCreator" />
-
             </list>
         </property>
         <!--The search filters which can be used on the discovery search page-->
@@ -235,9 +229,7 @@
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterIssued" />
 		        <ref bean="searchFacetLanguage" />
-		        <ref bean="searchFacetType" />
 		        <ref bean="searchFacetFile" />
-		        <ref bean="searchFacetBranding" />
                 <ref bean="searchFacetNarratorName" />
                 <ref bean="searchFacetNarratorGender" />
                 <ref bean="searchFacetNarratorBirthdate" />
@@ -254,9 +246,8 @@
                 <ref bean="searchFacetInterviewPeriod" />
                 <ref bean="searchFacetInterviewPlace" />
                 <ref bean="searchFacetNarratorProject" />
-                <ref bean="searchFacetTechnicalType" />
-                <ref bean="searchFacetCreator" />
-
+                <ref bean="searchFacetBitstreamType" />
+                <ref bean="searchFacetBitstreamCreator" />
             </list>
         </property>
         <!--The sort filters for the discovery search-->
@@ -327,17 +318,6 @@
         <property name="type" value="iso_language"/>
         <property name="fullAutoComplete" value="false"/>	
     </bean>
-    <bean id="searchFilterType" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="type"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.type</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="false"/>
-    </bean>
     <bean id="searchFilterPeriod" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
         <property name="indexFieldName" value="period"/>
         <property name="metadataFields">
@@ -375,18 +355,6 @@
         <property name="fullAutoComplete" value="false"/>
     </bean>
     <!--Search facet configuration beans-->
-    <bean id="searchFacetCreator" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="creator"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.creator</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="20"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
-    </bean>
-
     <bean id="searchFacetNarratorName" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
         <property name="indexFieldName" value="narratorName"/>
         <property name="metadataFields">
@@ -583,18 +551,6 @@
         <property name="fullAutoComplete" value="true"/>
     </bean>
 
-    <bean id="searchFacetTechnicalType" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="technicalType"/>
-        <property name="metadataFields">
-            <list>
-                <value>viadat.technical.type</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="20"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="fullAutoComplete" value="true"/>
-    </bean>
-
     <bean id="searchFacetLanguage" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
         <property name="indexFieldName" value="language"/>
         <property name="metadataFields">
@@ -607,17 +563,6 @@
         <property name="type" value="iso_language"/>
     </bean>
 
-    <bean id="searchFacetType" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="type"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.type</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="20"/>
-        <property name="sortOrder" value="COUNT"/>
-    </bean>
-    
     <bean id="searchFacetFile" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
         <property name="indexFieldName" value="hasfile"/>
         <property name="metadataFields">
@@ -626,17 +571,30 @@
             </list>
         </property>
         <property name="sortOrder" value="COUNT"/>
-    </bean>   
-    
-    <bean id="searchFacetBranding" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="branding"/>
+    </bean>
+
+
+    <bean id="searchFacetBitstreamCreator" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="bitstreamCreator"/>
         <property name="metadataFields">
             <list>
-                <value>local.branding</value>
+                <value>local.bitstream.creator</value>
             </list>
         </property>
         <property name="sortOrder" value="COUNT"/>
-        <!--property name="type" value="raw_values"/-->
+        <property name="type" value="bitstream"/>
+        <property name="facetLimit" value="20"/>
+    </bean>
+    <bean id="searchFacetBitstreamType" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="bitstreamType"/>
+        <property name="metadataFields">
+            <list>
+                <value>local.bitstream.type</value>
+            </list>
+        </property>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="type" value="bitstream"/>
+        <property name="facetLimit" value="20"/>
     </bean>
 
     <!--Sort properties-->

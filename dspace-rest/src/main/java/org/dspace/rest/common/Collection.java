@@ -107,7 +107,7 @@ public class Collection extends DSpaceObject {
 
         if(expandFields.contains("logo") || expandFields.contains("all")) {
             if(collection.getLogo() != null) {
-                this.logo = new Bitstream(collection.getLogo(), null);
+                this.logo = new Bitstream(collection.getLogo(), null, context);
             }
         }
         else {

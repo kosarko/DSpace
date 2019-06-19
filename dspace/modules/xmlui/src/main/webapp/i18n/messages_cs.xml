@@ -1142,6 +1142,8 @@
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_creator_help">Tvůrce záznamu nebo instituce</message>
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note">Poznámka</message>
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note_help">Poznámka k nahrávce</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_type">Typ souboru</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_type">Typ souboru ve smyslu audio, audio-vizuální, text apod.</message>
 
 
         <!-- org.dspace.app.xmlui.Submission.submit.EditBitstreamPolicies -->
@@ -2741,6 +2743,7 @@
 
 	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.note">Poznámka</message>
 	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.creator">Tvůrce záznamu</message>
+	<message key="xmlui.dri2xhtml.METS-1.0.metadata.bitstream.type">Typ</message>
 
 	<!-- Special pioneer model related text, wherever it might end up -->
 	<message key="xmlui.dri2xhtml.pioneer.preview">Náhled</message>
@@ -3615,6 +3618,10 @@
 	<message key="input_forms.field.viadat.narrator.contact.hint">Kontaktní údaje</message>
 	<message key="input_forms.field.viadat.narrator.note.label">Poznámka</message>
 	<message key="input_forms.field.viadat.narrator.note.hint">Poznámka</message>
+	<message key="input_forms.field.viadat.narrator.outputs.label">Výstupy</message>
+	<message key="input_forms.field.viadat.narrator.outputs.hint">Nahrát soubory je možné na další stránce</message>
+	<message key="input_forms.field.viadat.narrator.materials.label">Materiály</message>
+	<message key="input_forms.field.viadat.narrator.materials.hint">Nahrát soubory je možné na další stránce</message>
 	<message key="input_forms.value_pairs.viadat_gender.male">Muž</message>
 	<message key="input_forms.value_pairs.viadat_gender.female">Žena</message>
 	<message key="input_forms.value_pairs.viadat_gender.unspecified">Nespecifikováno</message>

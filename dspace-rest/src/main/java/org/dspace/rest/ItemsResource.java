@@ -34,7 +34,6 @@ import org.apache.log4j.Logger;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
 import org.dspace.content.*;
-import org.dspace.content.Collection;
 import org.dspace.content.service.ItemService;
 import org.dspace.eperson.Group;
 import org.dspace.identifier.IdentifierNotFoundException;
@@ -562,7 +561,7 @@ public class ItemsResource extends Resource
             }
 
             dspaceBitstream = org.dspace.content.Bitstream.find(context, dspaceBitstream.getID());
-            bitstream = new Bitstream(dspaceBitstream, "");
+            bitstream = new Bitstream(dspaceBitstream, "", context);
             //trigger auto generated metadata on item
             dspaceItem.update();
 
