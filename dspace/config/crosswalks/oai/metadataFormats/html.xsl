@@ -5,7 +5,8 @@
     xmlns:doc="http://www.lyncode.com/xoai"
     xmlns:h="http://lindat.mff.cuni.cz/ns/experimental/html"
     xmlns:confman="org.dspace.core.ConfigurationManager"
-    exclude-result-prefixes="doc confman"
+    xmlns:stringutils="org.apache.commons.lang3.StringUtils"
+    exclude-result-prefixes="doc confman stringutils"
     version="1.0">
 
     <!-- repository name -->
@@ -16,25 +17,19 @@
     <xsl:template match="/">
         <h:html xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://lindat.mff.cuni.cz/ns/experimental/html http://lindat.mff.cuni.cz/schemas/experimental/html.xsd">
             <xsl:variable name="title"><xsl:call-template name="title"/></xsl:variable>
-            <xsl:variable name="authors"><xsl:call-template name="authors"/></xsl:variable>
             <xsl:variable name="pid"><xsl:call-template name="pid"/></xsl:variable>
             <xsl:variable name="repository"><xsl:call-template name="repository"/></xsl:variable>
             <xsl:variable name="year"><xsl:call-template name="year"/></xsl:variable>
-            <xsl:choose>
-                    <xsl:when test="$authors != ''">
-                        <xsl:copy-of select="$authors"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="doc:metadata/doc:element[@name='dc']/doc:element[@name='publisher']/doc:element/doc:field[@name='value']"/>
-                    </xsl:otherwise>
-            </xsl:choose>
+            <xsl:variable name="type"><xsl:call-template name="type"/></xsl:variable>
+            <xsl:if test="$type != ''">
+                <xsl:copy-of select="$type"/>
+            </xsl:if>
+            <xsl:if test="$title != ''">
+                <xsl:copy-of select="$title"/>
+            </xsl:if>
             <xsl:if test="$year != ''">
                 <xsl:text>, </xsl:text>
                 <xsl:copy-of select="$year"/>
-            </xsl:if>
-            <xsl:if test="$title != ''">
-                <xsl:text>, </xsl:text>
-                <xsl:copy-of select="$title"/>
             </xsl:if>
             <xsl:if test="$repository != ''">
                 <xsl:text>, </xsl:text>
@@ -51,6 +46,13 @@
     <xsl:template name="title">
         <xsl:if test="doc:metadata/doc:element[@name='dc']/doc:element[@name='title']/doc:element/doc:field[@name='value']">
             <i><xsl:value-of select="doc:metadata/doc:element[@name='dc']/doc:element[@name='title']/doc:element/doc:field[@name='value']"/></i>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="type">
+        <xsl:if test="doc:metadata/doc:element[@name='dc']/doc:element[@name='type']/doc:element/doc:field[@name='value']">
+            <xsl:value-of
+                    select="concat(stringutils:capitalize(doc:metadata/doc:element[@name='dc']/doc:element[@name='type']/doc:element/doc:field[@name='value']), ': ')"/>
         </xsl:if>
     </xsl:template>
 
