@@ -7,6 +7,7 @@
  */
 package org.dspace.discovery;
 
+import org.apache.solr.client.solrj.response.FieldStatsInfo;
 import org.dspace.util.MultiFormatDateParser;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1779,6 +1780,10 @@ public class SolrServiceImpl implements SearchService, IndexingService {
 
         }
 
+        for(String statsField : discoveryQuery.getStatsFields()){
+            solrQuery.setGetFieldStatistics(statsField);
+        }
+
         //Add any configured search plugins !
         List<SolrServiceSearchPlugin> solrServiceSearchPlugins = new DSpace().getServiceManager().getServicesByType(SolrServiceSearchPlugin.class);
         for (SolrServiceSearchPlugin searchPlugin : solrServiceSearchPlugins)
@@ -1964,6 +1969,19 @@ public class SolrServiceImpl implements SearchService, IndexingService {
                 if(StringUtils.isNotBlank(recommendedQuery))
                 {
                     result.setSpellCheckQuery(recommendedQuery);
+                }
+            }
+
+            if(solrQueryResponse.getFieldStatsInfo() != null){
+                for(Map.Entry<String, FieldStatsInfo> entry : solrQueryResponse.getFieldStatsInfo().entrySet()){
+                    String field = entry.getKey();
+                    FieldStatsInfo statsInfo = entry.getValue();
+                    Object min = statsInfo.getMin();
+                    Object max = statsInfo.getMax();
+                    if(min != null && max != null) {
+                        result.addStatsResult(field, new DiscoverResult.StatsResult(min, max));
+                    }
+
                 }
             }
         }

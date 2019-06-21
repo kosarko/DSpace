@@ -28,6 +28,7 @@ public class DiscoverResult {
     private int searchTime;
     private Map<String, DSpaceObjectHighlightResult> highlightedResults;
     private String spellCheckQuery;
+    private Map<String, StatsResult> statsForField;
 
 
     public DiscoverResult() {
@@ -35,6 +36,7 @@ public class DiscoverResult {
         facetResults = new LinkedHashMap<String, List<FacetResult>>();
         searchDocuments = new LinkedHashMap<String, List<SearchDocument>>();
         highlightedResults = new HashMap<String, DSpaceObjectHighlightResult>();
+        statsForField = new HashMap<>();
     }
 
 
@@ -106,6 +108,14 @@ public class DiscoverResult {
     public void addHighlightedResult(DSpaceObject dso, DSpaceObjectHighlightResult highlightedResult)
     {
         this.highlightedResults.put(dso.getHandle(), highlightedResult);
+    }
+
+    public void addStatsResult(String field, StatsResult statsResult) {
+        this.statsForField.put(field, statsResult);
+    }
+
+    public StatsResult getStatsResult(String field){
+        return statsForField.get(field);
     }
 
     public static final class FacetResult{
@@ -238,6 +248,26 @@ public class DiscoverResult {
 
         public static String getDspaceObjectStringRepresentation(DSpaceObject dso){
             return dso.getType() + ":" + dso.getID();
+        }
+    }
+
+    /**
+     * This class holds min/max object from FieldStatsInfo
+     */
+    public static final class StatsResult {
+        Object min;
+        Object max;
+        public StatsResult(Object min, Object max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public Object getMin(){
+            return min;
+        }
+
+        public Object getMax() {
+            return max;
         }
     }
 }

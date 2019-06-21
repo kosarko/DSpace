@@ -43,6 +43,7 @@ public class DiscoverQuery {
     private int facetMinCount = -1;
     private int facetOffset = 0;
     private Map<String, DiscoverHitHighlightingField> hitHighlighting;
+    private List<String> statsFields;
 
     /** Used when you want to search for a specific field value **/
     private List<String> searchFields;
@@ -61,6 +62,7 @@ public class DiscoverQuery {
         this.hitHighlighting = new HashMap<String, DiscoverHitHighlightingField>();
         //Use a linked hashmap since sometimes insertion order might matter
         this.properties = new LinkedHashMap<String, List<String>>();
+        this.statsFields = new ArrayList<>();
     }
 
 
@@ -287,5 +289,13 @@ public class DiscoverQuery {
 
     public void setSpellCheck(boolean spellCheck) {
         this.spellCheck = spellCheck;
+    }
+
+    public void addStatsField(String field){
+        statsFields.add(field);
+    }
+
+    public List<String> getStatsFields() {
+        return statsFields;
     }
 }

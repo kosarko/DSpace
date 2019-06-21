@@ -389,28 +389,15 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
                             yearRangeQuery.setMaxResults(1);
                             //Set our query to anything that has this value
                             yearRangeQuery.addFieldPresentQueries(dateFacet);
-                            //Set sorting so our last value will appear on top
-                            yearRangeQuery.setSortField(dateFacet + "_sort", DiscoverQuery.SORT_ORDER.asc);
                             yearRangeQuery.addFilterQueries(filterQueries);
                             yearRangeQuery.addSearchField(dateFacet);
-                            DiscoverResult lastYearResult = getSearchService().search(context, scope, yearRangeQuery);
-
-
-                            if(0 < lastYearResult.getDspaceObjects().size()){
-                                java.util.List<DiscoverResult.SearchDocument> searchDocuments = lastYearResult.getSearchDocument(lastYearResult.getDspaceObjects().get(0));
-                                if(0 < searchDocuments.size() && 0 < searchDocuments.get(0).getSearchFieldValues(dateFacet).size()){
-                                    oldestYear = Integer.parseInt(searchDocuments.get(0).getSearchFieldValues(dateFacet).get(0));
-                                }
+                            yearRangeQuery.addStatsField(dateFacet);
+                            DiscoverResult yearResult = getSearchService().search(context, scope, yearRangeQuery);
+                            if(yearResult.getStatsResult(dateFacet) != null){
+                                oldestYear = ((Number)yearResult.getStatsResult(dateFacet).getMin()).intValue();
+                                newestYear = ((Number)yearResult.getStatsResult(dateFacet).getMax()).intValue();
                             }
-                            //Now get the first year
-                            yearRangeQuery.setSortField(dateFacet + "_sort", DiscoverQuery.SORT_ORDER.desc);
-                            DiscoverResult firstYearResult = getSearchService().search(context, scope, yearRangeQuery);
-                            if( 0 < firstYearResult.getDspaceObjects().size()){
-                                java.util.List<DiscoverResult.SearchDocument> searchDocuments = firstYearResult.getSearchDocument(firstYearResult.getDspaceObjects().get(0));
-                                if(0 < searchDocuments.size() && 0 < searchDocuments.get(0).getSearchFieldValues(dateFacet).size()){
-                                    newestYear = Integer.parseInt(searchDocuments.get(0).getSearchFieldValues(dateFacet).get(0));
-                                }
-                            }
+
                             //No values found!
                             if(newestYear == -1 || oldestYear == -1)
                             {
