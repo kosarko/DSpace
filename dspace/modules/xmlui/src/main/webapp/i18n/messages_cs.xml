@@ -3307,6 +3307,11 @@
 	<message key="xmlui.UFAL.artifactbrowser.item_list.alias">Alias:</message>
 	<message key="xmlui.UFAL.artifactbrowser.interviews-count">Počet rozhovorů s tímto narátorem: {0}</message>
 	<message key="xmlui.UFAL.artifactbrowser.item_list.keywords">Klíčová slova:</message>
+	<message key="xmlui.UFAL.artifactbrowser.search.level1">1. Úroveň (narátor)</message>
+	<message key="xmlui.UFAL.artifactbrowser.search.level2">2. Úroveň (rozhovor)</message>
+	<message key="xmlui.UFAL.artifactbrowser.search.toggle_on">Narátory</message>
+	<message key="xmlui.UFAL.artifactbrowser.search.toggle_off">Rozhovory</message>
+	<message key="xmlui.UFAL.artifactbrowser.search.toggle_hint">Ve vyhledávání zobrazit pouze</message>
 
 
 	<!-- UFAL/lib/xsl/aspect/artifactbrowser/item-view.xsl -->

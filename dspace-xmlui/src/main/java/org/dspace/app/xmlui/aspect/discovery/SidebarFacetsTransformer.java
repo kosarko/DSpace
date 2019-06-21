@@ -22,6 +22,7 @@ import org.dspace.app.xmlui.wing.Message;
 import org.dspace.app.xmlui.wing.WingException;
 import org.dspace.app.xmlui.wing.element.List;
 import org.dspace.app.xmlui.wing.element.Options;
+import org.dspace.app.xmlui.wing.element.PageMeta;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.DSpaceObject;
 import org.dspace.core.Context;
@@ -57,12 +58,7 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
     /**
      * Cached query results
      */
-    protected DiscoverResult queryResults;
-
-    /**
-     * Cached query arguments
-     */
-    protected DiscoverQuery queryArgs;
+    protected DiscoverResult narratorResults, interviewResults;
 
     /**
      * Cached validity object
@@ -78,6 +74,12 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
         org.dspace.kernel.ServiceManager manager = dspace.getServiceManager() ;
 
         return manager.getServiceByName(SearchService.class.getName(),SearchService.class);
+    }
+
+    @Override
+    public void addPageMeta(PageMeta pageMeta) throws SAXException, WingException, UIException, SQLException, IOException, AuthorizeException {
+        super.addPageMeta(pageMeta);
+        pageMeta.addMetadata("include-library", "bootstrap-toggle");
     }
 
     /**
@@ -124,18 +126,21 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
                     val.add(dso);
                 }
 
-                val.add("numFound:" + queryResults.getDspaceObjects().size());
+                val.add("narrators numFound:" + narratorResults.getDspaceObjects().size());
+                val.add("interviews numFound:" + interviewResults.getDspaceObjects().size());
 
-                for (DSpaceObject resultDso : queryResults.getDspaceObjects()) {
-                    val.add(resultDso);
-                }
+                for(DiscoverResult queryResults : new DiscoverResult[]{narratorResults, interviewResults}) {
+                    for (DSpaceObject resultDso : queryResults.getDspaceObjects()) {
+                        val.add(resultDso);
+                    }
 
-                for (String facetField : queryResults.getFacetResults().keySet()) {
-                    val.add(facetField);
+                    for (String facetField : queryResults.getFacetResults().keySet()) {
+                        val.add(facetField);
 
-                    java.util.List<DiscoverResult.FacetResult> facetValues = queryResults.getFacetResults().get(facetField);
-                    for (DiscoverResult.FacetResult facetValue : facetValues) {
-                        val.add(facetField + facetValue.getAsFilterQuery() + facetValue.getCount());
+                        java.util.List<DiscoverResult.FacetResult> facetValues = queryResults.getFacetResults().get(facetField);
+                        for (DiscoverResult.FacetResult facetValue : facetValues) {
+                            val.add(facetField + facetValue.getAsFilterQuery() + facetValue.getCount());
+                        }
                     }
                 }
 
@@ -153,34 +158,101 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
     public void performSearch() throws SearchServiceException, UIException, SQLException {
         DSpaceObject dso = getScope();
         Request request = ObjectModelHelper.getRequest(objectModel);
-        queryArgs = getQueryArgs(context, dso, DiscoveryUIUtils.getFilterQueries(request, context));
         //If we are on a search page performing a search a query may be used
         String query = request.getParameter("query");
         if(query != null && !"".equals(query)){
             // Do standard escaping of some characters in this user-entered query
             query = DiscoveryUIUtils.escapeQueryChars(query);
-            queryArgs.setQuery(query);
+        }else{
+            query = "*:*";
+        }
+
+
+        String[] filterQueries = DiscoveryUIUtils.getFilterQueries(request, context);
+
+        java.util.List<String> narratorFilterQueries = new ArrayList<>();
+        java.util.List<String> interviewFilterQueries = new ArrayList<>();
+
+        for(String fq : filterQueries){
+            if(fq.startsWith("narrator")){
+                narratorFilterQueries.add(fq);
+            }else if(fq.startsWith("interview")){
+                interviewFilterQueries.add(fq);
+            }else{
+                log.error("Neither interview nor narrator filter " + fq);
+            }
+        }
+
+        // _query_ is nested query, let's us combine different query types, normal and join
+        // join query is sort of inner join; returns the documents having the `to` field, ie. with haspart narrators
+        // `{!join from=identifier_keyword to=haspart_keyword}1650` 1650 is a from_query
+        // search through docs having identifier_keyword, using from_query, leave only those that are also in
+        // some haspart field, return the documents with haspart field.
+        // join in fq can't change the "type" of returned document
+        String narratorReturningQuery = query + " OR _query_:{!join from=identifier_keyword to=haspart_keyword}" + query;
+        String interviewReturningQuery = query + " OR _query_:{!join from=identifier_keyword to=ispartof_keyword}" + query;
+
+        DiscoverQuery narratorQuery = getQueryArgs(context, dso,
+                narratorFilterQueries.toArray(new String[narratorFilterQueries.size()]));
+        DiscoverQuery interviewQuery = getQueryArgs(context, dso,
+                interviewFilterQueries.toArray(new String[interviewFilterQueries.size()]));
+        narratorQuery.addFilterQueries("type_keyword:narrator");
+        narratorQuery.setQuery(narratorReturningQuery);
+        interviewQuery.addFilterQueries("type_keyword:interview");
+        interviewQuery.setQuery(interviewReturningQuery);
+
+        if(!interviewFilterQueries.isEmpty()){
+            for (ListIterator<String> it = interviewFilterQueries.listIterator(); it.hasNext();){
+                //this query returns narrators so the from query searches for interviews
+                String fq = "{!join from=identifier_keyword to=haspart_keyword}" + it.next();
+                it.set(fq);
+            }
+            narratorQuery.addFilterQueries(interviewFilterQueries.toArray(new String[interviewFilterQueries.size()]));
+        }
+
+        if(!narratorFilterQueries.isEmpty()){
+            for (ListIterator<String> it = narratorFilterQueries.listIterator(); it.hasNext(); ) {
+                // this join returns interview
+                String fq = "{!join from=identifier_keyword to=ispartof_keyword}" + it.next();
+                it.set(fq);
+            }
+            interviewQuery.addFilterQueries(narratorFilterQueries.toArray(new String[narratorFilterQueries.size()]));
         }
 
         //We do not need to retrieve any dspace objects, only facets
-        queryArgs.setMaxResults(0);
-        queryResults =  getSearchService().search(context, dso,  queryArgs);
+        interviewQuery.setMaxResults(0);
+        narratorQuery.setMaxResults(0);
+        narratorResults = getSearchService().search(context, dso, narratorQuery);
+        interviewResults = getSearchService().search(context, dso, interviewQuery);
     }
 
     @Override
     public void addOptions(Options options) throws SAXException, WingException, SQLException, IOException, AuthorizeException {
-
-        Request request = ObjectModelHelper.getRequest(objectModel);
-
         try {
             performSearch();
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error while searching for sidebar facets", e);
 
             return;
         }
+        boolean hasResults = narratorResults.getFacetResults().size() > 0 || interviewResults.getFacetResults().size() > 0;
+        if(hasResults) {
+            //Since we have a value it is safe to add the sidebar (doing it this way will ensure that we do not end up with an empty sidebar)
+            List facetListing = options.addList("discovery");
+            facetListing.setHead(T_FILTER_HEAD);
 
-        if (this.queryResults != null) {
+            for (DiscoverResult queryResults : new DiscoverResult[]{narratorResults, interviewResults}) {
+                processResults(queryResults, facetListing);
+            }
+        }
+    }
+
+    private void processResults(DiscoverResult queryResults, List browse) throws SQLException, WingException,
+            UnsupportedEncodingException {
+
+        Request request = ObjectModelHelper.getRequest(objectModel);
+
+        if (queryResults != null) {
             DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
             java.util.List<String> fqs = Arrays.asList(DiscoveryUIUtils.getFilterQueries(request, context));
 
@@ -188,8 +260,6 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
             java.util.List<DiscoverySearchFilterFacet> facets = discoveryConfiguration.getSidebarFacets();
 
             if (facets != null && 0 < facets.size()) {
-
-                List browse = null;
 
                 for (DiscoverySearchFilterFacet field : facets) {
                     //Retrieve our values
@@ -203,13 +273,6 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
 
                     //This is needed to make sure that the date filters do not remain empty
                     if (facetValues != null && 0 < facetValues.size()) {
-
-                        if(browse == null){
-                            //Since we have a value it is safe to add the sidebar (doing it this way will ensure that we do not end up with an empty sidebar)
-                            browse = options.addList("discovery");
-
-                            browse.setHead(T_FILTER_HEAD);
-                        }
 
                         Iterator<DiscoverResult.FacetResult> iter = facetValues.iterator();
 
@@ -293,6 +356,10 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
         if(StringUtils.isNotBlank(request.getParameter("rpp"))){
             parameters.add("rpp=" + request.getParameter("rpp"));
         }
+        String showNarratorsParam = request.getParameter("showNarrators");
+        boolean showNarrators = !"false".equals(showNarratorsParam);
+        parameters.add("showNarrators=" + Boolean.toString(showNarrators));
+
 
         Map<String, String[]> parameterFilterQueries = DiscoveryUIUtils.getParameterFilterQueries(request);
         for(String parameter : parameterFilterQueries.keySet()){
@@ -496,8 +563,8 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
 
     @Override
     public void recycle() {
-        queryResults = null;
-        queryArgs = null;
+        narratorResults = null;
+        interviewResults = null;
         validity = null;
         super.recycle();
     }

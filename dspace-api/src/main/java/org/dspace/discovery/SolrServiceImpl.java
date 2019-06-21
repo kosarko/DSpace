@@ -2224,7 +2224,10 @@ public class SolrServiceImpl implements SearchService, IndexingService {
 
     protected String transformFacetField(DiscoverFacetField facetFieldConfig, String field, boolean removePostfix)
     {
-        if(facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_TEXT))
+        if(facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_TEXT) ||
+                facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG) ||
+                facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_BITSTREAM) ||
+                facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_PRESENT))
         {
             if(removePostfix)
             {
@@ -2268,13 +2271,6 @@ public class SolrServiceImpl implements SearchService, IndexingService {
         }else if(facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_STANDARD))
         {
             return field;
-	}else if(facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG)){
-            if(removePostfix)
-            {
-                return field.substring(0, field.lastIndexOf("_filter"));
-            }else{
-                return field + "_filter";
-            }
         }else{
             return field;
         }

@@ -3,6 +3,8 @@ package cz.cuni.mff.ufal.dspace.discovery;
 import java.sql.SQLException;
 import java.util.*;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrInputDocument;
 import org.dspace.content.Bitstream;
@@ -16,13 +18,10 @@ import org.dspace.discovery.configuration.DiscoveryConfiguration;
 import org.dspace.discovery.configuration.DiscoveryConfigurationParameters;
 import org.dspace.discovery.configuration.DiscoverySearchFilter;
 import org.dspace.discovery.configuration.DiscoverySearchFilterFacet;
-import org.dspace.identifier.IdentifierService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cz.cuni.mff.ufal.IsoLangCodes;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Keeps most of our search query/index tweaks
@@ -36,13 +35,7 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
     private static final Logger log = LoggerFactory
             .getLogger(SolrServiceTweaksPlugin.class);
 
-    private IdentifierService identifierService;
-
-    @Autowired
-    @Required
-    public void setIdentifierService(IdentifierService identifierService){
-        this.identifierService = identifierService;
-    }
+    static final String[] generatedIndexFieldSuffixes = {"_filter", "_ac", "_keyword", ".year"};
 
     @Override
     public void additionalSearchParameters(Context context,
@@ -78,217 +71,300 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
         if (dso.getType() == Constants.ITEM)
         {
             Item item = (Item) dso;
-            //create our filter values
-            List<DiscoveryConfiguration> discoveryConfigurations;
-            try
-            {
-                discoveryConfigurations = SearchUtils
-                        .getAllDiscoveryConfigurations(item);
-                // metadataField to list of filters
-                Map<String, List<DiscoverySearchFilter>> searchFilters = new HashMap<String, List<DiscoverySearchFilter>>();
-                Map<String, List<DiscoverySearchFilter>> bitstreamSearchFilters = new HashMap<>();
-                // read config
-                // partly yanked from SolrServiceImpl
-                // go through configurations
-                for (DiscoveryConfiguration discoveryConfiguration : discoveryConfigurations)
-                {
-                    // go through filters in configuration
-                    for (int i = 0; i < discoveryConfiguration
-                            .getSearchFilters().size(); i++)
-                    {
-                        DiscoverySearchFilter discoverySearchFilter = discoveryConfiguration
-                                .getSearchFilters().get(i);
-                        // go through metadata fields the filter uses
-                        for (int j = 0; j < discoverySearchFilter
-                                .getMetadataFields().size(); j++)
-                        {
-                            String metadataField = discoverySearchFilter
-                                    .getMetadataFields().get(j);
-                            // list of filters for metadataField
-                            List<DiscoverySearchFilter> resultingList;
-                            String type = discoverySearchFilter.getType();
-                            // Process only our new types
-                            if (type.equals(DiscoveryConfigurationParameters.TYPE_RAW)
-                                    || type.equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG))
-                            {
-                                if (searchFilters.get(metadataField) != null)
-                                {
-                                    resultingList = searchFilters.get(metadataField);
-                                }
-                                else
-                                {
-                                    // New metadata field, create a new list for it
-                                    resultingList = new ArrayList<DiscoverySearchFilter>();
-                                }
-                                resultingList.add(discoverySearchFilter);
-
-                                searchFilters.put(metadataField, resultingList);
-                            }
-                            else if (type.equals(DiscoveryConfigurationParameters.TYPE_BITSTREAM))
-                            {
-                                if(bitstreamSearchFilters.get(metadataField) != null){
-                                    resultingList = searchFilters.get(metadataField);
-                                } else{
-                                    resultingList = new ArrayList<>();
-                                }
-                                resultingList.add(discoverySearchFilter);
-                                bitstreamSearchFilters.put(metadataField, resultingList);
-                            }
-                        }
-                    }
-                }
-                //clear any input document fields we are about to add lower
-                clearFieldsWeAreAdding(document, searchFilters, bitstreamSearchFilters);
-
-                for (Map.Entry<String, List<DiscoverySearchFilter>> entry : searchFilters .entrySet())
-                {
-                    String metadataField = entry.getKey();
-                    List<DiscoverySearchFilter> filters = entry.getValue();
-                    Metadatum[] mds = item
-                            .getMetadataByMetadataString(metadataField);
-                    for (Metadatum md : mds)
-                    {
-                        String value = md.value;
-                        for (DiscoverySearchFilter filter : filters)
-                        {
-                            if (filter
-                                    .getFilterType()
-                                    .equals(DiscoverySearchFilterFacet.FILTER_TYPE_FACET))
-                            {
-                                String convertedValue = null;
-                                if (filter
-                                        .getType()
-                                        .equals(DiscoveryConfigurationParameters.TYPE_RAW))
-                                {
-                                    // no lowercasing and separators for this
-                                    // type
-                                    convertedValue = value;
-                                }
-                                else if (filter
-                                        .getType()
-                                        .equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG))
-                                {
-                                    String langName = IsoLangCodes
-                                            .getLangForCode(value);
-                                    if (langName != null)
-                                    {
-                                        convertedValue = langName.toLowerCase()
-                                                + SolrServiceImpl.FILTER_SEPARATOR
-                                                + langName;
-                                    }
-                                    else
-                                    {
-                                        log.error(String
-                                                .format("No language found for iso code %s",
-                                                        value));
-                                    }
-                                }
-                                if (convertedValue != null)
-                                {
-                                    document.addField(
-                                            filter.getIndexFieldName()
-                                                    + "_filter", convertedValue);
-                                }
-                            }
-
-                            if (filter
-                                    .getType()
-                                    .equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG))
-                            {
-
-                                String langName = IsoLangCodes
-                                        .getLangForCode(value);
-                                if (langName != null)
-                                {
-                                    document.addField(
-                                            filter.getIndexFieldName(),
-                                            langName);
-                                    document.addField(
-                                            filter.getIndexFieldName()
-                                                    + "_keyword", langName);
-                                    document.addField(
-                                            filter.getIndexFieldName() + "_ac",
-                                            langName);
-                                    //this should ensure it's copied into the default search field
-                                    document.addField(
-                                            "dc.language.name",
-                                            langName);
-                                }
-                                else
-                                {
-                                    log.error(String
-                                            .format("No language found for iso code %s",
-                                                    value));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for (Map.Entry<String, List<DiscoverySearchFilter>> entry : bitstreamSearchFilters.entrySet()){
-                    String mdField = entry.getKey();
-                    List<DiscoverySearchFilter> filters = entry.getValue();
-                    List<Metadatum> mds = new LinkedList<>();
-                    for(Bitstream bitstream : item.getNonInternalBitstreams()){
-                       mds.addAll(bitstream.getMetadata(mdField, Item.ANY));
-                    }
-                    for (DiscoverySearchFilter filter : filters) {
-                        for (Metadatum md : mds) {
-                            String name = filter.getIndexFieldName();
-                            String[] names = {name, name + "_filter", name + "_keyword",
-                                    name + "_ac"};
-                            for (String fieldName : names) {
-                                document.addField(fieldName, md.value);
-                            }
-
-                        }
-                    }
-                }
-            }
-            catch (SQLException e)
-            {
-                log.error(e.getMessage());
-            }
-            //process item metadata
-            //just add _comp to local*
-            Metadatum[] mds = item.getMetadata("local", Item.ANY, Item.ANY, Item.ANY);
-            for(Metadatum meta : mds){
-            	String field = meta.schema + "." + meta.element;
-                String value = meta.value;
-                if (value == null) {
-                    continue;
-                }
-                if (meta.qualifier != null && !meta.qualifier.trim().equals("")) {
-                    field += "." + meta.qualifier;
-                }
-            	document.addField(field + "_comp", value);
-            }
-
-            //create handle_title_ac field
-            String title = item.getName();
-            String handle = item.getHandle();
-            document.addField("handle_title_ac", handle + ":" + title);
-
-            final CopyPartsMetadataIndexPlugin copyPartsMetadataIndexPlugin = new CopyPartsMetadataIndexPlugin();
-            copyPartsMetadataIndexPlugin.setIdentifierService(identifierService);
-            copyPartsMetadataIndexPlugin.additionalIndex(context, dso, document);
+            copyBitstreamMetadataToInterview(document, item);
+            processAdditionalConfigFilters(document, item);
+            createCompFieldsFromLocalMetadata(document, item);
+            createHandleTitleAcField(document, item);
+            cleanupNarratorInterviewFields(document, item);
         }
     }
 
-    private void clearFieldsWeAreAdding(SolrInputDocument document, Map<String, List<DiscoverySearchFilter>>... maps){
-        for (Map<String, List<DiscoverySearchFilter>> mdFieldToFilters : maps) {
+    private void copyBitstreamMetadataToInterview(SolrInputDocument document, Item item) {
+        List<Bitstream> bitstreams = new ArrayList<>();
+        try {
+            bitstreams.addAll(Arrays.asList(item.getNonInternalBitstreams()));
+        }catch (SQLException e){
+            log.error(e.getMessage());
+        }
+        for(Bitstream bitstream : bitstreams){
+            List<Metadatum> metadata = bitstream.getMetadata("local", "bitstream", Item.ANY, Item.ANY, Item.ANY);
+            for(Metadatum md : metadata){
+                String field = md.schema + "." + md.element;
+                if(md.qualifier != null && !md.qualifier.isEmpty()){
+                    field += "." + md.qualifier;
+                }
+                document.addField(field, md.value);
+            }
+        }
+    }
+
+    private void processAdditionalConfigFilters(SolrInputDocument document, Item item) {
+        // metadataField to list of filters
+        Map<String, List<DiscoverySearchFilter>> searchFilters;
+        Map<String, List<DiscoverySearchFilter>> bitstreamSearchFilters;
+        try {
+            Map<String, Map<String, List<DiscoverySearchFilter>>> maps = getFieldToFiltersMaps(item);
+            searchFilters = maps.get("search");
+            bitstreamSearchFilters = maps.get("bitstream");
+
+            handleOurNewFilterTypes(document, item, searchFilters);
+
+            handleOurBitstreamFilters(document, item, bitstreamSearchFilters);
+        }catch (SQLException e){
+            log.error(e.getMessage());
+        }
+    }
+
+    private void handleOurBitstreamFilters(SolrInputDocument document, Item item, Map<String, List<DiscoverySearchFilter>> bitstreamSearchFilters) throws SQLException {
+        //clear any input document fields we are about to add lower
+        clearFieldsWeAreAdding(document, bitstreamSearchFilters);
+        for (Map.Entry<String, List<DiscoverySearchFilter>> entry : bitstreamSearchFilters.entrySet()){
+            String mdField = entry.getKey();
+            List<DiscoverySearchFilter> filtersUsingMdField = entry.getValue();
+            List<Metadatum> metadataForMdFieldFromAllBitstreams = new LinkedList<>();
+            for(Bitstream bitstream : item.getNonInternalBitstreams()){
+               metadataForMdFieldFromAllBitstreams.addAll(bitstream.getMetadata(mdField, Item.ANY));
+            }
+            for (DiscoverySearchFilter filter : filtersUsingMdField) {
+                for (Metadatum md : metadataForMdFieldFromAllBitstreams) {
+                    List<String> fieldNames = generateFieldNamesFromFilterIndexName(filter.getIndexFieldName());
+                    //XXX bitstream filters don't work with dates
+                    CollectionUtils.filter(fieldNames , new Predicate() {
+                                @Override
+                                public boolean evaluate(Object object) {
+                                    return object instanceof String && !((String)object).contains(".year");
+                                }
+                    });
+                    for (String fieldName : fieldNames){
+                        document.addField(fieldName, md.value);
+                    }
+
+                }
+            }
+        }
+    }
+
+    private void handleOurNewFilterTypes(SolrInputDocument document, Item item, Map<String, List<DiscoverySearchFilter>> searchFilters) {
+        //clear any input document fields we are about to add lower
+        clearFieldsWeAreAdding(document, searchFilters);
+        for (Map.Entry<String, List<DiscoverySearchFilter>> entry : searchFilters .entrySet())
+        {
+            String metadataField = entry.getKey();
+            List<DiscoverySearchFilter> filters = entry.getValue();
+            Metadatum[] mds = item
+                    .getMetadataByMetadataString(metadataField);
+            for (Metadatum md : mds)
+            {
+                String value = md.value;
+                for (DiscoverySearchFilter filter : filters)
+                {
+                    if (filter
+                            .getFilterType()
+                            .equals(DiscoverySearchFilterFacet.FILTER_TYPE_FACET))
+                    {
+                        String convertedValue = null;
+                        if (filter
+                                .getType()
+                                .equals(DiscoveryConfigurationParameters.TYPE_RAW))
+                        {
+                            // no lowercasing and separators for this
+                            // type
+                            convertedValue = value;
+                        }
+                        else if (filter
+                                .getType()
+                                .equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG))
+                        {
+                            String langName = IsoLangCodes
+                                    .getLangForCode(value);
+                            if (langName != null)
+                            {
+                                convertedValue = langName.toLowerCase()
+                                        + SolrServiceImpl.FILTER_SEPARATOR
+                                        + langName;
+                            }
+                            else
+                            {
+                                log.error(String
+                                        .format("No language found for iso code %s",
+                                                value));
+                            }
+                        }
+                        if (convertedValue != null)
+                        {
+                            document.addField(
+                                    filter.getIndexFieldName()
+                                            + "_filter", convertedValue);
+                        }
+                    }
+
+                    if (filter
+                            .getType()
+                            .equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG))
+                    {
+
+                        String langName = IsoLangCodes
+                                .getLangForCode(value);
+                        if (langName != null)
+                        {
+                            document.addField(
+                                    filter.getIndexFieldName(),
+                                    langName);
+                            document.addField(
+                                    filter.getIndexFieldName()
+                                            + "_keyword", langName);
+                            document.addField(
+                                    filter.getIndexFieldName() + "_ac",
+                                    langName);
+                            //this should ensure it's copied into the default search field
+                            document.addField(
+                                    "dc.language.name",
+                                    langName);
+                        }
+                        else
+                        {
+                            log.error(String
+                                    .format("No language found for iso code %s",
+                                            value));
+                        }
+                    }
+                }
+            }
+
+            for(DiscoverySearchFilter filter : filters){
+                if(!filter.getType().equals(DiscoveryConfigurationParameters.TYPE_PRESENT)){
+                    continue;
+                }
+                String convertedValue = mds.length > 0 ? "Yes" : "No";
+                for(String suff : new String[]{"", "_filter", "_keyword", "_ac"}){
+                    document.addField(filter.getIndexFieldName() + suff, convertedValue);
+                }
+
+            }
+
+        }
+    }
+
+    private Map<String, Map<String, List<DiscoverySearchFilter>>> getFieldToFiltersMaps(Item item) throws SQLException {
+        // metadataField to list of filters
+        Map<String, List<DiscoverySearchFilter>> searchFilters = new HashMap<>();
+        Map<String, List<DiscoverySearchFilter>> bitstreamSearchFilters = new HashMap<>();
+        List<DiscoveryConfiguration> discoveryConfigurations = SearchUtils
+                .getAllDiscoveryConfigurations(item);
+        // read config
+        // partly yanked from SolrServiceImpl
+        // go through configurations
+        for (DiscoveryConfiguration discoveryConfiguration : discoveryConfigurations)
+        {
+            // go through filters in configuration
+            for (int i = 0; i < discoveryConfiguration
+                    .getSearchFilters().size(); i++)
+            {
+                DiscoverySearchFilter discoverySearchFilter = discoveryConfiguration
+                        .getSearchFilters().get(i);
+                // go through metadata fields the filter uses
+                for (int j = 0; j < discoverySearchFilter
+                        .getMetadataFields().size(); j++)
+                {
+                    String metadataField = discoverySearchFilter
+                            .getMetadataFields().get(j);
+                    // list of filters for metadataField
+                    List<DiscoverySearchFilter> resultingList;
+                    String type = discoverySearchFilter.getType();
+                    // Process only our new types
+                    if (type.equals(DiscoveryConfigurationParameters.TYPE_RAW)
+                            || type.equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG)
+                            || type.equals(DiscoveryConfigurationParameters.TYPE_PRESENT))
+                    {
+                        if (searchFilters.get(metadataField) != null)
+                        {
+                            resultingList = searchFilters.get(metadataField);
+                        }
+                        else
+                        {
+                            // New metadata field, create a new list for it
+                            resultingList = new ArrayList<DiscoverySearchFilter>();
+                        }
+                        resultingList.add(discoverySearchFilter);
+
+                        searchFilters.put(metadataField, resultingList);
+                    }
+                    else if (type.equals(DiscoveryConfigurationParameters.TYPE_BITSTREAM))
+                    {
+                        if(bitstreamSearchFilters.get(metadataField) != null){
+                            resultingList = searchFilters.get(metadataField);
+                        } else{
+                            resultingList = new ArrayList<>();
+                        }
+                        resultingList.add(discoverySearchFilter);
+                        bitstreamSearchFilters.put(metadataField, resultingList);
+                    }
+                }
+            }
+        }
+        Map<String, Map<String, List<DiscoverySearchFilter>>> ret = new HashMap<>();
+        ret.put("search", searchFilters);
+        ret.put("bitstream", bitstreamSearchFilters);
+        return ret;
+    }
+
+    private void createCompFieldsFromLocalMetadata(SolrInputDocument document, Item item) {
+        //just add _comp to local*, these have special treatment in schema.xml
+        Metadatum[] mds = item.getMetadata("local", Item.ANY, Item.ANY, Item.ANY);
+        for(Metadatum meta : mds){
+            String field = meta.schema + "." + meta.element;
+            String value = meta.value;
+            if (value == null) {
+                continue;
+            }
+            if (meta.qualifier != null && !meta.qualifier.trim().equals("")) {
+                field += "." + meta.qualifier;
+            }
+            document.addField(field + "_comp", value);
+        }
+    }
+
+    private void createHandleTitleAcField(SolrInputDocument document, Item item) {
+        //create handle_title_ac field
+        String title = item.getName();
+        String handle = item.getHandle();
+        document.addField("handle_title_ac", handle + ":" + title);
+    }
+
+    private void cleanupNarratorInterviewFields(SolrInputDocument document, Item item) {
+        String type = item.getMetadata("dc.type");
+        List<String> toDelete = new LinkedList<>();
+        for (String fieldName: document.getFieldNames()){
+            if("narrator".equals(type) && fieldName.startsWith("interview")){
+                toDelete.add(fieldName);
+            }else if("interview".equals(type) && fieldName.startsWith("narrator")){
+                toDelete.add(fieldName);
+            }
+        }
+        for(String fieldName : toDelete){
+            document.removeField(fieldName);
+        }
+    }
+
+    static List<String> generateFieldNamesFromFilterIndexName(String name) {
+        List<String> names = new ArrayList<>();
+        names.add(name);
+        for(String suffix : generatedIndexFieldSuffixes){
+            names.add(name + suffix);
+        }
+        return names;
+    }
+
+    private void clearFieldsWeAreAdding(SolrInputDocument document,
+                                        Map<String, List<DiscoverySearchFilter>> mdFieldToFilters){
             for (Map.Entry<String, List<DiscoverySearchFilter>> entry : mdFieldToFilters.entrySet()) {
                 //String metadataField = entry.getKey();
                 List<DiscoverySearchFilter> filters = entry.getValue();
                 for (DiscoverySearchFilter filter : filters) {
-                    String name = filter.getIndexFieldName();
-                    String[] names = {name, name + "_filter", name + "_keyword",
-                            name + "_ac"};
-                    for (String fieldName : names) {
+                    for (String fieldName : generateFieldNamesFromFilterIndexName(filter.getIndexFieldName())) {
                         document.removeField(fieldName);
                     }
                 }
             }
-        }
     }
 }

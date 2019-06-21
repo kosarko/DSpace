@@ -97,19 +97,22 @@
         <property name="sidebarFacets">
             <list>
                 <ref bean="searchFilterNarratorProject" />
-                <ref bean="searchFilterKeywords" />
+                <ref bean="searchFilterNarratorKeywordsTopic" />
+                <ref bean="searchFilterNarratorKeywordsProfession" />
+                <ref bean="searchFilterInterviewKeywords" />
+                <ref bean="searchFilterInterviewDetailedKeywords" />
                 <ref bean="searchFilterPeriod" />
             </list>
         </property>
         <!--The search filters which can be used on the discovery search page-->
         <property name="searchFilters">
             <list>
-                <ref bean="searchFilterTitle" />
-                <ref bean="searchFilterIssued" />
-		        <ref bean="searchFilterLanguage" />
-                <ref bean="searchFilterPeriod" />
                 <ref bean="searchFilterNarratorProject" />
-                <ref bean="searchFilterKeywords" />
+                <ref bean="searchFilterNarratorKeywordsTopic" />
+                <ref bean="searchFilterNarratorKeywordsProfession" />
+                <ref bean="searchFilterInterviewKeywords" />
+                <ref bean="searchFilterInterviewDetailedKeywords" />
+                <ref bean="searchFilterPeriod" />
             </list>
         </property>
         <!--The sort filters for the discovery search-->
@@ -131,7 +134,6 @@
             <list>
                 <!--Only find items-->
                 <value>search.resourcetype:2</value>
-                <value>dc.type:narrator</value>
             </list>
         </property>
         <!--The configuration for the recent submissions-->
@@ -204,7 +206,7 @@
         <property name="sidebarFacets">
             <list>
 		        <ref bean="searchFacetLanguage" />
-		        <ref bean="searchFacetFile" />
+		        <ref bean="searchFacetNarratorFile" />
                 <ref bean="searchFacetNarratorName" />
                 <ref bean="searchFacetNarratorGender" />
                 <ref bean="searchFacetNarratorBirthdate" />
@@ -212,6 +214,8 @@
                 <ref bean="searchFacetNarratorKeywordsProfession" />
                 <ref bean="searchFacetNarratorKeywordsTopic" />
                 <ref bean="searchFacetNarratorConsent" />
+                <ref bean="searchFacetNarratorProject" />
+                <ref bean="searchFacetNarratorHasPart" />
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewType" />
                 <ref bean="searchFacetInterviewDate" />
@@ -220,16 +224,16 @@
                 <ref bean="searchFacetInterviewDetailedKeywords" />
                 <ref bean="searchFacetInterviewPeriod" />
                 <ref bean="searchFacetInterviewPlace" />
-                <ref bean="searchFacetNarratorProject" />
+                <ref bean="searchFacetInterviewFile" />
+                <ref bean="searchFacetBitstreamType" />
+                <ref bean="searchFacetBitstreamCreator" />
             </list>
         </property>
         <!--The search filters which can be used on the discovery search page-->
         <property name="searchFilters">
             <list>
-                <ref bean="searchFilterTitle" />
-                <ref bean="searchFilterIssued" />
 		        <ref bean="searchFacetLanguage" />
-		        <ref bean="searchFacetFile" />
+		        <ref bean="searchFacetNarratorFile" />
                 <ref bean="searchFacetNarratorName" />
                 <ref bean="searchFacetNarratorGender" />
                 <ref bean="searchFacetNarratorBirthdate" />
@@ -237,6 +241,8 @@
                 <ref bean="searchFacetNarratorKeywordsProfession" />
                 <ref bean="searchFacetNarratorKeywordsTopic" />
                 <ref bean="searchFacetNarratorConsent" />
+                <ref bean="searchFacetNarratorProject" />
+                <ref bean="searchFacetNarratorHasPart" />
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewType" />
                 <ref bean="searchFacetInterviewDate" />
@@ -245,7 +251,7 @@
                 <ref bean="searchFacetInterviewDetailedKeywords" />
                 <ref bean="searchFacetInterviewPeriod" />
                 <ref bean="searchFacetInterviewPlace" />
-                <ref bean="searchFacetNarratorProject" />
+                <ref bean="searchFacetInterviewFile" />
                 <ref bean="searchFacetBitstreamType" />
                 <ref bean="searchFacetBitstreamCreator" />
             </list>
@@ -269,7 +275,6 @@
             <list>
                 <!--Only find items-->
                 <value>search.resourcetype:2</value>
-                <value>dc.type:narrator</value>
             </list>
         </property>
         <!--The configuration for the recent submissions-->
@@ -284,42 +289,8 @@
 
 
     <!--Search filter configuration beans-->
-    <bean id="searchFilterTitle" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
-        <property name="indexFieldName" value="title"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.title</value>
-            </list>
-        </property>
-		<property name="fullAutoComplete" value="false"/>
-    </bean>
-
-    <bean id="searchFilterIssued" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="dateIssued"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.date.issued</value>
-            </list>
-        </property>
-        <property name="type" value="date"/>
-		<property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="VALUE"/>
-		<property name="fullAutoComplete" value="false"/>
-    </bean>
-   <bean id="searchFilterLanguage" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="language"/>
-        <property name="metadataFields">
-            <list>
-                <value>dc.language.iso</value>
-            </list>
-        </property>
-        <property name="facetLimit" value="5"/>
-        <property name="sortOrder" value="COUNT"/>
-        <property name="type" value="iso_language"/>
-        <property name="fullAutoComplete" value="false"/>	
-    </bean>
     <bean id="searchFilterPeriod" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="period"/>
+        <property name="indexFieldName" value="interviewPeriod"/>
         <property name="metadataFields">
             <list>
                 <value>viadat.interview.period</value>
@@ -329,13 +300,44 @@
         <property name="sortOrder" value="COUNT"/>
         <property name="fullAutoComplete" value="false"/>
     </bean>
-    <bean id="searchFilterKeywords" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="keywords"/>
+    <bean id="searchFilterNarratorKeywordsTopic" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narratorKeywordsTopic"/>
         <property name="metadataFields">
             <list>
                 <value>viadat.narrator.keywordsTopic</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="false"/>
+    </bean>
+    <bean id="searchFilterNarratorKeywordsProfession" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narratorKeywordsProfession"/>
+        <property name="metadataFields">
+            <list>
                 <value>viadat.narrator.keywordsProfession</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="false"/>
+    </bean>
+    <bean id="searchFilterInterviewKeywords" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="interviewKeywords"/>
+        <property name="metadataFields">
+            <list>
                 <value>viadat.interview.keywords</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="fullAutoComplete" value="false"/>
+    </bean>
+    <bean id="searchFilterInterviewDetailedKeywords"
+          class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="interviewDetailedKeywords"/>
+        <property name="metadataFields">
+            <list>
                 <value>viadat.interview.detailedKeywords</value>
             </list>
         </property>
@@ -344,7 +346,7 @@
         <property name="fullAutoComplete" value="false"/>
     </bean>
     <bean id="searchFilterNarratorProject" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="project"/>
+        <property name="indexFieldName" value="narratorProject"/>
         <property name="metadataFields">
             <list>
                 <value>viadat.narrator.project</value>
@@ -552,7 +554,7 @@
     </bean>
 
     <bean id="searchFacetLanguage" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="language"/>
+        <property name="indexFieldName" value="interviewLanguage"/>
         <property name="metadataFields">
             <list>
                 <value>dc.language.iso</value>
@@ -563,8 +565,29 @@
         <property name="type" value="iso_language"/>
     </bean>
 
-    <bean id="searchFacetFile" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="hasfile"/>
+    <bean id="searchFacetNarratorFile" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narratorHasfile"/>
+        <property name="metadataFields">
+            <list>
+                <value>local.has.files</value>
+            </list>
+        </property>
+        <property name="sortOrder" value="COUNT"/>
+    </bean>
+
+    <bean id="searchFacetNarratorHasPart" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narratorHasPart"/>
+        <property name="metadataFields">
+            <list>
+                <value>dc.relation.haspart</value>
+            </list>
+        </property>
+        <property name="sortOrder" value="COUNT"/>
+            <property name="type" value="present"/>
+    </bean>
+
+    <bean id="searchFacetInterviewFile" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="interviewHasfile"/>
         <property name="metadataFields">
             <list>
                 <value>local.has.files</value>
@@ -575,7 +598,7 @@
 
 
     <bean id="searchFacetBitstreamCreator" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="bitstreamCreator"/>
+        <property name="indexFieldName" value="interviewBitstreamCreator"/>
         <property name="metadataFields">
             <list>
                 <value>local.bitstream.creator</value>
@@ -586,7 +609,7 @@
         <property name="facetLimit" value="20"/>
     </bean>
     <bean id="searchFacetBitstreamType" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
-        <property name="indexFieldName" value="bitstreamType"/>
+        <property name="indexFieldName" value="interviewBitstreamType"/>
         <property name="metadataFields">
             <list>
                 <value>local.bitstream.type</value>

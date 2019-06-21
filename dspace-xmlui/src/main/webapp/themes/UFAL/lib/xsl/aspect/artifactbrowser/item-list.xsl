@@ -36,41 +36,23 @@
 			<h4>
 				<i18n:text>xmlui.UFAL.artifactbrowser.search.limit</i18n:text>
 			</h4>
-			<xsl:for-each select="/dri:document/dri:options/dri:list[@n='discovery']/dri:list[count(dri:item/dri:xref)>1]">
-				<div class="well well-sm well-white accordion-group" style="margin-bottom: 5px;">
-					<div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#search-filters">
-							<xsl:attribute name="href">#<xsl:copy-of select="translate(@id, '.', '_')" /></xsl:attribute>
-							<div>
-							<strong>
-								<xsl:apply-templates select="dri:head" />
-							</strong>
-							<b xmlns:i18n="http://apache.org/cocoon/i18n/2.1" class="arrow fa fa-caret-down pull-right">&#160;</b>
-							</div>
-						</a>
-					</div>
-					<div class="accordion-body collapse">
-						<xsl:attribute name="id"><xsl:copy-of select="translate(@id, '.', '_')" /></xsl:attribute>
-						<div class="accordion-inner no-padding">
-						<ul class="nav nav-list">
-						<li style="border-bottom: none;">
-						<ul class="sublist">
-							<xsl:for-each select="dri:item/dri:xref">
-								<li>
-									<a>										
-										<xsl:attribute name="href"><xsl:value-of select="@target" /></xsl:attribute>
-										<span class="wordbreak">
-												<xsl:apply-templates select="./node()"/>
-										</span>
-									</a>
-								</li>
-							</xsl:for-each>
-						</ul>
-						</li>
-						</ul>
-						</div>
-					</div>
-				</div>
+			<h5>
+				<i18n:text i18n:key="xmlui.UFAL.artifactbrowser.search.level1">1. Úroveň (narátor)</i18n:text>
+			</h5>
+			<xsl:for-each select="/dri:document/dri:options/dri:list[@n='discovery']/dri:list[count(dri:item/dri:xref)>1][starts-with(@n, 'narrator')]">
+				<xsl:call-template name="drawFacets"/>
+			</xsl:for-each>
+			<h5>
+				<i18n:text i18n:key="xmlui.UFAL.artifactbrowser.search.level2">2. Úroveň (rozhovor)</i18n:text>
+			</h5>
+			<xsl:for-each select="/dri:document/dri:options/dri:list[@n='discovery']/dri:list[count(dri:item/dri:xref)>1][starts-with(@n, 'interview') and not(contains(@n, 'Bitstream'))]">
+				<xsl:call-template name="drawFacets"/>
+			</xsl:for-each>
+			<h5>
+				<i18n:text i18n:key="xmlui.UFAL.artifactbrowser.search.level3">3. Úroveň (technické údaje)</i18n:text>
+			</h5>
+			<xsl:for-each select="/dri:document/dri:options/dri:list[@n='discovery']/dri:list[count(dri:item/dri:xref)>1][contains(@n, 'Bitstream')]">
+				<xsl:call-template name="drawFacets"/>
 			</xsl:for-each>
 		</div>
 		</xsl:if>
@@ -108,6 +90,43 @@
 		</div>
 		</div>
     </xsl:template>
+
+	<xsl:template name="drawFacets">
+				<div class="well well-sm well-white accordion-group" style="margin-bottom: 5px;">
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#search-filters">
+							<xsl:attribute name="href">#<xsl:copy-of select="translate(@id, '.', '_')" /></xsl:attribute>
+							<div>
+							<strong>
+								<xsl:apply-templates select="dri:head" />
+							</strong>
+							<b xmlns:i18n="http://apache.org/cocoon/i18n/2.1" class="arrow fa fa-caret-down pull-right">&#160;</b>
+							</div>
+						</a>
+					</div>
+					<div class="accordion-body collapse">
+						<xsl:attribute name="id"><xsl:copy-of select="translate(@id, '.', '_')" /></xsl:attribute>
+						<div class="accordion-inner no-padding">
+						<ul class="nav nav-list">
+						<li style="border-bottom: none;">
+						<ul class="sublist">
+							<xsl:for-each select="dri:item/dri:xref">
+								<li>
+									<a>										
+										<xsl:attribute name="href"><xsl:value-of select="@target" /></xsl:attribute>
+										<span class="wordbreak">
+												<xsl:apply-templates select="./node()"/>
+										</span>
+									</a>
+								</li>
+							</xsl:for-each>
+						</ul>
+						</li>
+						</ul>
+						</div>
+					</div>
+				</div>
+	</xsl:template>
 
 
     <xsl:template match="dri:div[@n='search-results']/dri:head" priority="10">
@@ -365,6 +384,15 @@
                 </div>
             </div>
         </div>
+			<h5>
+				<i18n:text i18n:key="xmlui.UFAL.artifactbrowser.search.toggle_hint">Ve vyhledávání zobrazit pouze</i18n:text>
+			</h5>
+			<xsl:variable name="showNarrators" select="//dri:field[@n='showNarrators']"/>
+			<input type="checkbox" id="search_toggle" data-toggle="toggle" data-on="xmlui.UFAL.artifactbrowser.search.toggle_on" data-off="xmlui.UFAL.artifactbrowser.search.toggle_off" i18n:attr="data-on data-off" data-onstyle="info" data-offstyle="info" data-height="30" data-width="130">
+				<xsl:if test="$showNarrators='true'">
+					<xsl:attribute name="checked">checked</xsl:attribute>
+				</xsl:if>
+			</input>
         
     </xsl:template>
         

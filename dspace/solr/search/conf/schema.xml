@@ -679,6 +679,11 @@
    <copyField source="*_comp" dest="search_text"/>
    <copyField source="viadat.*" dest="search_text"/>
     <copyField source="local.bitstream.*" dest="search_text"/>
+    <copyField source="dc.relation.ispartof" dest="ispartof_keyword"/>
+    <copyField source="dc.relation.haspart" dest="haspart_keyword"/>
+    <copyField source="dc.identifier.uri" dest="identifier_keyword"/>
+    <copyField source="dc.type" dest="type_keyword"/>
+
 
    <!-- Above, multiple source fields are copied to the [text] field.
 	  Another way to map multiple source fields to the same

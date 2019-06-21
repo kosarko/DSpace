@@ -328,14 +328,7 @@
 				<xsl:for-each select="/dri:document/dri:options/dri:list[@n='discovery']/dri:list">
 					<div>
 						<xsl:attribute name="class">
-							<xsl:choose>
-								<xsl:when test="position() = 1">
-									<xsl:text>col-md-offset-2 col-md-3 text-left</xsl:text>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text>col-md-3 text-left</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
+								<xsl:text>col-md-2 text-left</xsl:text>
 						</xsl:attribute>
 						<ul class="nav nav-list">
 						<li style="margin: 10px;">
