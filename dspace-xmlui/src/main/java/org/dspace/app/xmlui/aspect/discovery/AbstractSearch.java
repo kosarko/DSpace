@@ -792,9 +792,9 @@ public abstract class AbstractSearch extends AbstractDSpaceTransformer implement
         List<String> interviewQueries = new ArrayList<>();
 
         for(String fq : filterQueries){
-            if(fq.startsWith("narrator")){
+            if(fq.contains("narrator")){
                 narratorQueries.add(fq);
-            }else if(fq.startsWith("interview")){
+            }else if(fq.contains("interview")){
                 interviewQueries.add(fq);
             }else{
                 log.error("Neither interview nor narrator filter " + fq);

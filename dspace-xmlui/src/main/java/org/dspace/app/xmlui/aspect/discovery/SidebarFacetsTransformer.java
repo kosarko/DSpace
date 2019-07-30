@@ -174,9 +174,9 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
         java.util.List<String> interviewFilterQueries = new ArrayList<>();
 
         for(String fq : filterQueries){
-            if(fq.startsWith("narrator")){
+            if(fq.contains("narrator")){
                 narratorFilterQueries.add(fq);
-            }else if(fq.startsWith("interview")){
+            }else if(fq.contains("interview")){
                 interviewFilterQueries.add(fq);
             }else{
                 log.error("Neither interview nor narrator filter " + fq);
