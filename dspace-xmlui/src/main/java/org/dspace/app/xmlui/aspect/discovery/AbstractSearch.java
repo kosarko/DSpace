@@ -16,6 +16,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.excalibur.source.SourceValidity;
 import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.dspace.app.util.MetadataExposure;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.DSpaceValidity;
@@ -822,7 +823,8 @@ public abstract class AbstractSearch extends AbstractDSpaceTransformer implement
         }
         queryArgs.addFilterQueries(narratorQueries.toArray(new String[narratorQueries.size()]));
         queryArgs.addFilterQueries(interviewQueries.toArray(new String[interviewQueries.size()]));
-        query = query + " OR _query_:{!join from=identifier_keyword to=" + toRelation + "}" + query;
+        String escapedQuery = ClientUtils.escapeQueryChars(query);
+        query = query + " OR _query_:\"{!join from=identifier_keyword to=" + toRelation + "}" + escapedQuery + "\"";
         //XXX enforce type_keyword exists and doesn't log an error
         String filter = "type_keyword:" + type;
         queryArgs.addFilterQueries(filter);

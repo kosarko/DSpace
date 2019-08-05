@@ -14,6 +14,7 @@ import org.apache.cocoon.util.HashUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.excalibur.source.SourceValidity;
 import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
 import org.dspace.app.xmlui.utils.DSpaceValidity;
 import org.dspace.app.xmlui.utils.HandleUtil;
@@ -189,8 +190,11 @@ public class SidebarFacetsTransformer extends AbstractDSpaceTransformer implemen
         // search through docs having identifier_keyword, using from_query, leave only those that are also in
         // some haspart field, return the documents with haspart field.
         // join in fq can't change the "type" of returned document
-        String narratorReturningQuery = query + " OR _query_:{!join from=identifier_keyword to=haspart_keyword}" + query;
-        String interviewReturningQuery = query + " OR _query_:{!join from=identifier_keyword to=ispartof_keyword}" + query;
+        String escapedQuery = ClientUtils.escapeQueryChars(query);
+        String narratorReturningQuery =
+                query + " OR _query_:\"{!join from=identifier_keyword to=haspart_keyword}" + escapedQuery + "\"";
+        String interviewReturningQuery =
+                query + " OR _query_:\"{!join from=identifier_keyword to=ispartof_keyword}" + escapedQuery + "\"";
 
         DiscoverQuery narratorQuery = getQueryArgs(context, dso,
                 narratorFilterQueries.toArray(new String[narratorFilterQueries.size()]));
