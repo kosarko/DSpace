@@ -71,7 +71,7 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
         if (dso.getType() == Constants.ITEM)
         {
             Item item = (Item) dso;
-            copyBitstreamMetadataToInterview(document, item);
+            copyBitstreamMetadataToItem(document, item);
             processAdditionalConfigFilters(document, item);
             createCompFieldsFromLocalMetadata(document, item);
             createHandleTitleAcField(document, item);
@@ -79,7 +79,7 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
         }
     }
 
-    private void copyBitstreamMetadataToInterview(SolrInputDocument document, Item item) {
+    private void copyBitstreamMetadataToItem(SolrInputDocument document, Item item) {
         List<Bitstream> bitstreams = new ArrayList<>();
         try {
             bitstreams.addAll(Arrays.asList(item.getNonInternalBitstreams()));
