@@ -25,6 +25,7 @@ public class DiscoveryConfigurationParameters {
     public static final String TYPE_ISO_LANG = "iso_language";
     public static final String TYPE_BITSTREAM = "bitstream";
     public static final String TYPE_PRESENT = "present";
+    public static final String TYPE_TIMELENGTH = "timeLength";
 
     public static enum SORT {VALUE, COUNT}
 

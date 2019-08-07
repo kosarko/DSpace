@@ -1158,7 +1158,7 @@
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note">Note</message>
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_note_help">Note to the recording</message>
 	<message key="xmlui.Submission.submit.EditFileStep.bitstream_type">File type</message>
-	<message key="xmlui.Submission.submit.EditFileStep.bitstream_type">Type of file eg. audio, audio-visual, text etc.</message>
+	<message key="xmlui.Submission.submit.EditFileStep.bitstream_type_help">Type of file eg. audio, audio-visual, text etc.</message>
 
     <!-- org.dspace.app.xmlui.Submission.submit.EditBitstreamPolicies -->
     <message key="xmlui.Submission.submit.EditBitstreamPolicies.head">Bitstream Access</message>
@@ -3031,6 +3031,12 @@
 	<message key="xmlui.UFAL.artifactbrowser.item_list.alias">Alias:</message>
 	<message key="xmlui.UFAL.artifactbrowser.interviews-count">Number of interviews with this narrator: {0}</message>
 	<message key="xmlui.UFAL.artifactbrowser.item_list.keywords">Keywords:</message>
+    <message key="xmlui.UFAL.artifactbrowser.search.level1">1st level (narrator)</message>
+    <message key="xmlui.UFAL.artifactbrowser.search.level2">2nd level (interview)</message>
+    <message key="xmlui.UFAL.artifactbrowser.search.level3">3rd level (technical details)</message>
+    <message key="xmlui.UFAL.artifactbrowser.search.toggle_on">Narrators</message>
+    <message key="xmlui.UFAL.artifactbrowser.search.toggle_off">Interviews</message>
+    <message key="xmlui.UFAL.artifactbrowser.search.toggle_hint">Show only</message>
 
 
   <!-- UFAL/lib/xsl/aspect/artifactbrowser/item-view.xsl -->
@@ -3586,6 +3592,127 @@
 	<message key="xmlui.Discovery.AbstractSearch.type_narratorProject">Project</message>
 
 	<message key="homepage.item.narrators">Narrator:</message>
+
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewLanguage">Language</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewLanguage.column_heading">Language</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewLanguage">Language</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewLanguage">Language</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewLanguage">Language</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewLanguage_filter">Language</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewLanguage">Language</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorHasfile">Provided files</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorHasfile.column_heading">Provided files</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorHasfile">Provided files</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorHasfile">Provided files</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorHasfile">Provided files</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorHasfile_filter">Provided files</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorHasfile">Provided files</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorHasPart">Interviewed</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorHasPart.column_heading">Interviewed</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorHasPart">Interviewed</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorHasPart">Interviewed</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorHasPart">Interviewed</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorHasPart_filter">Interviewed</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorHasPart">Interviewed</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewHasfile">Has Files</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewHasfile.column_heading">Has Files</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewHasfile">Has Files</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewHasfile">Has Files</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewHasfile">Has Files</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewHasfile_filter">Has Files</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewHasfile">Has Files</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewBitstreamCreator">Creator</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewBitstreamCreator.column_heading">Creator</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewBitstreamCreator">Creator</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewBitstreamCreator">Creator</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewBitstreamCreator">Creator</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewBitstreamCreator_filter">Creator</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewBitstreamCreator">Creator</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewBitstreamType">Type</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewBitstreamType.column_heading">Type</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewBitstreamType">Type</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewBitstreamType">Type</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewBitstreamType">Type</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewBitstreamType_filter">Type</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewBitstreamType">Type</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewLength">Interview length</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewLength.column_heading">Interview length</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewLength">Interview length</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewLength">Interview length</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewLength">Interview length</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewLength_filter">Interview length</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewLength">Interview length</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorIdentifier">Narrator ID</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorIdentifier.column_heading">Narrator ID</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorIdentifier">Narrator ID</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorIdentifier">Narrator ID</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorIdentifier">Narrator ID</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorIdentifier_filter">Narrator ID</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorIdentifier">Narrator ID</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewIdentifier">Interview ID</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewIdentifier.column_heading">Interview ID</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewIdentifier">Interview ID</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewIdentifier">Interview ID</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewIdentifier">Interview ID</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewIdentifier_filter">Interview ID</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewIdentifier">Interview ID</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDescription">Interview description</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewDescription.column_heading">Interview description</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewDescription">Interview description</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewDescription">Interview description</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewDescription">Interview description</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewDescription_filter">Interview description</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewDescription">Interview description</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorOutputs">Outputs</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorOutputs.column_heading">Outputs</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorOutputs">Outputs</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorOutputs">Outputs</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorOutputs">Outputs</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorOutputs_filter">Outputs</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorOutputs">Outputs</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorNote">Narrator note</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorNote.column_heading">Narrator note</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorNote">Narrator note</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorNote">Narrator note</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorNote">Narrator note</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorNote_filter">Narrator note</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorNote">Narrator note</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorMaterials">Materials</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorMaterials.column_heading">Materials</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorMaterials">Materials</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorMaterials">Materials</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorMaterials">Materials</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorMaterials_filter">Materials</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorMaterials">Materials</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorContact">Narrator contact</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.narratorContact.column_heading">Narrator contact</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.narratorContact">Narrator contact</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.narratorContact">Narrator contact</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_narratorContact">Narrator contact</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.narratorContact_filter">Narrator contact</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_narratorContact">Narrator contact</message>
+
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewNote">Interview note</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.interviewNote.column_heading">Interview note</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.title.metadata.interviewNote">Interview note</message>
+	<message key="xmlui.ArtifactBrowser.ConfigurableBrowse.trail.metadata.interviewNote">Interview note</message>
+	<message key="xmlui.ArtifactBrowser.AdvancedSearch.type_interviewNote">Interview note</message>
+	<message key="xmlui.ArtifactBrowser.SimpleSearch.filter.interviewNote_filter">Interview note</message>
+	<message key="xmlui.Discovery.AbstractSearch.type_interviewNote">Interview note</message>
 
 </catalogue>
 

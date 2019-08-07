@@ -2227,7 +2227,8 @@ public class SolrServiceImpl implements SearchService, IndexingService {
         if(facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_TEXT) ||
                 facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG) ||
                 facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_BITSTREAM) ||
-                facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_PRESENT))
+                facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_PRESENT) ||
+                facetFieldConfig.getType().equals(DiscoveryConfigurationParameters.TYPE_TIMELENGTH))
         {
             if(removePostfix)
             {

@@ -37,6 +37,10 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
 
     static final String[] generatedIndexFieldSuffixes = {"_filter", "_ac", "_keyword", ".year"};
 
+    private static final int FIFTEEN_MINUTES = 15 * 60;
+    private static final int FORTYFIVE_MINUTES = 45 * 60;
+
+
     @Override
     public void additionalSearchParameters(Context context,
             DiscoverQuery discoveryQuery, SolrQuery solrQuery)
@@ -190,6 +194,30 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
                                                 value));
                             }
                         }
+                        else if(filter.getType().equals(DiscoveryConfigurationParameters.TYPE_TIMELENGTH)){
+                            int hours = 0;
+                            int minutes = 0;
+                            int seconds = 0;
+                            String[] parts = value.split(":", 3);
+                            if(parts.length == 3){
+                                hours = Integer.parseInt(parts[0]);
+                                minutes = Integer.parseInt(parts[1]);
+                                seconds = Integer.parseInt(parts[2]);
+                            }
+                            int totalSeconds = seconds + minutes * 60 + hours * 60 * 60;
+                            if(totalSeconds <= FIFTEEN_MINUTES){
+                                convertedValue = "=< 15 min";
+                            }else if(totalSeconds <= FORTYFIVE_MINUTES){
+                                convertedValue = "=< 45 min";
+                            }else {
+                                convertedValue = "> 45 min";
+                            }
+                            for(String suff : new String[]{"", "_filter", "_keyword", "_ac"}){
+                                document.addField(filter.getIndexFieldName() + suff, convertedValue);
+                            }
+                            convertedValue = null;
+                        }
+
                         if (convertedValue != null)
                         {
                             document.addField(
@@ -274,6 +302,7 @@ public class SolrServiceTweaksPlugin implements SolrServiceIndexPlugin,
                     // Process only our new types
                     if (type.equals(DiscoveryConfigurationParameters.TYPE_RAW)
                             || type.equals(DiscoveryConfigurationParameters.TYPE_ISO_LANG)
+                            || type.equals(DiscoveryConfigurationParameters.TYPE_TIMELENGTH)
                             || type.equals(DiscoveryConfigurationParameters.TYPE_PRESENT))
                     {
                         if (searchFilters.get(metadataField) != null)

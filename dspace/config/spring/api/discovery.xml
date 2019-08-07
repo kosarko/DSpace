@@ -219,6 +219,7 @@
                 <ref bean="searchFacetInterviewTranscript" />
                 <ref bean="searchFacetInterviewType" />
                 <ref bean="searchFacetInterviewDate" />
+                <ref bean="searchFacetInterviewLength" />
                 <ref bean="searchFacetInterviewInterviewer" />
                 <ref bean="searchFacetInterviewKeywords" />
                 <ref bean="searchFacetInterviewDetailedKeywords" />
@@ -254,6 +255,16 @@
                 <ref bean="searchFacetInterviewFile" />
                 <ref bean="searchFacetBitstreamType" />
                 <ref bean="searchFacetBitstreamCreator" />
+                <ref bean="searchFacetInterviewLength" />
+                <ref bean="searchFilterNarratorIdentifier" />
+                <ref bean="searchFilterInterviewIdentifier" />
+                <ref bean="searchFilterInterviewDescription" />
+                <ref bean="searchFilterNarratorOutputs" />
+                <ref bean="searchFilterNarratorNote" />
+                <ref bean="searchFilterNarratorMaterials" />
+                <ref bean="searchFilterNarratorContact" />
+                <ref bean="searchFilterInterviewNote" />
+
             </list>
         </property>
         <!--The sort filters for the discovery search-->
@@ -407,7 +418,8 @@
         <property name="fullAutoComplete" value="true"/>
     </bean>
 
-    <bean id="searchFacetNarratorKeywordsProfession" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet"> <property name="indexFieldName" value="narratorKeywordsProfession"/>
+    <bean id="searchFacetNarratorKeywordsProfession" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="narratorKeywordsProfession"/>
         <property name="metadataFields">
             <list>
                 <value>viadat.narrator.keywordsProfession</value>
@@ -618,6 +630,89 @@
         <property name="sortOrder" value="COUNT"/>
         <property name="type" value="bitstream"/>
         <property name="facetLimit" value="20"/>
+    </bean>
+    <bean id="searchFacetInterviewLength" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="interviewLength"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.interview.length</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="20"/>
+        <property name="sortOrder" value="COUNT"/>
+        <property name="type" value="timeLength"/>
+    </bean>
+
+    <bean id="searchFilterNarratorIdentifier" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
+        <property name="indexFieldName" value="narratorIdentifier"/>
+        <property name="metadataFields">
+            <list>
+                <value>dc.identifier</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="searchFilterInterviewIdentifier" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
+        <property name="indexFieldName" value="interviewIdentifier"/>
+        <property name="metadataFields">
+            <list>
+                <value>dc.identifier</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="searchFilterInterviewDescription" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
+        <property name="indexFieldName" value="interviewDescription"/>
+        <property name="metadataFields">
+            <list>
+                <value>dc.description</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="searchFilterNarratorOutputs" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
+        <property name="indexFieldName" value="narratorOutputs"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.outputs</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="searchFilterNarratorNote" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
+        <property name="indexFieldName" value="narratorNote"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.note</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="searchFilterNarratorMaterials" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
+        <property name="indexFieldName" value="narratorMaterials"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.materials</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="searchFilterNarratorContact" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
+        <property name="indexFieldName" value="narratorContact"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.narrator.contact</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="searchFilterInterviewNote" class="org.dspace.discovery.configuration.DiscoverySearchFilter">
+        <property name="indexFieldName" value="interviewNote"/>
+        <property name="metadataFields">
+            <list>
+                <value>viadat.interview.note</value>
+            </list>
+        </property>
     </bean>
 
     <!--Sort properties-->
