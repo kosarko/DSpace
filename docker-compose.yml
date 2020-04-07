@@ -1,0 +1,38 @@
+version: '2.4'
+services:
+  # Postgres database
+  postgres:
+    build: ./Docker/postgres
+    ports:
+      - 5432:5432
+    tty: true
+    stdin_open: true
+    volumes:
+    - pgdata:/var/lib/postgresql/data
+    platform: linux
+  # DSpace
+  dspace-dev:
+    build:
+        context: .
+        #target: base
+    ports:
+      - 8080:8080
+      - 8000:8000
+      #Remote Debugger
+      - 1043:1043
+    depends_on:
+      - postgres
+    volumes:
+      - assetstore:/srv/dspace/assetstore
+      - solr:/srv/dspace/solr
+      - log:/srv/dspace/log
+    command: bash -c "/dspace_after_install_init/init.sh && /usr/local/tomcat/bin/catalina.sh jpda run"
+    tty: true
+    stdin_open: true
+    platform: linux
+
+volumes:
+  pgdata:
+  assetstore:
+  solr:
+  log:

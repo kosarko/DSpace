@@ -1,0 +1,16 @@
+<import_structure>
+        <community>
+                <name>Community1</name>
+                <description>...</description>
+                <intro>...</intro>
+                <copyright>...</copyright>
+                <sidebar>...</sidebar>
+                <collection>
+                   <name>LINDAT/CLARIAH-CZ</name>
+                    <description>...</description>
+                    <intro>...</intro>
+                    <copyright>...</copyright>
+                    <sidebar>...</sidebar>
+                </collection>
+         </community>
+</import_structure>
