@@ -28,6 +28,8 @@ import cz.cuni.mff.ufal.dspace.authenticate.shibboleth.ShibGroup;
 import cz.cuni.mff.ufal.dspace.authenticate.shibboleth.ShibHeaders;
 import cz.cuni.mff.ufal.lindat.utilities.interfaces.IFunctionalities;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
  * Shibboleth authentication for DSpace
  *
@@ -744,14 +746,16 @@ public class ShibAuthentication implements AuthenticationMethod
     //
     //
 
+    /**
+     * Current implementation checks only if the new value is blank
+     * @param field
+     * @param newValue
+     * @param oldValue
+     * @return
+     */
     private static boolean canUpdateField(String field, String newValue, String oldValue)
     {
-        boolean res = false;
-        if(newValue != null && (oldValue == null || oldValue.isEmpty()))
-        {
-            res = true;
-        }
-        return res;
+        return isNotBlank(newValue);
     }
 
     private static boolean valuesDiffer(String newValue, String oldValue, boolean ignoreCase)
