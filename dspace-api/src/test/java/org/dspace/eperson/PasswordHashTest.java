@@ -7,45 +7,35 @@
  */
 package org.dspace.eperson;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import org.apache.commons.codec.DecoderException;
-import org.dspace.servicemanager.DSpaceKernelInit;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.dspace.AbstractDSpaceTest;
+import org.dspace.core.Constants;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- *
  * @author mwood
  */
-public class PasswordHashTest
-{
-    public PasswordHashTest()
-    {
+public class PasswordHashTest extends AbstractDSpaceTest {
+    public PasswordHashTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass()
-            throws Exception
-    {
-        // Make certain that a default DSpaceKernel is started.
-        DSpaceKernelInit.getKernel(null).start();
-    }
-
-    @AfterClass
-    public static void tearDownClass()
-            throws Exception
-    {
-    }
-    
     @Before
-    public void setUp()
-    {
+    public void setUp() {
     }
-    
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
     }
 
     /**
@@ -53,13 +43,13 @@ public class PasswordHashTest
      */
     @Test
     public void testConstructors()
-            throws DecoderException
-    {
-        PasswordHash h1, h3;
+        throws DecoderException {
+        PasswordHash h1;
+        PasswordHash h3;
 
         // Test null inputs, as from NULL database columns (old EPerson using
         // unsalted hash, for example).
-        h3 = new PasswordHash(null, (byte[])null, (byte[])null);
+        h3 = new PasswordHash(null, (byte[]) null, (byte[]) null);
         assertNull("Null algorithm", h3.getAlgorithm());
         assertNull("Null salt", h3.getSalt());
         assertNull("Null hash", h3.getHash());
@@ -67,7 +57,7 @@ public class PasswordHashTest
         assertFalse("Match non-null string?", h3.matches("not null"));
 
         // Test 3-argument constructor with null string arguments
-        h3 = new PasswordHash(null, (String)null, (String)null);
+        h3 = new PasswordHash(null, (String) null, (String) null);
         assertNull("Null algorithm", h3.getAlgorithm());
         assertNull("Null salt", h3.getSalt());
         assertNull("Null hash", h3.getHash());
@@ -91,14 +81,13 @@ public class PasswordHashTest
      */
     @Test
     public void testMatches()
-            throws NoSuchAlgorithmException
-    {
+        throws NoSuchAlgorithmException, UnsupportedEncodingException {
         System.out.println("matches");
         final String secret = "Clark Kent is Superman";
 
         // Test old 1-trip MD5 hash
         MessageDigest digest = MessageDigest.getInstance("MD5");
-        PasswordHash hash = new PasswordHash(null, null, digest.digest(secret.getBytes()));
+        PasswordHash hash = new PasswordHash(null, null, digest.digest(secret.getBytes(Constants.DEFAULT_ENCODING)));
         boolean result = hash.matches(secret);
         assertTrue("Old unsalted 1-trip MD5 hash", result);
 

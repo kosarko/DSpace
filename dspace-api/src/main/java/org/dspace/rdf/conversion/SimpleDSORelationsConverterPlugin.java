@@ -7,18 +7,19 @@
  */
 package org.dspace.rdf.conversion;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.Iterator;
+import java.util.List;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Logger;
 import org.dspace.app.util.Util;
 import org.dspace.content.Bitstream;
 import org.dspace.content.Bundle;
@@ -26,581 +27,476 @@ import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
-import org.dspace.content.ItemIterator;
 import org.dspace.content.Site;
+import org.dspace.content.service.BitstreamService;
+import org.dspace.content.service.CommunityService;
+import org.dspace.content.service.ItemService;
+import org.dspace.content.service.SiteService;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
-import org.dspace.rdf.RDFConfiguration;
 import org.dspace.rdf.RDFUtil;
 import org.dspace.services.ConfigurationService;
-import org.dspace.utils.DSpace;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- *
  * @author Pascal-Nicolas Becker (dspace -at- pascal -hyphen- becker -dot- de)
  */
 public class SimpleDSORelationsConverterPlugin
-implements ConverterPlugin
-{
+    implements ConverterPlugin {
     public static final String SIMPLE_RELATIONS_PREFIXES_KEY = "rdf.simplerelations.prefixes";
     public static final String SIMPLE_RELATIONS_SITE2COMMUNITY_KEY = "rdf.simplerelations.site2community";
     public static final String SIMPLE_RELATIONS_COMMUNITY2SITE_KEY = "rdf.simplerelations.community2site";
-    public static final String SIMPLE_RELATIONS_COMMUNITY2SUBCOMMUNITY_KEY= "rdf.simplerelations.community2subcommunity";
-    public static final String SIMPLE_RELATIONS_SUBCOMMUNITY2COMMUNITY_KEY= "rdf.simplerelations.subcommunity2community";
+    public static final String SIMPLE_RELATIONS_COMMUNITY2SUBCOMMUNITY_KEY = "rdf.simplerelations" +
+        ".community2subcommunity";
+    public static final String SIMPLE_RELATIONS_SUBCOMMUNITY2COMMUNITY_KEY = "rdf.simplerelations" +
+        ".subcommunity2community";
     public static final String SIMPLE_RELATIONS_COMMUNITY2COLLECTION_KEY = "rdf.simplerelations.community2collection";
     public static final String SIMPLE_RELATIONS_COLLECTION2COMMUNITY_KEY = "rdf.simplerelations.collection2community";
     public static final String SIMPLE_RELATIONS_COLLECTION2ITEM_KEY = "rdf.simplerelations.collection2item";
     public static final String SIMPLE_RELATIONS_ITEM2COLLECTION_KEY = "rdf.simplerelations.item2collection";
     public static final String SIMPLE_RELATIONS_ITEM2BITSTREAM_KEY = "rdf.simplerelations.item2bitstream";
 
-    
-    private static final Logger log = Logger.getLogger(SimpleDSORelationsConverterPlugin.class);
-    protected ConfigurationService configurationService;
-    
-    protected String[] site2community;
-    protected String[] community2site;
-    protected String[] community2subcommunity;
-    protected String[] subcommunity2community;
-    protected String[] community2collection;
-    protected String[] collection2community;
-    protected String[] collection2item;
-    protected String[] item2collection;
-    protected String[] item2bitstream;
 
-    public SimpleDSORelationsConverterPlugin()
-    {
-        site2community = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_SITE2COMMUNITY_KEY);
-        community2site = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_COMMUNITY2SITE_KEY);
-        community2subcommunity = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_COMMUNITY2SUBCOMMUNITY_KEY);
-        subcommunity2community = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_SUBCOMMUNITY2COMMUNITY_KEY);
-        community2collection = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_COMMUNITY2COLLECTION_KEY);
-        collection2community = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_COLLECTION2COMMUNITY_KEY);
-        collection2item = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_COLLECTION2ITEM_KEY);
-        item2collection = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_ITEM2COLLECTION_KEY);
-        item2bitstream = RDFConfiguration.loadConfigurationArray(SIMPLE_RELATIONS_ITEM2BITSTREAM_KEY);
-        
-        if (site2community == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between the repository "
-                    + "the repository (SITE) and the top communities.");
-        }
-        if (community2site == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between "
-                    + "the top communities and the repository (SITE).");
-        }
-        if (community2subcommunity == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between "
-                    + "communities and subcommunities.");
-        }
-        if (subcommunity2community == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between "
-                    + "subcommunities and communities.");
-        }
-        if (community2collection == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between "
-                    + "communities and collections.");
-        }
-        if (collection2community == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between "
-                    + "collections and communities.");
-        }
-        if (collection2item == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between "
-                    + "collections and items");
-        }
-        if (item2collection == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between "
-                    + "items and collections");
-        }
-        if (item2bitstream == null)
-        {
-            log.warn("SimpleDSORelationsConverterPlugin was unable to load "
-                    + "configuration to convert relation between "
-                    + "items and bitstreams.");
-        }
-    }
-    
+    private static final Logger log =
+            org.apache.logging.log4j.LogManager.getLogger(SimpleDSORelationsConverterPlugin.class);
+
+    @Autowired(required = true)
+    protected BitstreamService bitstreamService;
+    @Autowired(required = true)
+    protected ItemService itemService;
+    @Autowired(required = true)
+    protected CommunityService communityService;
+    @Autowired(required = true)
+    protected SiteService siteService;
+    @Autowired(required = true)
+    protected ConfigurationService configurationService;
+
     /**
-     * Loads the prefixes that should be used by the 
-     * SimpleDSORelationsConverterPlugin. Please remember to close the model 
+     * Loads the prefixes that should be used by the
+     * SimpleDSORelationsConverterPlugin. Please remember to close the model
      * returned by this method.
+     *
      * @return A model containing the content of the file used to configure the
      * RDF-Prefixes that should be used by this plugin.
      */
-    protected Model getPrefixes()
-    {
+    protected Model getPrefixes() {
         Model m = ModelFactory.createDefaultModel();
         String prefixesPath = configurationService
-                .getProperty(SIMPLE_RELATIONS_PREFIXES_KEY);
-        if (!StringUtils.isEmpty(prefixesPath))
-        {
+            .getProperty(SIMPLE_RELATIONS_PREFIXES_KEY);
+        if (!StringUtils.isEmpty(prefixesPath)) {
             InputStream is = FileManager.get().open(prefixesPath);
-            if (is == null)
-            {
+            if (is == null) {
                 log.warn("Cannot find file '" + prefixesPath + "', ignoring...");
             } else {
                 m.read(is, null, FileUtils.guessLang(prefixesPath));
                 try {
                     is.close();
-                }
-                catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     // nothing to do here.
                 }
             }
         } else {
             log.warn("Configuration does not contain path to prefixes file for "
-                    + "SimpleDSORelationsConverterPlugin. Will proceed without "
-                    + "prefixes.");
+                         + "SimpleDSORelationsConverterPlugin. Will proceed without "
+                         + "prefixes.");
         }
         return m;
     }
-    
+
     @Override
-    public void setConfigurationService(ConfigurationService configurationService)
-    {
+    public void setConfigurationService(ConfigurationService configurationService) {
         this.configurationService = configurationService;
     }
 
     @Override
     public Model convert(Context context, DSpaceObject dso)
-            throws SQLException
-    {
-        
-        switch(dso.getType())
-        {
-            case (Constants.SITE) :
-            {
+        throws SQLException {
+
+        switch (dso.getType()) {
+            case (Constants.SITE):
                 return convertSite(context, (Site) dso);
-            }
-            case (Constants.COMMUNITY) :
-            {
+            case (Constants.COMMUNITY):
                 return convertCommunity(context, (Community) dso);
-            }
-            case (Constants.COLLECTION) :
-            {
+            case (Constants.COLLECTION):
                 return convertCollection(context, (Collection) dso);
-            }
-            case (Constants.ITEM) :
-            {
+            case (Constants.ITEM):
                 return convertItem(context, (Item) dso);
-            }
+            default:
+                return null;
         }
-        return null;
     }
-    
+
     public Model convertSite(Context context, Site site)
-            throws SQLException
-    {
-        if (site2community == null)
-        {
+        throws SQLException {
+        String[] site2community = configurationService.getArrayProperty(SIMPLE_RELATIONS_SITE2COMMUNITY_KEY);
+        if (site2community == null || site2community.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from the repository (SITE) to the top level "
-                    + "communities is disabled. Won't link from the repostitory "
-                    + "(SITE) to the top level communities.");
+                         + "linking from the repository (SITE) to the top level "
+                         + "communities is disabled. Won't link from the repostitory "
+                         + "(SITE) to the top level communities.");
             return null;
         }
-        
+
         Model m = ModelFactory.createDefaultModel();
         Model prefixes = this.getPrefixes();
         m.setNsPrefixes(prefixes);
         prefixes.close();
-        
+
         String myId = RDFUtil.generateIdentifier(context, site);
-        if (myId == null)
-        {
+        if (myId == null) {
             return null;
         }
 
-        Community[] topLevelCommies = Community.findAllTop(context);
-        for (Community community : topLevelCommies)
-        {
-            if (!RDFUtil.isPublicBoolean(context, community))
-            {
+        List<Community> topLevelCommies = communityService.findAllTop(context);
+        for (Community community : topLevelCommies) {
+            if (!RDFUtil.isPublicBoolean(context, community)) {
                 continue;
             }
             String id = RDFUtil.generateIdentifier(context, community);
-            if (id == null)
-            {
+            if (id == null) {
                 continue;
             }
-            for (String link : site2community)
-            {
+            for (String link : site2community) {
                 m.add(m.createResource(myId),
-                        m.createProperty(link),
-                        m.createResource(id));
+                      m.createProperty(link),
+                      m.createResource(id));
             }
         }
-        
-        if (m.isEmpty())
-        {
+
+        if (m.isEmpty()) {
             log.info("There were no public sub communities we could link to.");
             m.close();
             return null;
         }
         return m;
     }
-    
+
     public Model convertCommunity(Context context, Community community)
-            throws SQLException
-    {
-        if (community2site == null)
-        {
+        throws SQLException {
+        String[] community2site = configurationService.getArrayProperty(SIMPLE_RELATIONS_COMMUNITY2SITE_KEY);
+        if (community2site == null || community2site.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from the top level communities to the repository "
-                    + "(SITE) is disabled. Won't link from the top level "
-                    + "communities to the repository (SITE).");
+                         + "linking from the top level communities to the repository "
+                         + "(SITE) is disabled. Won't link from the top level "
+                         + "communities to the repository (SITE).");
+            // don't return here, as we might have to add other links.
+            // ensure community2site is not null
+            community2site = new String[] {};
         }
-        if (community2subcommunity == null)
-        {
+
+        String[] community2subcommunity = configurationService
+            .getArrayProperty(SIMPLE_RELATIONS_COMMUNITY2SUBCOMMUNITY_KEY);
+        if (community2subcommunity == null || community2subcommunity.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from communities to subcommunities was disabled. "
-                    + "Won't link from communities to subcommunities.");
+                         + "linking from communities to subcommunities was disabled. "
+                         + "Won't link from communities to subcommunities.");
+            // don't return here, as we might have to add other links.
+            // ensure community2subcommunity is not null
+            community2subcommunity = new String[] {};
         }
-        if (subcommunity2community == null)
-        {
+
+        String[] subcommunity2community = configurationService
+            .getArrayProperty(SIMPLE_RELATIONS_SUBCOMMUNITY2COMMUNITY_KEY);
+        if (subcommunity2community == null || subcommunity2community.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from subcommunities to communities was disabled. "
-                    + "Won't link from subcommunities to communities.");
+                         + "linking from subcommunities to communities was disabled. "
+                         + "Won't link from subcommunities to communities.");
+            // don't return here, as we might have to add other links.
+            // ensure subcommunity2community is not null
+            subcommunity2community = new String[] {};
         }
-        if (community2collection == null)
-        {
+
+        String[] community2collection = configurationService
+            .getArrayProperty(SIMPLE_RELATIONS_COMMUNITY2COLLECTION_KEY);
+        if (community2collection == null || community2collection.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from communities to collections was disabled. "
-                    + "Won't link from collections to subcommunities.");
+                         + "linking from communities to collections was disabled. "
+                         + "Won't link from collections to subcommunities.");
+            // don't return here, as we might have to add other links.
+            // ensure community2collection is not null
+            community2collection = new String[] {};
         }
-        if (community2site == null && community2subcommunity == null
-                && subcommunity2community == null && community2collection == null)
-        {
+        if (community2site.length == 0 && community2subcommunity.length == 0
+            && subcommunity2community.length == 0 && community2collection.length == 0) {
             return null;
         }
-        
+
         Model m = ModelFactory.createDefaultModel();
         Model prefixes = this.getPrefixes();
         m.setNsPrefixes(prefixes);
         prefixes.close();
-        
+
         String myId = RDFUtil.generateIdentifier(context, community);
-        if (myId == null)
-        {
+        if (myId == null) {
             return null;
         }
-        
+
         // add all parents
-        DSpaceObject[] parents = community.getAllParents();
+        List<Community> communityParentList = communityService.getAllParents(context, community);
+        DSpaceObject[] parents = communityParentList.toArray(new DSpaceObject[communityParentList.size()]);
         // check whether this is a top level community
-        if (parents.length == 0)
-        {
-            parents = new DSpaceObject[] {Site.find(context, Site.SITE_ID)};
+        if (parents.length == 0) {
+            parents = new DSpaceObject[] {siteService.findSite(context)};
         }
-        for (DSpaceObject parent : parents)
-        {
-            if (!RDFUtil.isPublicBoolean(context, parent))
-            {
+        for (DSpaceObject parent : parents) {
+            if (!RDFUtil.isPublicBoolean(context, parent)) {
                 continue;
             }
-            
+
             String id = RDFUtil.generateIdentifier(context, parent);
-            if (id != null)
-            {
-                if (parent instanceof Site)
-                {
-                    for (String link : community2site)
-                    {
+            if (id != null) {
+                if (parent instanceof Site) {
+                    for (String link : community2site) {
                         m.add(m.createResource(myId),
-                                m.createProperty(link),
-                                m.createResource(id));
+                              m.createProperty(link),
+                              m.createResource(id));
                     }
-                }
-                else if (parent instanceof Community)
-                {
-                    for (String link : subcommunity2community)
-                    {
+                } else if (parent instanceof Community) {
+                    for (String link : subcommunity2community) {
                         m.add(m.createResource(myId),
-                                m.createProperty(link),
-                                m.createResource(id));
+                              m.createProperty(link),
+                              m.createResource(id));
                     }
                 }
             }
         }
-        
+
         // add all subcommunities
-        for (Community sub : community.getSubcommunities())
-        {
-            if (!RDFUtil.isPublicBoolean(context, sub))
-            {
+        for (Community sub : community.getSubcommunities()) {
+            if (!RDFUtil.isPublicBoolean(context, sub)) {
                 continue;
             }
             String id = RDFUtil.generateIdentifier(context, sub);
-            if (id == null)
-            {
+            if (id == null) {
                 continue;
             }
-            for (String link : community2subcommunity)
-            {
+            for (String link : community2subcommunity) {
                 m.add(m.createResource(myId),
-                        m.createProperty(link),
-                        m.createResource(id));
+                      m.createProperty(link),
+                      m.createResource(id));
             }
         }
         // add all collections.
-        for (Collection col : community.getAllCollections())
-        {
-            if (!RDFUtil.isPublicBoolean(context, col))
-            {
+        for (Collection col : communityService.getAllCollections(context, community)) {
+            if (!RDFUtil.isPublicBoolean(context, col)) {
                 continue;
             }
             String id = RDFUtil.generateIdentifier(context, col);
-            if (id == null)
-            {
+            if (id == null) {
                 continue;
             }
-            for (String link : community2collection)
-            {
+            for (String link : community2collection) {
                 m.add(m.createResource(myId),
-                        m.createProperty(link),
-                        m.createResource(id));
+                      m.createProperty(link),
+                      m.createResource(id));
             }
         }
-        
-        if (m.isEmpty())
-        {
+
+        if (m.isEmpty()) {
             m.close();
             return null;
         }
         return m;
     }
-    
+
     public Model convertCollection(Context context, Collection collection)
-            throws SQLException
-    {
-        if (collection2community == null)
-        {
+        throws SQLException {
+        String[] collection2community = configurationService
+            .getArrayProperty(SIMPLE_RELATIONS_COLLECTION2COMMUNITY_KEY);
+        if (collection2community == null || collection2community.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from collections to communities was disabled. "
-                    + "Won't link from collections to communities.");
+                         + "linking from collections to communities was disabled. "
+                         + "Won't link from collections to communities.");
+            // don't return here, as we might have to link to items.
+            // ensure collection2community is not null
+            collection2community = new String[] {};
         }
-        if (collection2item == null)
-        {
+
+        String[] collection2item = configurationService.getArrayProperty(SIMPLE_RELATIONS_COLLECTION2ITEM_KEY);
+        if (collection2item == null || collection2item.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from collections to items was disabled. "
-                    + "Won't link from collections to items.");
+                         + "linking from collections to items was disabled. "
+                         + "Won't link from collections to items.");
+            // don't return here, as we might have to link to communities.
+            // ensure collection2item is not null
+            collection2item = new String[] {};
         }
-        if (collection2community == null && collection2item == null)
-        {
+        if (collection2community.length == 0 && collection2item.length == 0) {
             return null;
         }
-        
+
         Model m = ModelFactory.createDefaultModel();
         Model prefixes = this.getPrefixes();
         m.setNsPrefixes(prefixes);
         prefixes.close();
-        
+
         String myId = RDFUtil.generateIdentifier(context, collection);
-        if (myId == null)
-        {
+        if (myId == null) {
             return null;
         }
-        
+
         // add all parents
-        DSpaceObject[] parents = collection.getCommunities();
-        for (DSpaceObject parent : parents)
-        {
-            if (!RDFUtil.isPublicBoolean(context, parent))
-            {
+        for (DSpaceObject parent : communityService.getAllParents(context, collection)) {
+            if (!RDFUtil.isPublicBoolean(context, parent)) {
                 continue;
             }
-            
+
             String id = RDFUtil.generateIdentifier(context, parent);
-            if (id != null)
-            {
-                for (String link : collection2community)
-                {
+            if (id != null) {
+                for (String link : collection2community) {
                     m.add(m.createResource(myId),
-                            m.createProperty(link),
-                            m.createResource(id));
+                          m.createProperty(link),
+                          m.createResource(id));
                 }
             }
         }
-        
+
         // add all items
-        ItemIterator items = collection.getAllItems();
-        while (items.hasNext())
-        {
+        Iterator<Item> items = itemService.findAllByCollection(context, collection);
+        while (items.hasNext()) {
             String id = RDFUtil.generateIdentifier(context, items.next());
-            if (id != null)
-            {
-                for (String link : collection2item)
-                {
+            if (id != null) {
+                for (String link : collection2item) {
                     m.add(m.createResource(myId),
-                            m.createProperty(link),
-                            m.createResource(id));
+                          m.createProperty(link),
+                          m.createResource(id));
                 }
             }
         }
-        
-        if (m.isEmpty())
-        {
+
+        if (m.isEmpty()) {
             m.close();
             return null;
         }
         return m;
     }
-    
+
     public Model convertItem(Context context, Item item)
-            throws SQLException
-    {
-        if (item2collection == null)
-        {
+        throws SQLException {
+        String[] item2collection = configurationService.getArrayProperty(SIMPLE_RELATIONS_ITEM2COLLECTION_KEY);
+        if (item2collection == null || item2collection.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from items to collections was disabled. "
-                    + "Won't link from items to collections.");
+                         + "linking from items to collections was disabled. "
+                         + "Won't link from items to collections.");
+            // don't return here, as we might have to link to bitstreams.
+            // ensure item2collection is not null
+            item2collection = new String[] {};
         }
-        if (item2bitstream == null)
-        {
+
+        String[] item2bitstream = configurationService.getArrayProperty(SIMPLE_RELATIONS_ITEM2BITSTREAM_KEY);
+        if (item2bitstream == null || item2bitstream.length == 0) {
             log.info("Either there was a problem loading the configuration or "
-                    + "linking from items to bitstreams was disabled. "
-                    + "Won't link from items to bitstreams.");
+                         + "linking from items to bitstreams was disabled. "
+                         + "Won't link from items to bitstreams.");
+            // don't return here, as we might have to link to collections.
+            // ensure item2bitstream is not null
+            item2bitstream = new String[] {};
         }
-        if (item2collection == null && item2bitstream == null)
-        {
+
+        if (item2collection.length == 0 && item2bitstream.length == 0) {
             return null;
         }
-        
+
         Model m = ModelFactory.createDefaultModel();
         Model prefixes = this.getPrefixes();
         m.setNsPrefixes(prefixes);
         prefixes.close();
-        
+
         String myId = RDFUtil.generateIdentifier(context, item);
-        if (myId == null)
-        {
+        if (myId == null) {
             return null;
         }
-        
+
         // add all parents
-        Collection[] collections = item.getCollections();
-        for (DSpaceObject parent : collections)
-        {
-            if (!RDFUtil.isPublicBoolean(context, parent))
-            {
+        for (DSpaceObject parent : item.getCollections()) {
+            if (!RDFUtil.isPublicBoolean(context, parent)) {
                 continue;
             }
-            
+
             String id = RDFUtil.generateIdentifier(context, parent);
-            if (id != null)
-            {
-                for (String link : item2collection)
-                {
+            if (id != null) {
+                for (String link : item2collection) {
                     m.add(m.createResource(myId),
-                            m.createProperty(link),
-                            m.createResource(id));
+                          m.createProperty(link),
+                          m.createResource(id));
                 }
             }
         }
-        
+
         // add all items
-        for(Bundle bundle : item.getBundles())
-        {
+        for (Bundle bundle : item.getBundles()) {
             // currently link only the original files
             // TODO: Discuss if LICENSEs, THUMBNAILs and/or extracted TEXTs
-            // should be linked/exported as well (and if sutch a feature should 
+            // should be linked/exported as well (and if sutch a feature should
             // be configurable).
-            if (bundle.getName().equals("ORIGINAL"))
-            {
-                for (Bitstream bs : bundle.getBitstreams())
-                {
-                    if (RDFUtil.isPublicBoolean(context, bs))
-                    {
-                        String url = bitstreamURI(bs);
-                        if (url != null)
-                        {
-                            for (String link : item2bitstream)
-                            {
+            if (bundle.getName().equals("ORIGINAL")) {
+                for (Bitstream bs : bundle.getBitstreams()) {
+                    if (RDFUtil.isPublicBoolean(context, bs)) {
+                        String url = bitstreamURI(context, bs);
+                        if (url != null) {
+                            for (String link : item2bitstream) {
                                 m.add(m.createResource(myId),
-                                    m.createProperty(link),
-                                    m.createResource(url));
+                                      m.createProperty(link),
+                                      m.createResource(url));
                             }
                         }
                     }
                 }
             }
         }
-        
-        if (m.isEmpty())
-        {
+
+        if (m.isEmpty()) {
             m.close();
             return null;
         }
         return m;
     }
-    
-    /**
-     * This methods generataes a link to the provieded Bitstream.
-     * As bitstreams currently don't get Persistent Identifier in DSpace, we have
-     * to link them using a link to the repository. This link should work with
-     * JSPUI and XMLUI (at least it does in DSpace 4.x).
-     * @param bitstream Bitstream for which a URL should be generated.
-     * @return The link to the URL or null if the Bistream is is a Community or 
-     * Collection logo.
-     * @throws SQLException 
-     */
-    public String bitstreamURI(Bitstream bitstream)
-            throws SQLException
-    {
-        DSpaceObject parent = bitstream.getParentObject();
 
-        if (!(parent instanceof Item))
-        {
+    /**
+     * This methods generates a link to the provided Bitstream.
+     * As bitstreams currently don't get Persistent Identifier in DSpace, we have
+     * to link them using a link to the repository.
+     *
+     * @param context   The relevant DSpace Context.
+     * @param bitstream Bitstream for which a URL should be generated.
+     * @return The link to the URL or null if the Bitstream is a Community or
+     * Collection logo.
+     * @throws SQLException if database error
+     */
+    public String bitstreamURI(Context context, Bitstream bitstream)
+        throws SQLException {
+        DSpaceObject parent = bitstreamService.getParentObject(context, bitstream);
+
+        if (!(parent instanceof Item)) {
             // Bitstream is a community or collection logo.
             // we currently ignore those
             return null;
         }
-        String dspaceURL = configurationService.getProperty("dspace.url");
+        String dspaceURL = configurationService.getProperty("dspace.ui.url");
         String link = "";
-        try
-        {
-            // this currently (DSpace 4.1) works with xmlui and jspui.
-            link = dspaceURL + "/bitstream/" + parent.getHandle() + "/" 
-                + bitstream.getSequenceID() + "/" 
+        try {
+            // the link to the bitstream in the UI
+            link = dspaceURL + "/bitstream/" + parent.getHandle() + "/"
+                + bitstream.getSequenceID() + "/"
                 + Util.encodeBitstreamName(bitstream.getName(), Constants.DEFAULT_ENCODING);
-        }
-        catch (UnsupportedEncodingException ex)
-        {
+        } catch (UnsupportedEncodingException ex) {
             throw new RuntimeException("DSpace's default encoding is not supported.", ex);
         }
         return link;
     }
 
     @Override
-    public boolean supports(int type)
-    {
-        switch (type)
-        {
-            case (Constants.COLLECTION) :
+    public boolean supports(int type) {
+        switch (type) {
+            case (Constants.COLLECTION):
                 return true;
-            case (Constants.COMMUNITY) :
+            case (Constants.COMMUNITY):
                 return true;
-            case (Constants.ITEM) :
+            case (Constants.ITEM):
                 return true;
-            case (Constants.SITE) :
+            case (Constants.SITE):
                 return true;
-            default :
+            default:
                 return false;
         }
     }

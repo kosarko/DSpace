@@ -7,22 +7,28 @@
  */
 package org.dspace.content;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
-import org.apache.log4j.Logger;
-import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.Context;
-import org.dspace.core.LogManager;
-import org.dspace.storage.rdbms.DatabaseManager;
-import org.dspace.storage.rdbms.TableRow;
-import org.dspace.storage.rdbms.TableRowIterator;
+import org.dspace.core.ReloadableEntity;
+import org.hibernate.annotations.Type;
+import org.hibernate.proxy.HibernateProxyHelper;
 
 /**
  * Database access class representing a Dublin Core metadata value.
  * It represents a value of a given <code>MetadataField</code> on an Item.
- * (The Item can have many values of the same field.)  It contains                                           element, qualifier, value and language.
+ * (The Item can have many values of the same field.)  It contains element, qualifier, value and language.
  * the field (which names the schema, element, and qualifier), language,
  * and a value.
  *
@@ -30,134 +36,95 @@ import org.dspace.storage.rdbms.TableRowIterator;
  * @see org.dspace.content.MetadataSchema
  * @see org.dspace.content.MetadataField
  */
-public class MetadataValue
-{
-    /** The reference to the metadata field */
-    private int fieldId = 0;
-
-    /** The primary key for the metadata value */
-    private int valueId = 0;
-
-    /** The reference to the DSpace resource */
-    private int resourceId;
-
-    /** The reference to the DSpace resource type*/
-    private int resourceTypeId;
-
-    /** The value of the field */
-    public String value;
-
-    /** The language of the field, may be <code>null</code> */
-    public String language;
-
-    /** The position of the record. */
-    public int place = 1;
-
-    /** Authority key, if any */
-    public String authority = null;
-
-    /** Authority confidence value -- see Choices class for values */
-    public int confidence = 0;
-
-    /** log4j logger */
-    private static Logger log = Logger.getLogger(MetadataValue.class);
-
-    /** The row in the table representing this type */
-    private TableRow row;
+@Entity
+@Table(name = "metadatavalue")
+public class MetadataValue implements ReloadableEntity<Integer> {
+    /**
+     * The reference to the metadata field
+     */
+    @Id
+    @Column(name = "metadata_value_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "metadatavalue_seq")
+    @SequenceGenerator(name = "metadatavalue_seq", sequenceName = "metadatavalue_seq", allocationSize = 1)
+    private final Integer id;
 
     /**
-     * Construct the metadata object from the matching database row.
-     *
-     * @param row database row to use for contents
+     * The primary key for the metadata value
      */
-    public MetadataValue(TableRow row)
-    {
-        if (row != null)
-        {
-            fieldId = row.getIntColumn("metadata_field_id");
-            valueId = row.getIntColumn("metadata_value_id");
-            resourceId = row.getIntColumn("resource_id");
-            resourceTypeId = row.getIntColumn("resource_type_id");
-            value = row.getStringColumn("text_value");
-            language = row.getStringColumn("text_lang");
-            place = row.getIntColumn("place");
-            authority = row.getStringColumn("authority");
-            confidence = row.getIntColumn("confidence");
-            this.row = row;
-        }
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "metadata_field_id")
+    private MetadataField metadataField = null;
 
     /**
-     * Default constructor.
+     * The value of the field
      */
-    public MetadataValue()
-    {
-    }
+    @Lob
+    @Type(type = "org.dspace.storage.rdbms.hibernate.DatabaseAwareLobType")
+    @Column(name = "text_value")
+    private String value;
 
     /**
-     * Constructor to create a value for a given field.
-     *
-     * @param field initial value for field
+     * The language of the field, may be <code>null</code>
      */
-    public MetadataValue(MetadataField field)
-    {
-        this.fieldId = field.getFieldID();
+    @Column(name = "text_lang", length = 24)
+    private String language;
+
+    /**
+     * The position of the record.
+     */
+    @Column(name = "place")
+    private int place = 1;
+
+    /**
+     * Authority key, if any
+     */
+    @Column(name = "authority", length = 100)
+    private String authority = null;
+
+    /**
+     * Authority confidence value -- see Choices class for values
+     */
+    @Column(name = "confidence")
+    private int confidence = -1;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "dspace_object_id")
+    protected DSpaceObject dSpaceObject;
+
+    /**
+     * Protected constructor, create object using:
+     * {@link org.dspace.content.service.MetadataValueService#create(Context, DSpaceObject, MetadataField)}
+     */
+    protected MetadataValue() {
+        id = 0;
     }
 
     /**
      * Get the field ID the metadata value represents.
      *
-     * @return metadata field ID
+     * @return metadata value ID
      */
-    public int getFieldId()
-    {
-        return fieldId;
+    @Override
+    public Integer getID() {
+        return id;
     }
 
     /**
-     * Set the field ID that the metadata value represents.
+     * Get the dspaceObject
      *
-     * @param fieldId new field ID
+     * @return dspaceObject
      */
-    public void setFieldId(int fieldId)
-    {
-        this.fieldId = fieldId;
+    public DSpaceObject getDSpaceObject() {
+        return dSpaceObject;
     }
 
     /**
-     * Get the resource type ID.
+     * Set the dspaceObject ID.
      *
-     * @return resource type ID
+     * @param dso new dspaceObject ID
      */
-    public int getResourceTypeId() {
-        return resourceTypeId;
-    }
-
-    /**
-     * Set the resource type ID.
-     *
-     * @param resourceTypeId new resource type ID
-     */
-    public void setResourceTypeId(int resourceTypeId) {
-        this.resourceTypeId = resourceTypeId;
-    }
-
-    /**
-     * Get the resource id
-     *
-     * @return resource ID
-     */
-    public int getResourceId() {
-        return resourceId;
-    }
-
-    /**
-     * Set the resource type ID.
-     *
-     * @param resourceId new resource ID
-     */
-    public void setResourceId(int resourceId) {
-        this.resourceId = resourceId;
+    public void setDSpaceObject(DSpaceObject dso) {
+        this.dSpaceObject = dso;
     }
 
     /**
@@ -165,8 +132,7 @@ public class MetadataValue
      *
      * @return language
      */
-    public String getLanguage()
-    {
+    public String getLanguage() {
         return language;
     }
 
@@ -175,8 +141,7 @@ public class MetadataValue
      *
      * @param language new language
      */
-    public void setLanguage(String language)
-    {
+    public void setLanguage(String language) {
         this.language = language;
     }
 
@@ -185,8 +150,7 @@ public class MetadataValue
      *
      * @return place ordering
      */
-    public int getPlace()
-    {
+    public int getPlace() {
         return place;
     }
 
@@ -195,19 +159,16 @@ public class MetadataValue
      *
      * @param place new place (relative order in series of values)
      */
-    public void setPlace(int place)
-    {
+    public void setPlace(int place) {
         this.place = place;
     }
 
-    /**
-     * Get the value ID.
-     *
-     * @return value ID
-     */
-    public int getValueId()
-    {
-        return valueId;
+    public MetadataField getMetadataField() {
+        return metadataField;
+    }
+
+    public void setMetadataField(MetadataField metadataField) {
+        this.metadataField = metadataField;
     }
 
     /**
@@ -215,8 +176,7 @@ public class MetadataValue
      *
      * @return metadata value
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 
@@ -225,8 +185,7 @@ public class MetadataValue
      *
      * @param value new metadata value
      */
-    public void setValue(String value)
-    {
+    public void setValue(String value) {
         this.value = value;
     }
 
@@ -235,9 +194,8 @@ public class MetadataValue
      *
      * @return metadata authority
      */
-    public String getAuthority ()
-    {
-        return authority ;
+    public String getAuthority() {
+        return authority;
     }
 
     /**
@@ -245,9 +203,8 @@ public class MetadataValue
      *
      * @param value new metadata authority
      */
-    public void setAuthority (String value)
-    {
-        this.authority  = value;
+    public void setAuthority(String value) {
+        this.authority = value;
     }
 
     /**
@@ -255,8 +212,7 @@ public class MetadataValue
      *
      * @return metadata confidence
      */
-    public int getConfidence()
-    {
+    public int getConfidence() {
         return confidence;
     }
 
@@ -265,211 +221,46 @@ public class MetadataValue
      *
      * @param value new metadata confidence
      */
-    public void setConfidence(int value)
-    {
+    public void setConfidence(int value) {
         this.confidence = value;
     }
 
-    /**
-     * Creates a new metadata value.
-     *
-     * @param context
-     *            DSpace context object
-     * @throws SQLException
-     * @throws AuthorizeException
-     */
-    public void create(Context context) throws SQLException, AuthorizeException
-    {
-        // Create a table row and update it with the values
-        row = DatabaseManager.row("MetadataValue");
-        row.setColumn("resource_id", resourceId);
-        row.setColumn("resource_type_id", resourceTypeId);
-        row.setColumn("metadata_field_id", fieldId);
-        row.setColumn("text_value", value);
-        row.setColumn("text_lang", language);
-        row.setColumn("place", place);
-        row.setColumn("authority", authority);
-        row.setColumn("confidence", confidence);
-        DatabaseManager.insert(context, row);
-
-        // Remember the new row number
-        this.valueId = row.getIntColumn("metadata_value_id");
-
-//        log.info(LogManager.getHeader(context, "create_metadata_value",
-//                "metadata_value_id=" + valueId));
-    }
-
-    /**
-     * Retrieves the metadata value from the database.
-     *
-     * @param context dspace context
-     * @param valueId database key id of value
-     * @return recalled metadata value
-     * @throws IOException
-     * @throws SQLException
-     * @throws AuthorizeException
-     */
-    public static MetadataValue find(Context context, int valueId)
-            throws IOException, SQLException, AuthorizeException
-    {
-        // Grab rows from DB
-        TableRowIterator tri = DatabaseManager.queryTable(context, "MetadataValue",
-                "SELECT * FROM MetadataValue where metadata_value_id= ? ",
-                valueId);
-
-        TableRow row = null;
-        try
-        {
-            if (tri.hasNext())
-            {
-                row = tri.next();
-            }
-        }
-        finally
-        {
-            // close the TableRowIterator to free up resources
-            if (tri != null)
-            {
-                tri.close();
-            }
-        }
-
-        if (row == null)
-        {
-            return null;
-        }
-        else
-        {
-            return new MetadataValue(row);
-        }
-    }
-
-    /**
-     * Retrieves the metadata values for a given field from the database.
-     *
-     * @param context dspace context
-     * @param fieldId field whose values to look for
-     * @return a collection of metadata values
-     * @throws IOException
-     * @throws SQLException
-     * @throws AuthorizeException
-     */
-    public static List<MetadataValue> findByField(Context context, int fieldId)
-            throws IOException, SQLException, AuthorizeException
-    {
-        // Grab rows from DB
-        TableRowIterator tri = DatabaseManager.queryTable(context, "MetadataValue",
-                "SELECT * FROM MetadataValue WHERE metadata_field_id= ? ",
-                fieldId);
-
-        TableRow row = null;
-        List<MetadataValue> ret = new ArrayList<MetadataValue>();
-        try
-        {
-            while (tri.hasNext())
-            {
-                row = tri.next();
-                ret.add(new MetadataValue(row));
-            }
-        }
-        finally
-        {
-            // close the TableRowIterator to free up resources
-            if (tri != null)
-            {
-                tri.close();
-            }
-        }
-
-        return ret;
-    }
-
-    /**
-     * Update the metadata value in the database.
-     *
-     * @param context dspace context
-     * @throws SQLException
-     * @throws AuthorizeException
-     */
-    public void update(Context context) throws SQLException, AuthorizeException
-    {
-        row.setColumn("resource_id", resourceId);
-        row.setColumn("resource_type_id", resourceTypeId);
-        row.setColumn("metadata_field_id", fieldId);
-        row.setColumn("text_value", value);
-        row.setColumn("text_lang", language);
-        row.setColumn("place", place);
-        row.setColumn("authority", authority);
-        row.setColumn("confidence", confidence);
-        DatabaseManager.update(context, row);
-
-        log.info(LogManager.getHeader(context, "update_metadatavalue",
-                "metadata_value_id=" + getValueId()));
-    }
-
-    /**
-     * Delete the metadata field.
-     *
-     * @param context dspace context
-     * @throws SQLException
-     * @throws AuthorizeException
-     */
-    public void delete(Context context) throws SQLException, AuthorizeException
-    {
-        log.info(LogManager.getHeader(context, "delete_metadata_value",
-                " metadata_value_id=" + getValueId()));
-        DatabaseManager.delete(context, row);
-    }
 
     /**
      * Return <code>true</code> if <code>other</code> is the same MetadataValue
      * as this object, <code>false</code> otherwise
      *
-     * @param obj
-     *            object to compare to
-     *
+     * @param obj object to compare to
      * @return <code>true</code> if object passed in represents the same
-     *         MetadataValue as this object
+     * MetadataValue as this object
      */
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj == null)
-        {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        Class<?> objClass = HibernateProxyHelper.getClassWithoutInitializingProxy(obj);
+        if (!getClass().equals(objClass)) {
             return false;
         }
         final MetadataValue other = (MetadataValue) obj;
-        if (this.fieldId != other.fieldId)
-        {
+        if (!this.id.equals(other.id)) {
             return false;
         }
-        if (this.valueId != other.valueId)
-        {
+        if (!this.getID().equals(other.getID())) {
             return false;
         }
-        if (this.resourceId != other.resourceId)
-        {
-            return false;
-        }
-        if (this.resourceTypeId != other.resourceTypeId)
-        {
-            return false;
-        }
-        return true;
+        return this.getDSpaceObject().getID().equals(other.getDSpaceObject().getID());
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 7;
-        hash = 47 * hash + this.fieldId;
-        hash = 47 * hash + this.valueId;
-        hash = 47 * hash + this.resourceId;
-        hash = 47 * hash + this.resourceTypeId;
+        hash = 47 * hash + this.id;
+        hash = 47 * hash + this.getID();
+        hash = 47 * hash + this.getDSpaceObject().getID().hashCode();
         return hash;
     }
+
+
 }

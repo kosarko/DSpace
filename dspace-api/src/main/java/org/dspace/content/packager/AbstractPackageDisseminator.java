@@ -7,21 +7,24 @@
  */
 package org.dspace.content.packager;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
-import org.dspace.content.ItemIterator;
 import org.dspace.content.crosswalk.CrosswalkException;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.CommunityService;
+import org.dspace.content.service.ItemService;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An abstract implementation of a DSpace Package Disseminator, which
@@ -34,27 +37,20 @@ import java.util.List;
  * <P>
  * All Package disseminators should either extend this abstract class
  * or implement <code>PackageDisseminator</code> to better suit their needs.
- * <P>
- * WARNING: If you choose to extend this Abstract class, you must DISABLE
- * plugin instance caching for your new class in dspace.cfg. This will ensure
- * that "packageFileList" and any other global instance variables are RESET
- * for each package dissemination. To DISABLE plugin instance caching, just place
- * the following configuration in your dspace.cfg:
- * <code>
- * plugin.reusable.[full-class-name] = false
- * </code>
- * For more information see the org.dspace.core.PluginManager cacheMe() method,
- * which defaults to caching all plugin class instances.
  *
  * @author Tim Donohue
  * @see PackageDisseminator
- * @see PluginManager
+ * @see org.dspace.core.service.PluginService
  */
 public abstract class AbstractPackageDisseminator
-        implements PackageDisseminator
-{
-    /**  List of all successfully disseminated package files */
+    implements PackageDisseminator {
+    /**
+     * List of all successfully disseminated package files
+     */
     private List<File> packageFileList = new ArrayList<File>();
+
+    protected final CommunityService communityService = ContentServiceFactory.getInstance().getCommunityService();
+    protected final ItemService itemService = ContentServiceFactory.getInstance().getItemService();
 
     /**
      * Recursively export one or more DSpace Objects as a series of packages.
@@ -74,63 +70,59 @@ public abstract class AbstractPackageDisseminator
      * Throws an exception of the initial object is not acceptable or there is
      * a failure creating the package.
      *
-     * @param context  DSpace context.
-     * @param dso  initial DSpace object
-     * @param params Properties-style list of options specific to this packager
+     * @param context DSpace context.
+     * @param dso     initial DSpace object
+     * @param params  Properties-style list of options specific to this packager
      * @param pkgFile File where initial package should be written. All other
-     *          packages will be written to the same directory as this File.
+     *                packages will be written to the same directory as this File.
      * @throws PackageValidationException if package cannot be created or there is
-     *  a fatal error in creating it.
+     *                                    a fatal error in creating it.
+     * @throws CrosswalkException         if crosswalk error
+     * @throws IOException                if IO error
+     * @throws SQLException               if database error
+     * @throws AuthorizeException         if authorization error
      */
     @Override
     public List<File> disseminateAll(Context context, DSpaceObject dso,
-                     PackageParameters params, File pkgFile)
+                                     PackageParameters params, File pkgFile)
         throws PackageException, CrosswalkException,
-               AuthorizeException, SQLException, IOException
-    {
+        AuthorizeException, SQLException, IOException {
         //If unset, make sure the Parameters specifies this is a recursive dissemination
-        if(!params.recursiveModeEnabled())
-        {
+        if (!params.recursiveModeEnabled()) {
             params.setRecursiveModeEnabled(true);
         }
 
         // If this object package has NOT already been disseminated
         // NOTE: This ensures we don't accidentally disseminate the same object
         // TWICE, e.g. when an Item is mapped into multiple Collections.
-        if(!getPackageList().contains(pkgFile))
-        {
+        if (!getPackageList().contains(pkgFile)) {
             // Disseminate the object using provided PackageDisseminator
             disseminate(context, dso, params, pkgFile);
         }
 
         //check if package was disseminated
-        if(pkgFile.exists())
-        {
+        if (pkgFile.exists()) {
             //add to list of successfully disseminated packages
             addToPackageList(pkgFile);
 
             //We can only recursively disseminate non-Items
             //(NOTE: Items have no children, as Bitstreams/Bundles are created from Item packages)
-            if(dso.getType()!=Constants.ITEM)
-            {
+            if (dso.getType() != Constants.ITEM) {
                 //Determine where first file package was disseminated to, as all
                 //others will be written to same directory
                 String pkgDirectory = pkgFile.getCanonicalFile().getParent();
-                if(!pkgDirectory.endsWith(File.separator))
-                {
+                if (!pkgDirectory.endsWith(File.separator)) {
                     pkgDirectory += File.separator;
                 }
                 String fileExtension = PackageUtils.getFileExtension(pkgFile.getName());
 
                 //recursively disseminate content, based on object type
-                switch (dso.getType())
-                {
-                    case Constants.COLLECTION :
+                switch (dso.getType()) {
+                    case Constants.COLLECTION:
                         //Also find all Items in this Collection and disseminate
                         Collection collection = (Collection) dso;
-                        ItemIterator iterator = collection.getItems();
-                        while(iterator.hasNext())
-                        {
+                        Iterator<Item> iterator = itemService.findByCollection(context, collection);
+                        while (iterator.hasNext()) {
                             Item item = iterator.next();
 
                             //disseminate all items (recursively!)
@@ -139,41 +131,43 @@ public abstract class AbstractPackageDisseminator
                         }
 
                         break;
-                    case Constants.COMMUNITY :
+                    case Constants.COMMUNITY:
                         //Also find all SubCommunities in this Community and disseminate
                         Community community = (Community) dso;
-                        Community[] subcommunities = community.getSubcommunities();
-                        for(int i=0; i<subcommunities.length; i++)
-                        {
+                        List<Community> subcommunities = community.getSubcommunities();
+                        for (Community subcommunity : subcommunities) {
                             //disseminate all sub-communities (recursively!)
-                            String childFileName = pkgDirectory + PackageUtils.getPackageName(subcommunities[i], fileExtension);
-                            disseminateAll(context, subcommunities[i], params, new File(childFileName));
+                            String childFileName = pkgDirectory + PackageUtils
+                                .getPackageName(subcommunity, fileExtension);
+                            disseminateAll(context, subcommunity, params, new File(childFileName));
                         }
 
                         //Also find all Collections in this Community and disseminate
-                        Collection[] collections = community.getCollections();
-                        for(int i=0; i<collections.length; i++)
-                        {
+                        List<Collection> collections = community.getCollections();
+                        for (int i = 0; i < collections.size(); i++) {
                             //disseminate all collections (recursively!)
-                            String childFileName = pkgDirectory + PackageUtils.getPackageName(collections[i], fileExtension);
-                            disseminateAll(context, collections[i], params, new File(childFileName));
+                            String childFileName = pkgDirectory + PackageUtils
+                                .getPackageName(collections.get(i), fileExtension);
+                            disseminateAll(context, collections.get(i), params, new File(childFileName));
                         }
 
                         break;
-                    case Constants.SITE :
+                    case Constants.SITE:
                         //Also find all top-level Communities and disseminate
-                        Community[] topCommunities = Community.findAllTop(context);
-                        for(int i=0; i<topCommunities.length; i++)
-                        {
+                        List<Community> topCommunities = communityService.findAllTop(context);
+                        for (Community topCommunity : topCommunities) {
                             //disseminate all top-level communities (recursively!)
-                            String childFileName = pkgDirectory + PackageUtils.getPackageName(topCommunities[i], fileExtension);
-                            disseminateAll(context, topCommunities[i], params, new File(childFileName));
+                            String childFileName = pkgDirectory + PackageUtils
+                                .getPackageName(topCommunity, fileExtension);
+                            disseminateAll(context, topCommunity, params, new File(childFileName));
                         }
 
                         break;
-                }//end switch
-            }//end if not an Item
-        }//end if pkgFile exists
+                    default:
+                        break;
+                } //end switch
+            } //end if not an Item
+        } //end if pkgFile exists
 
         //return list of all successfully disseminated packages
         return getPackageList();
@@ -181,13 +175,12 @@ public abstract class AbstractPackageDisseminator
 
     /**
      * Add File to list of successfully disseminated package files
+     *
      * @param f added File.
      */
-    protected void addToPackageList(File f)
-    {
+    protected void addToPackageList(File f) {
         //add to list of successfully disseminated packages
-        if(!packageFileList.contains(f))
-        {
+        if (!packageFileList.contains(f)) {
             packageFileList.add(f);
         }
     }
@@ -202,8 +195,7 @@ public abstract class AbstractPackageDisseminator
      *
      * @return List of Files which correspond to the disseminated packages
      */
-    protected List<File> getPackageList()
-    {
+    protected List<File> getPackageList() {
         return packageFileList;
     }
 }

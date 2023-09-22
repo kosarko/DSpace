@@ -7,31 +7,28 @@
  */
 package org.dspace.content.crosswalk;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.DSpaceObject;
-import org.dspace.content.packager.AbstractMETSDisseminator;
 import org.dspace.content.packager.PackageDisseminator;
 import org.dspace.content.packager.PackageException;
 import org.dspace.content.packager.PackageParameters;
-import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
-import org.dspace.core.PluginManager;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
-
-import edu.harvard.hul.ois.mets.helper.MetsException;
+import org.dspace.core.factory.CoreServiceFactory;
+import org.dspace.services.ConfigurationService;
+import org.dspace.services.factory.DSpaceServicesFactory;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
 
 /**
  * METS dissemination crosswalk
@@ -40,13 +37,11 @@ import edu.harvard.hul.ois.mets.helper.MetsException;
  * description -- intended to work within an application like the
  * OAI-PMH server.
  *
- * based on class by Larry Stone
+ * @author Larry Stone
  * @version $Revision$
- * modified for LINDAT/CLARIN
  */
 public class METSDisseminationCrosswalk
-    implements DisseminationCrosswalk
-{
+    implements DisseminationCrosswalk {
     // Plugin Name of METS packager to use for manifest;
     // maybe make  this configurable.
     private static final String METS_PACKAGER_PLUGIN = "METS";
@@ -61,113 +56,107 @@ public class METSDisseminationCrosswalk
         Namespace.getNamespace("xlink", "http://www.w3.org/TR/xlink");
 
 
-    /** METS namespace -- includes "mets" prefix for use in XPaths */
+    /**
+     * METS namespace -- includes "mets" prefix for use in XPaths
+     */
     private static final Namespace METS_NS = Namespace
-            .getNamespace("mets", "http://www.loc.gov/METS/");
+        .getNamespace("mets", "http://www.loc.gov/METS/");
 
-    private static final Namespace namespaces[] = { METS_NS, MODS_NS, XLINK_NS };
+    private static final Namespace namespaces[] = {METS_NS, MODS_NS, XLINK_NS};
 
-    /**  URL of METS XML Schema */
+    /**
+     * URL of METS XML Schema
+     */
     private static final String METS_XSD = "http://www.loc.gov/standards/mets/mets.xsd";
 
     private static final String schemaLocation =
-        METS_NS.getURI()+" "+METS_XSD;
+        METS_NS.getURI() + " " + METS_XSD;
 
     @Override
-    public Namespace[] getNamespaces()
-    {
+    public Namespace[] getNamespaces() {
         return (Namespace[]) ArrayUtils.clone(namespaces);
     }
 
     @Override
-    public String getSchemaLocation()
-    {
+    public String getSchemaLocation() {
         return schemaLocation;
     }
 
     @Override
-    public List<Element> disseminateList(DSpaceObject dso)
+    public List<Element> disseminateList(Context context, DSpaceObject dso)
         throws CrosswalkException,
-               IOException, SQLException, AuthorizeException
-    {
-        List<Element> result = new ArrayList<Element>(1);
-        result.add(disseminateElement(dso));
+        IOException, SQLException, AuthorizeException {
+        List<Element> result = new ArrayList<>(1);
+        result.add(disseminateElement(context, dso));
         return result;
     }
 
     @Override
-    public Element disseminateElement(DSpaceObject dso)
+    public Element disseminateElement(Context context, DSpaceObject dso)
         throws CrosswalkException,
-               IOException, SQLException, AuthorizeException
-    {
-        if (!canDisseminate(dso))
-        {
-            throw new CrosswalkObjectNotSupported("METSDisseminationCrosswalk cannot disseminate a DSpaceObject of type: " + Constants.typeText[dso.getType()]);
-        }
-        
-        AbstractMETSDisseminator dip = (AbstractMETSDisseminator)
-          PluginManager.getNamedPlugin(PackageDisseminator.class, METS_PACKAGER_PLUGIN);
-        if (dip == null)
-        {
-            throw new CrosswalkInternalException("Cannot find a disseminate plugin for package=" + METS_PACKAGER_PLUGIN);
+        IOException, SQLException, AuthorizeException {
+        if (!canDisseminate(dso)) {
+            throw new CrosswalkObjectNotSupported(
+                "METSDisseminationCrosswalk cannot disseminate a DSpaceObject of type: " + Constants.typeText[dso
+                    .getType()]);
         }
 
-        try
-        {
+        PackageDisseminator dip = (PackageDisseminator)
+            CoreServiceFactory.getInstance().getPluginService()
+                              .getNamedPlugin(PackageDisseminator.class, METS_PACKAGER_PLUGIN);
+        if (dip == null) {
+            throw new CrosswalkInternalException(
+                "Cannot find a disseminate plugin for package=" + METS_PACKAGER_PLUGIN);
+        }
+
+        try {
             // Set the manifestOnly=true param so we just get METS document (and not content files, etc)
             PackageParameters pparams = new PackageParameters();
             pparams.put("manifestOnly", "true");
-            //UFAL
-            pparams.put("unauthorized", "skip");
-            //\UFAL
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            // Create a temporary file to disseminate into
+            ConfigurationService configurationService
+                    = DSpaceServicesFactory.getInstance().getConfigurationService();
+            String tempDirectory = (configurationService.hasProperty("upload.temp.dir"))
+                ? configurationService.getProperty("upload.temp.dir")
+                    : System.getProperty("java.io.tmpdir");
+
+            File tempFile = File.createTempFile("METSDissemination" + dso.hashCode(), null, new File(tempDirectory));
+            tempFile.deleteOnExit();
 
             // Disseminate METS to temp file
-            Context context = new Context();
-            dip.writeManifest(context, dso, pparams, baos);
-            context.complete();
+            dip.disseminate(context, dso, pparams, tempFile);
 
-            try
-            {
+            try {
                 //Return just the root Element of the METS file
                 SAXBuilder builder = new SAXBuilder();
-                Document metsDocument = builder.build(baos.toString());
+                Document metsDocument = builder.build(tempFile);
                 return metsDocument.getRootElement();
+            } catch (JDOMException je) {
+                throw new MetadataValidationException(
+                    "Error parsing METS (see wrapped error message for more details) ", je);
             }
-            catch (JDOMException je)
-            {
-                throw new MetadataValidationException("Error parsing METS (see wrapped error message for more details) ",je);
-            }
-        }
-        catch (PackageException pe)
-        {
-            throw new CrosswalkInternalException("Failed making METS manifest in packager (see wrapped error message for more details) ",pe);
-        }
-        catch (MetsException e)
-        {
-            throw new CrosswalkInternalException("Failed making METS manifest in packager (see wrapped error message for more details) ",e);
+        } catch (PackageException pe) {
+            throw new CrosswalkInternalException(
+                "Failed making METS manifest in packager (see wrapped error message for more details) ", pe);
         }
     }
 
     @Override
-    public boolean canDisseminate(DSpaceObject dso)
-    {
+    public boolean canDisseminate(DSpaceObject dso) {
         //can disseminate most types of DSpaceObjects (Site, Community, Collection, Item)
-        if(dso.getType()==Constants.SITE || 
-           dso.getType()==Constants.COMMUNITY ||
-           dso.getType()==Constants.COLLECTION ||
-           dso.getType()==Constants.ITEM)
-        {    
+        if (dso.getType() == Constants.SITE ||
+            dso.getType() == Constants.COMMUNITY ||
+            dso.getType() == Constants.COLLECTION ||
+            dso.getType() == Constants.ITEM) {
             return true;
-        }
-        else
+        } else {
             return false;
+        }
     }
 
     @Override
-    public boolean preferList()
-    {
+    public boolean preferList() {
         return false;
     }
 }

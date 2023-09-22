@@ -7,12 +7,7 @@
  */
 package org.dspace.xoai.filter;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.dspace.core.Context;
-import org.dspace.storage.rdbms.DatabaseManager;
 import org.dspace.xoai.data.DSpaceItem;
-import org.dspace.xoai.filter.results.DatabaseFilterResult;
 import org.dspace.xoai.filter.results.SolrFilterResult;
 
 /**
@@ -23,40 +18,23 @@ import org.dspace.xoai.filter.results.SolrFilterResult;
  * http://www.openarchives.org/OAI/openarchivesprotocol.html#deletion
  * <P>
  * (Don't worry, a tombstone doesn't display the withdrawn item's metadata or files.)
- * 
+ *
  * @author Tim Donohue
  */
 public class DSpaceWithdrawnFilter extends DSpaceFilter {
 
     @Override
-    public DatabaseFilterResult buildDatabaseQuery(Context context)
-    {
-        List<Object> params = new ArrayList<Object>();
-
-        String filter = "i.withdrawn=TRUE";
-        if(DatabaseManager.isOracle())
-            filter = "i.withdrawn=1";
-
-        return new DatabaseFilterResult(filter, params);
-    }
-
-    @Override
-    public boolean isShown(DSpaceItem item)
-    {
+    public boolean isShown(DSpaceItem item) {
         // For DSpace, if an Item is withdrawn, "isDeleted()" will be true.
         // In this scenario, we want a withdrawn item to be *shown* so that
         // we can properly respond with a "deleted" status via OAI-PMH.
         // Don't worry, this does NOT make the metadata public for withdrawn items,
         // it merely provides an item "tombstone" via OAI-PMH.
-        if (item.isDeleted())
-            return true;
-        else
-            return false;
+        return item.isDeleted();
     }
 
     @Override
-    public SolrFilterResult buildSolrQuery()
-    {
+    public SolrFilterResult buildSolrQuery() {
         // In Solr, we store withdrawn items as "deleted".
         // See org.dspace.xoai.app.XOAI, index(Item) method.
         return new SolrFilterResult("item.deleted:true");

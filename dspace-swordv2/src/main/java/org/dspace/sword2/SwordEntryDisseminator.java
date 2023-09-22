@@ -13,8 +13,8 @@ import org.swordapp.server.DepositReceipt;
 import org.swordapp.server.SwordError;
 import org.swordapp.server.SwordServerException;
 
-public interface SwordEntryDisseminator
-{
-    public DepositReceipt disseminate(Context context, Item item, DepositReceipt receipt)
+public interface SwordEntryDisseminator {
+    public DepositReceipt disseminate(Context context, Item item,
+                                      DepositReceipt receipt)
         throws DSpaceSwordException, SwordError, SwordServerException;
 }

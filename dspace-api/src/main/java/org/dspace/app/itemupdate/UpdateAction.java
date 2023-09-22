@@ -7,24 +7,27 @@
  */
 package org.dspace.app.itemupdate;
 
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.ItemService;
 import org.dspace.core.Context;
 
 /**
- *    Interface for actions to update an item
- *
+ * Interface for actions to update an item
  */
-public interface UpdateAction 
-{
-	/**
-	 *   Action to update item
-	 * 
-	 * @param context
-	 * @param itarch
-	 * @param isTest
-	 * @param suppressUndo
-	 * @throws Exception
-	 */
-	public void execute(Context context, ItemArchive itarch, boolean isTest, boolean suppressUndo) 
-	throws Exception;
-	
+public interface UpdateAction {
+    public ItemService itemService = ContentServiceFactory.getInstance().getItemService();
+
+
+    /**
+     * Action to update item
+     *
+     * @param context      DSpace context
+     * @param itarch       item archive
+     * @param isTest       test flag
+     * @param suppressUndo undo flag
+     * @throws Exception if error
+     */
+    public void execute(Context context, ItemArchive itarch, boolean isTest, boolean suppressUndo)
+        throws Exception;
+
 }

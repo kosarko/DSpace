@@ -7,16 +7,15 @@
  */
 package org.dspace.rest.common;
 
-import org.atteo.evo.inflector.English;
-import org.dspace.rest.Resource;
-import org.dspace.core.ConfigurationManager;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.ServletContext;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.atteo.evo.inflector.English;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.DSpaceObjectService;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,9 +25,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @XmlRootElement(name = "dspaceobject")
-@XmlSeeAlso({Item.class, Collection.class, Community.class})
 public class DSpaceObject {
-    private Integer id;
+
+    private String uuid;
 
     private String name;
     private String handle;
@@ -37,28 +36,23 @@ public class DSpaceObject {
     @XmlElement(name = "link", required = true)
     private String link;
 
-    private List<String> expand = new ArrayList<String>();
+    @XmlElement(required = true)
+    private ArrayList<String> expand = new ArrayList<String>();
 
     public DSpaceObject() {
 
     }
 
-    public DSpaceObject(org.dspace.content.DSpaceObject dso) {
-        setId(dso.getID());
+    public DSpaceObject(org.dspace.content.DSpaceObject dso, ServletContext servletContext) {
+        setUUID(dso.getID().toString());
         setName(dso.getName());
         setHandle(dso.getHandle());
-        setType(dso.getTypeText().toLowerCase());
+        DSpaceObjectService dspaceObjectService = ContentServiceFactory.getInstance().getDSpaceObjectService(dso);
+        setType(dspaceObjectService.getTypeText(dso).toLowerCase());
+        link = createLink(servletContext);
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
@@ -75,7 +69,7 @@ public class DSpaceObject {
     }
 
     public String getLink() {
-        return ConfigurationManager.getProperty("dspace.baseUrl") + "/rest/" + English.plural(getType()) + "/" + getId();
+        return link;
     }
 
     public String getType() {
@@ -87,16 +81,27 @@ public class DSpaceObject {
     }
 
 
-    @XmlElement(required = true)
     public List<String> getExpand() {
         return expand;
     }
 
-    public void setExpand(List<String> expand) {
+    public void setExpand(ArrayList<String> expand) {
         this.expand = expand;
     }
 
     public void addExpand(String expandableAttribute) {
         this.expand.add(expandableAttribute);
+    }
+
+    public String getUUID() {
+        return uuid;
+    }
+
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
+    }
+
+    private String createLink(ServletContext context) {
+        return context.getContextPath() + "/" + English.plural(getType()) + "/" + getUUID();
     }
 }

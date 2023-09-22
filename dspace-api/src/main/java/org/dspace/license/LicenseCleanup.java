@@ -15,9 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
-
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -25,124 +27,120 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Bitstream;
 import org.dspace.content.Bundle;
 import org.dspace.content.Item;
-import org.dspace.content.ItemIterator;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.BitstreamService;
+import org.dspace.content.service.BundleService;
+import org.dspace.content.service.ItemService;
 import org.dspace.core.Context;
 
 /**
- * Cleanup class for CC Licenses, corrects XML formating errors by replacing the license_rdf bitstream.
- * 
+ * Cleanup class for CC Licenses, corrects XML formatting errors by replacing
+ * the license_rdf bitstream.
+ *
  * @author mdiggory
  */
-public class LicenseCleanup
-{
+public class LicenseCleanup {
 
-    private static final Logger log = Logger.getLogger(LicenseCleanup.class);
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger(LicenseCleanup.class);
 
     protected static final Templates templates;
 
-    static
-    {
+    protected static final BitstreamService bitstreamService = ContentServiceFactory.getInstance()
+                                                                                    .getBitstreamService();
+    protected static final BundleService bundleService = ContentServiceFactory.getInstance().getBundleService();
+    protected static final ItemService itemService = ContentServiceFactory.getInstance().getItemService();
 
-        try
-        {
+    static {
+        try {
             templates = TransformerFactory.newInstance().newTemplates(
-                    new StreamSource(CreativeCommons.class
-                            .getResourceAsStream("LicenseCleanup.xsl")));
-        }
-        catch (TransformerConfigurationException e)
-        {
+                new StreamSource(CreativeCommonsServiceImpl.class
+                                     .getResourceAsStream("LicenseCleanup.xsl")));
+        } catch (TransformerConfigurationException e) {
             log.error(e.getMessage(), e);
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
 
     /**
-     * @param args
-     * @throws SQLException
-     * @throws IOException
-     * @throws AuthorizeException
+     * Default constructor
+     */
+    private LicenseCleanup() { }
+
+    /**
+     * @param args the command line arguments given
+     * @throws SQLException       if database error
+     * @throws IOException        if IO error
+     * @throws AuthorizeException if authorization error
      */
     public static void main(String[] args) throws SQLException,
-            AuthorizeException, IOException
-    {
+        AuthorizeException, IOException {
 
         Context ctx = new Context();
         ctx.turnOffAuthorisationSystem();
-        ItemIterator iter = Item.findAll(ctx);
+        Iterator<Item> iter = itemService.findAll(ctx);
 
         Properties props = new Properties();
 
         File processed = new File("license.processed");
 
-        if (processed.exists())
-        {
+        if (processed.exists()) {
             props.load(new FileInputStream(processed));
         }
 
         int i = 0;
 
-        try
-        {
-            while (iter.hasNext())
-            {
-                if (i == 100)
-                {
+        try {
+            while (iter.hasNext()) {
+                if (i == 100) {
                     props.store(new FileOutputStream(processed),
-                                    "processed license files, remove to restart processing from scratch");
+                                "processed license files, remove to restart processing from scratch");
                     i = 0;
                 }
 
                 Item item = (Item) iter.next();
                 log.info("checking: " + item.getID());
-                if (!props.containsKey("I" + item.getID()))
-                {
-                    handleItem(item);
+                if (!props.containsKey("I" + item.getID())) {
+                    handleItem(ctx, item);
                     log.info("processed: " + item.getID());
                 }
 
-                item.decache();
                 props.put("I" + item.getID(), "done");
                 i++;
-
             }
-
-        }
-        finally
-        {
+        } finally {
             props
-                    .store(new FileOutputStream(processed),
-                            "processed license files, remove to restart processing from scratch");
+                .store(new FileOutputStream(processed),
+                       "processed license files, remove to restart processing from scratch");
         }
-
     }
 
     /**
      * Process Item, correcting CC-License if encountered.
-     * @param item
-     * @throws SQLException
-     * @throws AuthorizeException
-     * @throws IOException
+     *
+     * @param context The relevant DSpace Context.
+     * @param item    The item to process
+     * @throws SQLException       if database error
+     * @throws AuthorizeException if authorization error
+     * @throws IOException        if IO error
      */
-    protected static void handleItem(Item item) throws SQLException,
-            AuthorizeException, IOException
-    {
-        Bundle[] bundles = item.getBundles("CC-LICENSE");
+    protected static void handleItem(Context context, Item item) throws SQLException,
+        AuthorizeException, IOException {
+        List<Bundle> bundles = itemService.getBundles(item, "CC-LICENSE");
 
-        if (bundles == null || bundles.length == 0)
-        {
+        if (bundles == null || bundles.isEmpty()) {
             return;
         }
 
-        Bundle bundle = bundles[0];
+        Bundle bundle = bundles.get(0);
 
-        Bitstream bitstream = bundle.getBitstreamByName("license_rdf");
+        Bitstream bitstream = bundleService.getBitstreamByName(bundle, "license_rdf");
 
-        String license_rdf = new String(copy(bitstream));
+        String license_rdf = new String(copy(context, bitstream), StandardCharsets.UTF_8);
 
         /* quickly fix xml by ripping out offensive parts */
         license_rdf = license_rdf.replaceFirst("<license", "");
@@ -150,35 +148,31 @@ public class LicenseCleanup
 
         StringWriter result = new StringWriter();
 
-        try
-        {
+        try {
             templates.newTransformer().transform(
-                    new StreamSource(new ByteArrayInputStream(license_rdf
-                            .getBytes())), new StreamResult(result));
-        }
-        catch (TransformerException e)
-        {
+                new StreamSource(new ByteArrayInputStream(license_rdf.getBytes(StandardCharsets.UTF_8))),
+                new StreamResult(result));
+        } catch (TransformerException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
 
         StringBuffer buffer = result.getBuffer();
 
-        Bitstream newBitstream = bundle
-                .createBitstream(new ByteArrayInputStream(buffer.toString()
-                        .getBytes()));
+        Bitstream newBitstream = bitstreamService
+            .create(context, bundle, new ByteArrayInputStream(buffer.toString()
+                                                                    .getBytes(StandardCharsets.UTF_8)));
 
-        newBitstream.setName(bitstream.getName());
-        newBitstream.setDescription(bitstream.getDescription());
-        newBitstream.setFormat(bitstream.getFormat());
-        newBitstream.setSource(bitstream.getSource());
-        newBitstream.setUserFormatDescription(bitstream
-                .getUserFormatDescription());
-        newBitstream.update();
+        newBitstream.setName(context, bitstream.getName());
+        newBitstream.setDescription(context, bitstream.getDescription());
+        newBitstream.setFormat(context, bitstream.getFormat(context));
+        newBitstream.setSource(context, bitstream.getSource());
+        newBitstream.setUserFormatDescription(context, bitstream
+            .getUserFormatDescription());
+        bitstreamService.update(context, newBitstream);
 
-        bundle.removeBitstream(bitstream);
+        bundleService.removeBitstream(context, bundle, bitstream);
 
-        bundle.update();
-
+        bundleService.update(context, bundle);
     }
 
     static final int BUFF_SIZE = 100000;
@@ -187,43 +181,35 @@ public class LicenseCleanup
 
     /**
      * Fast stream copy routine
-     * 
-     * @param b the Bitstream to be copied.
+     *
+     * @param context The relevant DSpace Context.
+     * @param b       the Bitstream to be copied.
      * @return copy of the content of {@code b}.
-     * @throws IOException
-     * @throws SQLException
-     * @throws AuthorizeException
+     * @throws IOException        if IO error
+     * @throws SQLException       if database error
+     * @throws AuthorizeException if authorization error
      */
-    public static byte[] copy(Bitstream b) throws IOException, SQLException,
-            AuthorizeException
-    {
+    public static byte[] copy(Context context, Bitstream b)
+        throws IOException, SQLException, AuthorizeException {
         InputStream in = null;
         ByteArrayOutputStream out = null;
-        try
-        {
-            in = b.retrieve();
+        try {
+            in = bitstreamService.retrieve(context, b);
             out = new ByteArrayOutputStream();
-            while (true)
-            {
-                synchronized (buffer)
-                {
+            while (true) {
+                synchronized (buffer) {
                     int amountRead = in.read(buffer);
-                    if (amountRead == -1)
-                    {
+                    if (amountRead == -1) {
                         break;
                     }
                     out.write(buffer, 0, amountRead);
                 }
             }
-        }
-        finally
-        {
-            if (in != null)
-            {
+        } finally {
+            if (in != null) {
                 in.close();
             }
-            if (out != null)
-            {
+            if (out != null) {
                 out.close();
             }
         }

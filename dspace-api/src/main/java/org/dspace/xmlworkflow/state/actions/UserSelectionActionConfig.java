@@ -17,13 +17,21 @@ import org.dspace.xmlworkflow.state.actions.userassignment.UserSelectionAction;
  * @author Ben Bosman (ben at atmire dot com)
  * @author Mark Diggory (markd at atmire dot com)
  */
-public class UserSelectionActionConfig extends WorkflowActionConfig{
+public class UserSelectionActionConfig extends WorkflowActionConfig {
 
     public UserSelectionActionConfig(String id) {
         super(id);
     }
 
-    public UserSelectionAction getProcessingAction(){
+    public void setProcessingAction(UserSelectionAction processingAction) {
+        this.processingAction = processingAction;
+        processingAction.setParent(this);
+
+    }
+
+
+    @Override
+    public UserSelectionAction getProcessingAction() {
         return (UserSelectionAction) processingAction;
     }
 }

@@ -1,3 +1,0 @@
-[submodule "dspace-xmlui/src/main/webapp/themes/UFAL/lib/js/piwik-charts"]
-	path = dspace-xmlui/src/main/webapp/themes/UFAL/lib/js/piwik-charts
-	url = https://github.com/ufal/piwik-charts

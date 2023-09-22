@@ -45,8 +45,7 @@ import org.dspace.core.Context;
  * @version $Revision$
  * @see PackageParameters
  */
-public interface PackageDisseminator
-{
+public interface PackageDisseminator {
     /**
      * Export the object (Item, Collection, or Community) as a
      * "package" on the indicated OutputStream.  Package is any serialized
@@ -61,17 +60,21 @@ public interface PackageDisseminator
      * Throws an exception of the chosen object is not acceptable or there is
      * a failure creating the package.
      *
-     * @param context  DSpace context.
+     * @param context DSpace context.
      * @param object  DSpace object (item, collection, etc)
-     * @param params Properties-style list of options specific to this packager
+     * @param params  Properties-style list of options specific to this packager
      * @param pkgFile File where export package should be written
      * @throws PackageValidationException if package cannot be created or there is
-     *  a fatal error in creating it.
+     *                                    a fatal error in creating it.
+     * @throws CrosswalkException         if crosswalk error
+     * @throws AuthorizeException         if authorization error
+     * @throws SQLException               if database error
+     * @throws IOException                if IO error
      */
     void disseminate(Context context, DSpaceObject object,
                      PackageParameters params, File pkgFile)
         throws PackageException, CrosswalkException,
-               AuthorizeException, SQLException, IOException;
+        AuthorizeException, SQLException, IOException;
 
     /**
      * Recursively export one or more DSpace Objects as a series of packages.
@@ -95,19 +98,23 @@ public interface PackageDisseminator
      * or simply forward the call to <code>disseminate</code> if it is unable to
      * support recursive dissemination.
      *
-     * @param context  DSpace context.
-     * @param dso  initial DSpace object
-     * @param params Properties-style list of options specific to this packager
+     * @param context DSpace context.
+     * @param dso     initial DSpace object
+     * @param params  Properties-style list of options specific to this packager
      * @param pkgFile File where initial package should be written. All other
-     *          packages will be written to the same directory as this File.
+     *                packages will be written to the same directory as this File.
      * @return List of all package Files which were successfully disseminated
      * @throws PackageValidationException if package cannot be created or there is
-     *  a fatal error in creating it.
+     *                                    a fatal error in creating it.
+     * @throws CrosswalkException         if crosswalk error
+     * @throws AuthorizeException         if authorization error
+     * @throws SQLException               if database error
+     * @throws IOException                if IO error
      */
     List<File> disseminateAll(Context context, DSpaceObject dso,
-                     PackageParameters params, File pkgFile)
+                              PackageParameters params, File pkgFile)
         throws PackageException, CrosswalkException,
-               AuthorizeException, SQLException, IOException;
+        AuthorizeException, SQLException, IOException;
 
 
     /**
@@ -115,12 +122,13 @@ public interface PackageDisseminator
      * Required when sending the package via HTTP, to
      * provide the Content-Type header.
      *
+     * @param params Package Parameters
      * @return the MIME type (content-type header) of the package to be returned
      */
     String getMIMEType(PackageParameters params);
 
 
-     /**
+    /**
      * Returns a user help string which should describe the
      * additional valid command-line options that this packager
      * implementation will accept when using the <code>-o</code> or

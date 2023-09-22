@@ -7,18 +7,21 @@
  */
 package org.dspace.xmlworkflow;
 
-import org.dspace.core.Context;
-import org.dspace.eperson.EPerson;
-import org.dspace.eperson.Group;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
+
+import org.dspace.core.Context;
+import org.dspace.eperson.EPerson;
+import org.dspace.eperson.Group;
+import org.dspace.eperson.factory.EPersonServiceFactory;
+import org.dspace.eperson.service.GroupService;
 
 /**
  * The members from a role, can either
  * contains a list of epersons or groups
- * 
+ *
  * @author Bram De Schouwer (bram.deschouwer at dot com)
  * @author Kevin Van de Velde (kevin at atmire dot com)
  * @author Ben Bosman (ben at atmire dot com)
@@ -26,43 +29,45 @@ import java.util.HashMap;
  */
 public class RoleMembers {
 
-    private ArrayList<Group> groups;
-    private ArrayList<EPerson> epersons;
+    protected GroupService groupService = EPersonServiceFactory.getInstance().getGroupService();
+    private final ArrayList<Group> groups;
+    private final ArrayList<EPerson> epersons;
 
-    public RoleMembers(){
-        this.groups = new ArrayList<Group>();
-        this.epersons = new ArrayList<EPerson>();
+    public RoleMembers() {
+        this.groups = new ArrayList<>();
+        this.epersons = new ArrayList<>();
     }
 
-    public ArrayList<Group> getGroups(){
+    public ArrayList<Group> getGroups() {
         return groups;
     }
-    public ArrayList<EPerson> getEPersons(){
+
+    public ArrayList<EPerson> getEPersons() {
         return epersons;
     }
 
-    public void addGroup(Group group){
+    public void addGroup(Group group) {
         groups.add(group);
     }
-    public void addEPerson(EPerson eperson){
+
+    public void addEPerson(EPerson eperson) {
         epersons.add(eperson);
     }
-    public void removeEperson(int toRemoveID){
-        for(EPerson eperson: epersons){
-            if(eperson.getID()==toRemoveID)
-                epersons.remove(eperson);
-        }
+
+    public void removeEperson(EPerson epersonToRemove) {
+        epersons.removeIf(eperson -> eperson.equals(epersonToRemove));
     }
+
     public ArrayList<EPerson> getAllUniqueMembers(Context context) throws SQLException {
-        HashMap<Integer, EPerson> epersonsMap = new HashMap<Integer, EPerson>();
-        for(EPerson eperson: epersons){
+        HashMap<UUID, EPerson> epersonsMap = new HashMap();
+        for (EPerson eperson : epersons) {
             epersonsMap.put(eperson.getID(), eperson);
         }
-        for(Group group: groups){
-            for(EPerson eperson: Group.allMembers(context, group)){
+        for (Group group : groups) {
+            for (EPerson eperson : groupService.allMembers(context, group)) {
                 epersonsMap.put(eperson.getID(), eperson);
             }
         }
-        return new ArrayList<EPerson>(epersonsMap.values());
+        return new ArrayList<>(epersonsMap.values());
     }
 }

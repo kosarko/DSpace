@@ -16,96 +16,94 @@ import java.util.Date;
  * Class for generating HTML "sitemaps" which contain links to various pages in
  * a DSpace site. This should improve search engine coverage of the DSpace site
  * and limit the server load caused by crawlers.
- * 
+ *
  * @author Robert Tansley
  * @author Stuart Lewis
  */
-public class HTMLSitemapGenerator extends AbstractGenerator
-{
-    /** Stem of URLs sitemaps will eventually appear at */
-    private String indexURLStem;
+public class HTMLSitemapGenerator extends AbstractGenerator {
+    /**
+     * Stem of URLs sitemaps will eventually appear at
+     */
+    protected String indexURLStem;
 
-    /** Tail of URLs sitemaps will eventually appear at */
-    private String indexURLTail;
+    /**
+     * Tail of URLs sitemaps will eventually appear at
+     */
+    protected String indexURLTail;
 
     /**
      * Construct an HTML sitemap generator, writing files to the given
      * directory, and with the sitemaps eventually exposed at starting with the
      * given URL stem and tail.
-     * 
-     * @param outputDirIn
-     *            Directory to write sitemap files to
-     * @param urlStem
-     *            start of URL that sitemap files will appear at, e.g.
-     *            {@code http://dspace.myu.edu/sitemap?sitemap=}
-     * @param urlTail
-     *            end of URL that sitemap files will appear at, e.g.
-     *            {@code .html} or {@code null}
+     *
+     * @param outputDirIn Directory to write sitemap files to
+     * @param urlStem     start of URL that sitemap files will appear at, e.g.
+     *                    {@code http://dspace.myu.edu/sitemap?sitemap=}
+     * @param urlTail     end of URL that sitemap files will appear at, e.g.
+     *                    {@code .html} or {@code null}
      */
-    public HTMLSitemapGenerator(File outputDirIn, String urlStem, String urlTail)
-    {
+    public HTMLSitemapGenerator(File outputDirIn, String urlStem, String urlTail) {
         super(outputDirIn);
 
         indexURLStem = urlStem;
         indexURLTail = (urlTail == null ? "" : urlTail);
     }
 
-    public String getFilename(int number)
-    {
+    @Override
+    public String getFilename(int number) {
         return "sitemap" + number + ".html";
     }
 
-    public String getLeadingBoilerPlate()
-    {
+    @Override
+    public String getLeadingBoilerPlate() {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n"
-                + "<html><head><title>URL List</title></head><body><ul>";
+            + "<html><head><title>URL List</title></head><body><ul>";
     }
 
-    public int getMaxSize()
-    {
+    @Override
+    public int getMaxSize() {
         // 50k
         return 51200;
     }
 
-    public int getMaxURLs()
-    {
+    @Override
+    public int getMaxURLs() {
         return 1000;
     }
 
-    public String getTrailingBoilerPlate()
-    {
+    @Override
+    public String getTrailingBoilerPlate() {
         return "</ul></body></html>\n";
     }
 
-    public String getURLText(String url, Date lastMod)
-    {
+    @Override
+    public String getURLText(String url, Date lastMod) {
         StringBuffer urlText = new StringBuffer();
 
         urlText.append("<li><a href=\"").append(url).append("\">").append(url)
-                .append("</a></li>\n");
+               .append("</a></li>\n");
 
         return urlText.toString();
     }
 
-    public boolean useCompression()
-    {
+    @Override
+    public boolean useCompression() {
         return false;
     }
 
-    public String getIndexFilename()
-    {
+    @Override
+    public String getIndexFilename() {
         return "sitemap_index.html";
     }
 
+    @Override
     public void writeIndex(PrintStream output, int sitemapCount)
-            throws IOException
-    {
+        throws IOException {
         output.println(getLeadingBoilerPlate());
 
-        for (int i = 0; i < sitemapCount; i++)
-        {
+        for (int i = 0; i < sitemapCount; i++) {
             output.print("<li><a href=\"" + indexURLStem + i + indexURLTail
-                    + "\">sitemap " + i);
+                             + "\">sitemap " + i);
             output.print("</a></li>\n");
         }
 

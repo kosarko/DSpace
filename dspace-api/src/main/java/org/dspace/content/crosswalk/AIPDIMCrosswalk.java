@@ -8,16 +8,14 @@
 package org.dspace.content.crosswalk;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
-import java.sql.SQLException;
-
-import org.dspace.core.Context;
-import org.dspace.content.DSpaceObject;
 import org.dspace.authorize.AuthorizeException;
-
-import org.jdom.Element;
-import org.jdom.Namespace;
+import org.dspace.content.DSpaceObject;
+import org.dspace.core.Context;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 
 /**
  * Crosswalk descriptive metadata to and from DIM (DSpace Intermediate
@@ -39,16 +37,15 @@ import org.jdom.Namespace;
  * @version $Revision: 1.2 $
  */
 public class AIPDIMCrosswalk
-    implements DisseminationCrosswalk, IngestionCrosswalk
-{
+    implements DisseminationCrosswalk, IngestionCrosswalk {
     /**
      * Get XML namespaces of the elements this crosswalk may return.
      * Returns the XML namespaces (as JDOM objects) of the root element.
      *
      * @return array of namespaces, which may be empty.
      */
-    public Namespace[] getNamespaces()
-    {
+    @Override
+    public Namespace[] getNamespaces() {
         Namespace result[] = new Namespace[1];
         result[0] = XSLTCrosswalk.DIM_NS;
         return result;
@@ -58,15 +55,16 @@ public class AIPDIMCrosswalk
      * Get the XML Schema location(s) of the target metadata format.
      * Returns the string value of the <code>xsi:schemaLocation</code>
      * attribute that should be applied to the generated XML.
-     *  <p>
+     * <p>
      * It may return the empty string if no schema is known, but crosswalk
      * authors are strongly encouraged to implement this call so their output
      * XML can be validated correctly.
+     *
      * @return SchemaLocation string, including URI namespace, followed by
-     *  whitespace and URI of XML schema document, or empty string if unknown.
+     * whitespace and URI of XML schema document, or empty string if unknown.
      */
-    public String getSchemaLocation()
-    {
+    @Override
+    public String getSchemaLocation() {
         return "";
     }
 
@@ -74,11 +72,11 @@ public class AIPDIMCrosswalk
      * Predicate: Can this disseminator crosswalk the given object.
      * Needed by OAI-PMH server implementation.
      *
-     * @param dso  dspace object, e.g. an <code>Item</code>.
+     * @param dso dspace object, e.g. an <code>Item</code>.
      * @return true when disseminator is capable of producing metadata.
      */
-    public boolean canDisseminate(DSpaceObject dso)
-    {
+    @Override
+    public boolean canDisseminate(DSpaceObject dso) {
         return true;
     }
 
@@ -96,8 +94,8 @@ public class AIPDIMCrosswalk
      *
      * @return true when disseminator prefers you call disseminateList().
      */
-    public boolean preferList()
-    {
+    @Override
+    public boolean preferList() {
         return false;
     }
 
@@ -111,20 +109,21 @@ public class AIPDIMCrosswalk
      * When there are no results, an
      * empty list is returned, but never <code>null</code>.
      *
-     * @param dso the  DSpace Object whose metadata to export.
+     * @param context context
+     * @param dso     the  DSpace Object whose metadata to export.
      * @return results of crosswalk as list of XML elements.
-     *
-     * @throws CrosswalkInternalException (<code>CrosswalkException</code>) failure of the crosswalk itself.
-     * @throws CrosswalkObjectNotSupported (<code>CrosswalkException</code>) Cannot crosswalk this kind of DSpace object.
-     * @throws IOException  I/O failure in services this calls
-     * @throws SQLException  Database failure in services this calls
-     * @throws AuthorizeException current user not authorized for this operation.
+     * @throws CrosswalkInternalException  (<code>CrosswalkException</code>) failure of the crosswalk itself.
+     * @throws CrosswalkObjectNotSupported (<code>CrosswalkException</code>) Cannot crosswalk this kind of DSpace
+     *                                     object.
+     * @throws IOException                 I/O failure in services this calls
+     * @throws SQLException                Database failure in services this calls
+     * @throws AuthorizeException          current user not authorized for this operation.
      */
-    public List<Element> disseminateList(DSpaceObject dso)
+    @Override
+    public List<Element> disseminateList(Context context, DSpaceObject dso)
         throws CrosswalkException, IOException, SQLException,
-               AuthorizeException
-    {
-        Element dim = disseminateElement(dso);
+        AuthorizeException {
+        Element dim = disseminateElement(context, dso);
         return dim.getChildren();
     }
 
@@ -134,19 +133,20 @@ public class AIPDIMCrosswalk
      * This is typically the root element of a document.
      * <p>
      *
-     * @param dso the  DSpace Object whose metadata to export.
+     * @param context context
+     * @param dso     the  DSpace Object whose metadata to export.
      * @return root Element of the target metadata, never <code>null</code>
-     *
-     * @throws CrosswalkInternalException (<code>CrosswalkException</code>) failure of the crosswalk itself.
-     * @throws CrosswalkObjectNotSupported (<code>CrosswalkException</code>) Cannot crosswalk this kind of DSpace object.
-     * @throws IOException  I/O failure in services this calls
-     * @throws SQLException  Database failure in services this calls
-     * @throws AuthorizeException current user not authorized for this operation.
+     * @throws CrosswalkInternalException  (<code>CrosswalkException</code>) failure of the crosswalk itself.
+     * @throws CrosswalkObjectNotSupported (<code>CrosswalkException</code>) Cannot crosswalk this kind of DSpace
+     *                                     object.
+     * @throws IOException                 I/O failure in services this calls
+     * @throws SQLException                Database failure in services this calls
+     * @throws AuthorizeException          current user not authorized for this operation.
      */
-    public Element disseminateElement(DSpaceObject dso)
+    @Override
+    public Element disseminateElement(Context context, DSpaceObject dso)
         throws CrosswalkException, IOException, SQLException,
-               AuthorizeException
-    {
+        AuthorizeException {
         return XSLTDisseminationCrosswalk.createDIM(dso);
     }
 
@@ -154,21 +154,34 @@ public class AIPDIMCrosswalk
      * Ingest a whole document.  Build Document object around root element,
      * and feed that to the transformation, since it may get handled
      * differently than a List of metadata elements.
+     *
+     * @param createMissingMetadataFields whether to create missing fields
+     * @throws CrosswalkException if crosswalk error
+     * @throws IOException        if IO error
+     * @throws SQLException       if database error
+     * @throws AuthorizeException if authorization error
      */
-    public void ingest(Context context, DSpaceObject dso, Element root)
-        throws CrosswalkException, IOException, SQLException, AuthorizeException
-    {
-        ingest(context, dso, root.getChildren());
+    @Override
+    public void ingest(Context context, DSpaceObject dso, Element root, boolean createMissingMetadataFields)
+        throws CrosswalkException, IOException, SQLException, AuthorizeException {
+        ingest(context, dso, root.getChildren(), createMissingMetadataFields);
     }
 
     /**
      * Fields correspond directly to Item.addMetadata() calls so
      * they are simply executed.
+     *
+     * @param createMissingMetadataFields whether to create missing fields
+     * @param dimList                     List of elements
+     * @throws CrosswalkException if crosswalk error
+     * @throws IOException        if IO error
+     * @throws SQLException       if database error
+     * @throws AuthorizeException if authorization error
      */
-    public void ingest(Context context, DSpaceObject dso, List<Element> dimList)
+    @Override
+    public void ingest(Context context, DSpaceObject dso, List<Element> dimList, boolean createMissingMetadataFields)
         throws CrosswalkException,
-               IOException, SQLException, AuthorizeException
-    {
-        XSLTIngestionCrosswalk.ingestDIM(context, dso, dimList);
+        IOException, SQLException, AuthorizeException {
+        XSLTIngestionCrosswalk.ingestDIM(context, dso, dimList, createMissingMetadataFields);
     }
 }

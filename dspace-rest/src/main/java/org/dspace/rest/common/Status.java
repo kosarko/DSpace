@@ -7,72 +7,64 @@
  */
 package org.dspace.rest.common;
 
-import org.dspace.core.Context;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.dspace.app.util.Util;
 import org.dspace.eperson.EPerson;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlElement;
-
 /**
- * Used to handle/determine status of REST API.
- * Mainly to know your authentication status
- *
+ * Determine status of REST API - is it running, accessible and without errors?.
+ * Find out API version (DSpace major version) and DSpace source version.
+ * Find out your authentication status.
  */
 @XmlRootElement(name = "status")
-public class Status
-{
+public class Status {
     private boolean okay;
     private boolean authenticated;
     private String email;
     private String fullname;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    private String token;
+    private String sourceVersion;
+    private String apiVersion;
 
     public Status() {
         setOkay(true);
+
+        setSourceVersion(Util.getSourceVersion());
+        String[] version = Util.getSourceVersion().split("\\.");
+        setApiVersion(version[0]); // major version
+
         setAuthenticated(false);
     }
 
-    public Status(String email, String fullname, String token) {
+    public Status(String email, String fullname) {
         setOkay(true);
         setAuthenticated(true);
         setEmail(email);
         setFullname(fullname);
-        setToken(token);
     }
 
-    public Status(EPerson eperson, String token) {
+    public Status(EPerson eperson) {
         setOkay(true);
-        if(eperson != null) {
+        if (eperson != null) {
             setAuthenticated(true);
             setEmail(eperson.getEmail());
             setFullname(eperson.getFullName());
-            setToken(token);
         } else {
             setAuthenticated(false);
         }
     }
 
-    @XmlElement(name="okay")
-    public boolean isOkay()
-    {
+    @JsonProperty("okay")
+    public boolean isOkay() {
         return this.okay;
     }
 
-    public void setOkay(boolean okay)
-    {
+    public void setOkay(boolean okay) {
         this.okay = okay;
     }
 
-    @XmlElement(name="authenticated")
+    @JsonProperty("authenticated")
     public boolean isAuthenticated() {
         return authenticated;
     }
@@ -81,7 +73,7 @@ public class Status
         this.authenticated = authenticated;
     }
 
-    @XmlElement(name="email")
+    @JsonProperty("email")
     public String getEmail() {
         return email;
     }
@@ -90,12 +82,30 @@ public class Status
         this.email = email;
     }
 
-    @XmlElement(name="fullname")
+    @JsonProperty("fullname")
     public String getFullname() {
         return fullname;
     }
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
+    }
+
+    @JsonProperty("sourceVersion")
+    public String getSourceVersion() {
+        return this.sourceVersion;
+    }
+
+    public void setSourceVersion(String sourceVersion) {
+        this.sourceVersion = sourceVersion;
+    }
+
+    @JsonProperty("apiVersion")
+    public String getApiVersion() {
+        return this.apiVersion;
+    }
+
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 }

@@ -7,29 +7,35 @@
  */
 package org.dspace.authority;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
+import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.Item;
-import org.dspace.utils.DSpace;
+import org.dspace.content.MetadataValue;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.core.Context;
+import org.dspace.util.SolrUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import java.util.*;
-import org.dspace.content.Metadatum;
-
 /**
- *
  * @author Antoine Snyers (antoine at atmire.com)
  * @author Kevin Van de Velde (kevin at atmire dot com)
  * @author Ben Bosman (ben at atmire dot com)
  * @author Mark Diggory (markd at atmire dot com)
  */
 public class AuthorityValue {
-
-
     /**
      * The id of the record in solr
      */
@@ -138,22 +144,27 @@ public class AuthorityValue {
 
     /**
      * Generate a solr record from this instance
+     *
+     * @return SolrInputDocument
      */
     public SolrInputDocument getSolrInputDocument() {
 
         SolrInputDocument doc = new SolrInputDocument();
+        DateFormat solrDateFormatter = SolrUtils.getDateFormatter();
         doc.addField("id", getId());
         doc.addField("field", getField());
         doc.addField("value", getValue());
         doc.addField("deleted", isDeleted());
-        doc.addField("creation_date", getCreationDate());
-        doc.addField("last_modified_date", getLastModified());
+        doc.addField("creation_date", solrDateFormatter.format(getCreationDate()));
+        doc.addField("last_modified_date", solrDateFormatter.format(getLastModified()));
         doc.addField("authority_type", getAuthorityType());
         return doc;
     }
 
     /**
      * Initialize this instance based on a solr record
+     *
+     * @param document SolrDocument
      */
     public void setValues(SolrDocument document) {
         this.id = String.valueOf(document.getFieldValue("id"));
@@ -166,24 +177,32 @@ public class AuthorityValue {
 
     /**
      * Replace an item's DCValue with this authority
+     *
+     * @param context     context
+     * @param value       metadata value
+     * @param currentItem item
+     * @throws SQLException       if database error
+     * @throws AuthorizeException if authorization error
      */
-    public void updateItem(Item currentItem, Metadatum value) {
-        Metadatum newValue = value.copy();
-        newValue.value = getValue();
-        newValue.authority = getId();
-        currentItem.replaceMetadataValue(value,newValue);
+    public void updateItem(Context context, Item currentItem, MetadataValue value)
+        throws SQLException, AuthorizeException {
+        value.setValue(getValue());
+        value.setAuthority(getId());
+        ContentServiceFactory.getInstance().getMetadataValueService().update(context, value, true);
     }
 
     /**
      * Information that can be used the choice ui
+     *
+     * @return map
      */
     public Map<String, String> choiceSelectMap() {
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
 
 
     public List<DateTimeFormatter> getDateFormatters() {
-        List<DateTimeFormatter> list = new ArrayList<DateTimeFormatter>();
+        List<DateTimeFormatter> list = new ArrayList<>();
         list.add(ISODateTimeFormat.dateTime());
         list.add(ISODateTimeFormat.dateTimeNoMillis());
         return list;
@@ -195,7 +214,7 @@ public class AuthorityValue {
             List<DateTimeFormatter> dateFormatters = getDateFormatters();
             boolean converted = false;
             int formatter = 0;
-            while(!converted) {
+            while (!converted) {
                 try {
                     DateTimeFormatter dateTimeFormatter = dateFormatters.get(formatter);
                     DateTime dateTime = dateTimeFormatter.parseDateTime(date);
@@ -206,7 +225,7 @@ public class AuthorityValue {
                     if (formatter > dateFormatters.size()) {
                         converted = true;
                     }
-                    log.error("Could not find a valid date format for: \""+date+"\"", e);
+                    log.error("Could not find a valid date format for: \"" + date + "\"", e);
                 }
             }
         }
@@ -216,30 +235,38 @@ public class AuthorityValue {
     /**
      * log4j logger
      */
-    private static Logger log = Logger.getLogger(AuthorityValue.class);
+    private static Logger log = org.apache.logging.log4j.LogManager.getLogger(AuthorityValue.class);
 
     @Override
     public String toString() {
         return "AuthorityValue{" +
-                "id='" + id + '\'' +
-                ", field='" + field + '\'' +
-                ", value='" + value + '\'' +
-                ", creationDate=" + creationDate +
-                ", deleted=" + deleted +
-                ", lastModified=" + lastModified +
-                '}';
+            "id='" + id + '\'' +
+            ", field='" + field + '\'' +
+            ", value='" + value + '\'' +
+            ", creationDate=" + creationDate +
+            ", deleted=" + deleted +
+            ", lastModified=" + lastModified +
+            '}';
     }
 
     /**
-     * Provides a string that will be allow a this AuthorityType to be recognized and provides information to create a new instance to be created using public AuthorityValue newInstance(String info).
-     * See the implementation of com.atmire.org.dspace.authority.AuthorityValueGenerator#generateRaw(java.lang.String, java.lang.String) for more precisions.
+     * Provides a string that will allow this AuthorityType to be recognized and
+     * provides information to create a new instance to be created using {@link #newInstance(String)}.
+     * See the implementation of
+     * {@link org.dspace.authority.AuthorityValueServiceImpl#generateRaw(java.lang.String, java.lang.String,
+     * java.lang.String)} for more details.
+     *
+     * @return see {@link org.dspace.authority.service.AuthorityValueService#GENERATE AuthorityValueService.GENERATE}
      */
     public String generateString() {
-        return AuthorityValueGenerator.GENERATE;
+        return AuthorityValueServiceImpl.GENERATE;
     }
 
     /**
      * Makes an instance of the AuthorityValue with the given information.
+     *
+     * @param info string info
+     * @return AuthorityValue
      */
     public AuthorityValue newInstance(String info) {
         return new AuthorityValue();
@@ -249,27 +276,13 @@ public class AuthorityValue {
         return "internal";
     }
 
-    private static AuthorityTypes authorityTypes;
-    public static AuthorityTypes getAuthorityTypes() {
-        if (authorityTypes == null) {
-            authorityTypes = new DSpace().getServiceManager().getServiceByName("AuthorityTypes", AuthorityTypes.class);
-        }
-        return authorityTypes;
-    }
-
-    public static AuthorityValue fromSolr(SolrDocument solrDocument) {
-        String type = (String) solrDocument.getFieldValue("authority_type");
-        AuthorityValue value = getAuthorityTypes().getEmptyAuthorityValue(type);
-        value.setValues(solrDocument);
-        return value;
-    }
-
-
-
     /**
      * The regular equals() only checks if both AuthorityValues describe the same authority.
      * This method checks if the AuthorityValues have different information
      * E.g. it is used to decide when lastModified should be updated.
+     *
+     * @param o object
+     * @return true or false
      */
     public boolean hasTheSameInformationAs(Object o) {
         if (this == o) {
