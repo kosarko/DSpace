@@ -218,6 +218,19 @@
                         </bean>
                         <!-- Create DOIs for items only that do have at least one bitstream. -->
                         <ref bean="has-at-least-one-bitstream_condition"/>
+			<!--
+			<bean class="org.dspace.content.logic.condition.InCollectionCondition">
+				<property name="parameters">
+					<map>
+						<entry key="collections">
+							<list>
+								<value>123456789/4</value>
+							</list>
+						</entry>
+					</map>
+				</property>
+			</bean>
+			-->
                     </list>
                 </property>
             </bean>

@@ -11,7 +11,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:dspace="http://www.dspace.org/xmlns/dspace/dim"
-                xmlns="http://datacite.org/schema/kernel-3"
+		xmlns="http://datacite.org/schema/kernel-4"
                 version="2.0">
     
     <!-- CONFIGURATION -->
@@ -46,9 +46,9 @@
             properties are in the metadata of the item to export.
             The classe named above respects this.
         -->
-        <resource xmlns="http://datacite.org/schema/kernel-3"
+        <resource xmlns="http://datacite.org/schema/kernel-4"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd">
+		  xsi:schemaLocation="http://datacite.org/schema/kernel-4 https://schema.datacite.org/meta/kernel-4.4/metadata.xsd">
 
             <!--
                 MANDATORY PROPERTIES
@@ -140,6 +140,13 @@
             </publicationYear>
 
             <!--
+                DataCite (10)
+                Template call for ResourceType
+                DataCite allows the ResourceType to ouccre not more than once.
+            -->
+            <xsl:apply-templates select="(//dspace:field[@mdschema='dc' and @element='type'])[1]" />
+
+            <!--
                 OPTIONAL PROPERTIES
             -->
 
@@ -213,13 +220,6 @@
                 Format: IETF BCP 47 or ISO 639-1
             -->
             <xsl:apply-templates select="(//dspace:field[@mdschema='dc' and @element='language' and (@qualifier='iso' or @qualifier='rfc3066')])[1]" />
-
-            <!--
-                DataCite (10)
-                Template call for ResourceType
-                DataCite allows the ResourceType to ouccre not more than once.
-            -->
-            <xsl:apply-templates select="(//dspace:field[@mdschema='dc' and @element='type'])[1]" />
 
             <!-- 
                 DataCite (11)
@@ -469,35 +469,12 @@
         Adds resourceType and resourceTypeGeneral information
     -->
     <xsl:template match="//dspace:field[@mdschema='dc' and @element='type'][1]">
+	<xsl:variable name="types" select="tokenize(text(),';')"/>
         <xsl:element name="resourceType">
             <xsl:attribute name="resourceTypeGeneral">
-                <xsl:choose>
-                    <xsl:when test="string(text())='Animation'">Audiovisual</xsl:when>
-                    <xsl:when test="string(text())='Article'">Text</xsl:when>
-                    <xsl:when test="string(text())='Book'">Text</xsl:when>
-                    <xsl:when test="string(text())='Book chapter'">Text</xsl:when>
-                    <xsl:when test="string(text())='Dataset'">Dataset</xsl:when>
-                    <xsl:when test="string(text())='Learning Object'">InteractiveResource</xsl:when>
-                    <xsl:when test="string(text())='Image'">Image</xsl:when>
-                    <xsl:when test="string(text())='Image, 3-D'">Image</xsl:when>
-                    <xsl:when test="string(text())='Map'">Model</xsl:when>
-                    <xsl:when test="string(text())='Musical Score'">Other</xsl:when>
-                    <xsl:when test="string(text())='Plan or blueprint'">Model</xsl:when>
-                    <xsl:when test="string(text())='Preprint'">Text</xsl:when>
-                    <xsl:when test="string(text())='Presentation'">Text</xsl:when>
-                    <xsl:when test="string(text())='Recording, acoustical'">Sound</xsl:when>
-                    <xsl:when test="string(text())='Recording, musical'">Sound</xsl:when>
-                    <xsl:when test="string(text())='Recording, oral'">Sound</xsl:when>
-                    <xsl:when test="string(text())='Software'">Software</xsl:when>
-                    <xsl:when test="string(text())='Technical Report'">Text</xsl:when>
-                    <xsl:when test="string(text())='Thesis'">Text</xsl:when>
-                    <xsl:when test="string(text())='Video'">Audiovisual</xsl:when>
-                    <xsl:when test="string(text())='Working Paper'">Text</xsl:when>
-                    <xsl:when test="string(text())='Other'">Other</xsl:when>
-                    <xsl:otherwise>Other</xsl:otherwise>
-                </xsl:choose>
+		    <xsl:value-of select="$types[1]"/>
             </xsl:attribute>
-            <xsl:value-of select="." />
+            <xsl:value-of select="$types[2]" />
         </xsl:element>
     </xsl:template>
 
