@@ -17,79 +17,67 @@ import org.dspace.content.BitstreamFormat;
 import org.dspace.content.Bundle;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
-import org.dspace.core.Context;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.BitstreamFormatService;
 import org.dspace.curate.AbstractCurationTask;
 import org.dspace.curate.Curator;
 import org.dspace.curate.Distributive;
 
 /**
- * ProfileFormats is a task that creates a distribution table of Bitstream 
+ * ProfileFormats is a task that creates a distribution table of Bitstream
  * formats for it's passed object. Primarily a curation task demonstrator.
  *
  * @author richardrodgers
  */
 @Distributive
-public class ProfileFormats extends AbstractCurationTask
-{
+public class ProfileFormats extends AbstractCurationTask {
     // map of formats to occurrences
-    private Map<String, Integer> fmtTable = new HashMap<String, Integer>();
+    protected Map<String, Integer> fmtTable = new HashMap<String, Integer>();
+    protected BitstreamFormatService bitstreamFormatService = ContentServiceFactory.getInstance()
+                                                                                   .getBitstreamFormatService();
 
     /**
      * Perform the curation task upon passed DSO
      *
      * @param dso the DSpace object
-     * @throws IOException
+     * @throws IOException if IO error
      */
     @Override
-    public int perform(DSpaceObject dso) throws IOException
-    {
+    public int perform(DSpaceObject dso) throws IOException {
         fmtTable.clear();
         distribute(dso);
         formatResults();
         return Curator.CURATE_SUCCESS;
     }
-    
+
     @Override
-    protected void performItem(Item item) throws SQLException, IOException
-    {
-        for (Bundle bundle : item.getBundles())
-        {
-            for (Bitstream bs : bundle.getBitstreams())
-            {
-                String fmt = bs.getFormat().getShortDescription();
+    protected void performItem(Item item) throws SQLException, IOException {
+        for (Bundle bundle : item.getBundles()) {
+            for (Bitstream bs : bundle.getBitstreams()) {
+                String fmt = bs.getFormat(Curator.curationContext()).getShortDescription();
                 Integer count = fmtTable.get(fmt);
-                if (count == null)
-                {
+                if (count == null) {
                     count = 1;
-                }
-                else
-                {
+                } else {
                     count += 1;
                 }
                 fmtTable.put(fmt, count);
-            }           
+            }
         }
     }
-    
-    private void formatResults() throws IOException
-    {
-        try
-        {
-            Context c = new Context();
+
+    private void formatResults() throws IOException {
+        try {
             StringBuilder sb = new StringBuilder();
-            for (String fmt : fmtTable.keySet())
-            {
-                BitstreamFormat bsf = BitstreamFormat.findByShortDescription(c, fmt);
+            for (String fmt : fmtTable.keySet()) {
+                BitstreamFormat bsf = bitstreamFormatService.findByShortDescription(Curator.curationContext(), fmt);
                 sb.append(String.format("%6d", fmtTable.get(fmt))).append(" (").
-                append(bsf.getSupportLevelText().charAt(0)).append(") ").
-                append(bsf.getDescription()).append("\n");
+                    append(bitstreamFormatService.getSupportLevelText(bsf).charAt(0)).append(") ").
+                      append(bsf.getDescription()).append("\n");
             }
             report(sb.toString());
             setResult(sb.toString());
-            c.complete();
-        }
-        catch (SQLException sqlE)
-        {
+        } catch (SQLException sqlE) {
             throw new IOException(sqlE.getMessage(), sqlE);
         }
     }

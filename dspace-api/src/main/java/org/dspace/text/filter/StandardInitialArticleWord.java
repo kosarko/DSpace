@@ -9,24 +9,22 @@ package org.dspace.text.filter;
 
 /**
  * Implements existing DSpace initial article word behaviour
- * 
+ *
  * Note: This only works for languages defined with ISO code entries.
- * 
+ *
  * @author Graham Triggs
  */
-public class StandardInitialArticleWord extends InitialArticleWord
-{
-    private static final String[] articleWords = { "the", "an", "a" };
+public class StandardInitialArticleWord extends InitialArticleWord {
+    private static final String[] articleWords = {"the", "an", "a"};
 
-    protected String[] getArticleWords(String lang)
-    {
-        if (lang != null && lang.startsWith("en"))
-        {
+    @Override
+    protected String[] getArticleWords(String lang) {
+        if (lang != null && lang.startsWith("en")) {
             return articleWords;
         }
-        
+
         return null;
     }
 
 }
- 	  	 
+

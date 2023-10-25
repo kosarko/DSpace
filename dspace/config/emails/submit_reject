@@ -1,27 +1,23 @@
-# Rejection email message
-#
-# {0}  Title of submission
-# {1}  Name of collection
-# {2}  Name of the rejector
-# {3}  Reason for the rejection
-# {4}  Link to 'My Account' page
-#
-Subject: ${lr.dspace.name.short}: Submission Returned for Corrections
+## Rejection email message
+##
+## {0}  Title of submission
+## {1}  Name of collection
+## {2}  Name of the rejector
+## {3}  Reason for the rejection
+## {4}  Link to 'My DSpace' page
+##
+#set($subject = 'DSpace: Submission Rejected')
 
-You submitted: {0}
+You submitted: ${params[0]}
 
-One of our editors, {2}, asked for the following corrections to be made to your submission:
+To collection: ${params[1]}
 
-{3}
+Your submission has been rejected by ${params[2]}
+with the following explanation:
 
-You can access your submission from your account
-"Submissions" page: {4}
+${params[3]}
 
+Your submission has not been deleted.  You can access it from your
+"My DSpace" page: ${params[4]}
 
-${lr.dspace.name.short} Team
-
-_____________________________________
-${dspace.name},
-WWW: ${dspace.url}
-Email: ${lr.help.mail}
-Tel.: ${lr.help.phone}
+DSpace

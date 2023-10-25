@@ -1,12 +1,6 @@
 <?xml version="1.0"?>
 
 <!--
-  - bitstream-formats.xml
-  -
-  - Version:  $Revision$
-  -
-  - Date:     $Date$
-  -
   - Initial contents for bitstream format registry.  Once the registry has
   - been loaded, this file becomes obsolete; the current version of the
   - registry must be read from the database.  Use
@@ -51,7 +45,7 @@
   <bitstream-type>
     <mimetype>text/plain; charset=utf-8</mimetype>
     <short_description>License</short_description>
-    <description>Item-specific license agreed upon to submission</description>
+    <description>Item-specific license agreed to upon submission</description>
     <support_level>1</support_level>
     <internal>true</internal>
   </bitstream-type>
@@ -60,7 +54,7 @@
   <bitstream-type>
     <mimetype>text/html; charset=utf-8</mimetype>
     <short_description>CC License</short_description>
-    <description>Item-specific Creative Commons license agreed upon to submission</description>
+    <description>Item-specific Creative Commons license agreed to upon submission</description>
     <support_level>1</support_level>
     <internal>true</internal>
   </bitstream-type>
@@ -81,6 +75,7 @@
     <support_level>1</support_level>
     <internal>false</internal>
     <extension>xml</extension>
+    <extension>trs</extension>
   </bitstream-type>
 
   <bitstream-type>
@@ -110,6 +105,15 @@
     <support_level>1</support_level>
     <internal>false</internal>
     <extension>css</extension>
+  </bitstream-type>
+
+  <bitstream-type>
+    <mimetype>text/csv</mimetype>
+    <short_description>CSV</short_description>
+    <description>Comma-Separated Values</description>
+    <support_level>1</support_level>
+    <internal>false</internal>
+    <extension>csv</extension>
   </bitstream-type>
 
   <bitstream-type>
@@ -184,6 +188,7 @@
     <internal>false</internal>
     <extension>jpeg</extension>
     <extension>jpg</extension>
+    <extension>jfif</extension>
   </bitstream-type>
   
   <bitstream-type>
@@ -320,6 +325,33 @@
     <internal>false</internal>
     <extension>mov</extension>
     <extension>qt</extension>
+  </bitstream-type>
+
+  <bitstream-type>
+    <mimetype>video/mp4</mimetype>
+    <short_description>Video MP4</short_description>
+    <description>Video MP4</description>
+    <support_level>1</support_level>
+    <internal>false</internal>
+    <extension>mp4</extension>
+  </bitstream-type>
+
+  <bitstream-type>
+    <mimetype>video/ogg</mimetype>
+    <short_description>Video OGG</short_description>
+    <description>Video OGG</description>
+    <support_level>1</support_level>
+    <internal>false</internal>
+    <extension>ogg</extension>
+  </bitstream-type>
+
+  <bitstream-type>
+    <mimetype>video/webm</mimetype>
+    <short_description>Video WEBM</short_description>
+    <description>Video WEBM</description>
+    <support_level>1</support_level>
+    <internal>false</internal>
+    <extension>webm</extension>
   </bitstream-type>
 
   <bitstream-type>
@@ -733,24 +765,107 @@
       <extension>rdf</extension>
     </bitstream-type>
 
-  <!-- ufal mime types -->
-  <bitstream-type>
-      <mimetype>application/zip</mimetype>
-      <short_description>Zip</short_description>
-      <description>ZIP archive</description>
+    <bitstream-type>
+      <mimetype>application/epub+zip</mimetype>
+      <short_description>EPUB</short_description>
+      <description>Electronic publishing</description>
       <support_level>1</support_level>
       <internal>false</internal>
-      <extension>zip</extension>
+      <extension>epub</extension>
     </bitstream-type>
 
-  <bitstream-type>
-      <mimetype>application/gzip</mimetype>
-      <short_description>gzip</short_description>
-      <description>gzip archive</description>
-      <support_level>1</support_level>
-      <internal>false</internal>
-      <extension>gz</extension>
+    <bitstream-type>
+        <mimetype>video/mp4</mimetype>
+        <short_description>mp4</short_description>
+        <description>mpeg4</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>mp4</extension>
     </bitstream-type>
 
+    <bitstream-type>
+        <mimetype>audio/mpeg</mimetype>
+        <short_description>mp3</short_description>
+        <description>MPEG audio</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>mp3</extension>
+    </bitstream-type>
 
+    <!-- CLARIN UPDATE Start -->
+
+    <bitstream-type>
+        <mimetype>application/x-tar</mimetype>
+        <short_description>tar</short_description>
+        <description>Tape archive</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>tar</extension>
+    </bitstream-type>
+
+    <bitstream-type>
+        <mimetype>application/x-rar-compressed</mimetype>
+        <short_description>rar</short_description>
+        <description>RAR</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>rar</extension>
+    </bitstream-type>
+
+    <bitstream-type>
+        <mimetype>application/x-bzip2</mimetype>
+        <short_description>bzip2</short_description>
+        <description>bzip2</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>bz2</extension>
+    </bitstream-type>
+
+    <bitstream-type>
+        <mimetype>application/x-xz</mimetype>
+        <short_description>xz</short_description>
+        <description>xz</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>xz</extension>
+    </bitstream-type>
+
+    <bitstream-type>
+        <mimetype>application/zip</mimetype>
+        <short_description>zip</short_description>
+        <description>ZIP</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>zip</extension>
+    </bitstream-type>
+
+    <bitstream-type>
+        <mimetype>application/x-gtar</mimetype>
+        <short_description>tgz</short_description>
+        <description>tar with gzip</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>tgz</extension>
+        <extension>tar.gz</extension>
+    </bitstream-type>
+
+    <bitstream-type>
+        <mimetype>application/x-bzip</mimetype>
+        <short_description>bz</short_description>
+        <description>BZip archive</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>bz</extension>
+    </bitstream-type>
+
+    <bitstream-type>
+        <mimetype>application/gzip</mimetype>
+        <short_description>gz</short_description>
+        <description>GZip Compressed Archive</description>
+        <support_level>1</support_level>
+        <internal>false</internal>
+        <extension>gz</extension>
+    </bitstream-type>
+
+    <!-- CLARIN UPDATE End -->
 </dspace-bitstream-types>

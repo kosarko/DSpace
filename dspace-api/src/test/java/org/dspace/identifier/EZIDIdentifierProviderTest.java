@@ -8,43 +8,72 @@
 
 package org.dspace.identifier;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.log4j.Logger;
+
 import org.dspace.AbstractUnitTest;
 import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.*;
-import org.dspace.core.Context;
+import org.dspace.content.Collection;
+import org.dspace.content.Community;
+import org.dspace.content.DSpaceObject;
+import org.dspace.content.Item;
+import org.dspace.content.MetadataValue;
+import org.dspace.content.WorkspaceItem;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.CollectionService;
+import org.dspace.content.service.CommunityService;
+import org.dspace.content.service.ItemService;
+import org.dspace.content.service.WorkspaceItemService;
 import org.dspace.identifier.ezid.DateToYear;
 import org.dspace.identifier.ezid.Transform;
 import org.dspace.services.ConfigurationService;
-import org.junit.*;
-
-import static org.junit.Assert.*;
+import org.dspace.services.factory.DSpaceServicesFactory;
+import org.dspace.workflow.WorkflowException;
+import org.dspace.workflow.WorkflowItem;
+import org.dspace.workflow.factory.WorkflowServiceFactory;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- *
  * @author mwood
  */
 public class EZIDIdentifierProviderTest
-        extends AbstractUnitTest
-{
-    /** Name of the reserved EZID test authority. */
+    extends AbstractUnitTest {
+    /**
+     * Name of the reserved EZID test authority.
+     */
     private static final String TEST_SHOULDER = "10.5072/FK2";
 
-    /** A sensible metadata crosswalk. */
+    /**
+     * A sensible metadata crosswalk.
+     */
     private static final Map<String, String> aCrosswalk = new HashMap<>();
+
     static {
         aCrosswalk.put("datacite.creator", "dc.contributor.author");
         aCrosswalk.put("datacite.title", "dc.title");
         aCrosswalk.put("datacite.publisher", "dc.publisher");
         aCrosswalk.put("datacite.publicationyear", "dc.date.issued");
     }
-    /** A sensible set of metadata transforms. */
+
+    /**
+     * A sensible set of metadata transforms.
+     */
     private static final Map<String, Transform> crosswalkTransforms = new HashMap();
+
     static {
         crosswalkTransforms.put("datacite.publicationyear", new DateToYear());
     }
@@ -55,53 +84,57 @@ public class EZIDIdentifierProviderTest
 
     private static Collection collection;
 
-    /** The most recently created test Item's ID */
-    private static int itemID;
+    protected CommunityService communityService = ContentServiceFactory.getInstance().getCommunityService();
+    protected CollectionService collectionService = ContentServiceFactory.getInstance().getCollectionService();
+    protected ItemService itemService = ContentServiceFactory.getInstance().getItemService();
+    protected WorkspaceItemService workspaceItemService = ContentServiceFactory.getInstance().getWorkspaceItemService();
 
-    public EZIDIdentifierProviderTest()
-    {
+
+    /**
+     * The most recently created test Item's ID
+     */
+    private static Item item;
+
+    public EZIDIdentifierProviderTest() {
     }
 
-    private static void dumpMetadata(Item eyetem)
-    {
-        if (null == eyetem)
-            return;
-
-        Metadatum[] metadata = eyetem.getMetadata("dc", Item.ANY, Item.ANY, Item.ANY);
-        for (Metadatum metadatum : metadata)
+    private void dumpMetadata(Item eyetem) {
+        List<MetadataValue> metadata = itemService.getMetadata(eyetem, "dc", Item.ANY, Item.ANY, Item.ANY);
+        for (MetadataValue metadatum : metadata) {
             System.out.printf("Metadata:  %s.%s.%s(%s) = %s\n",
-                    metadatum.schema,
-                    metadatum.element,
-                    metadatum.qualifier,
-                    metadatum.language,
-                    metadatum.value);
+                              metadatum.getMetadataField().getMetadataSchema().getName(),
+                              metadatum.getMetadataField().getElement(),
+                              metadatum.getMetadataField().getQualifier(),
+                              metadatum.getLanguage(),
+                              metadatum.getValue());
+        }
     }
 
     /**
      * Create a fresh Item, installed in the repository.
      *
-     * @throws SQLException
-     * @throws AuthorizeException
-     * @throws IOException
+     * @throws SQLException       if database error
+     * @throws AuthorizeException if authorization error
+     * @throws IOException        if IO error
      */
     private Item newItem()
-            throws SQLException, AuthorizeException, IOException
-    {
+        throws SQLException, AuthorizeException, IOException, WorkflowException {
+        //Install a fresh item
         context.turnOffAuthorisationSystem();
-       
-         //Install a fresh item
-        WorkspaceItem wsItem = WorkspaceItem.create(context, collection, false);
-        Item item = InstallItem.installItem(context, wsItem);
-       
-        itemID = item.getID();
 
-        item.addMetadata("dc", "contributor", "author", null, "Author, A. N.");
-        item.addMetadata("dc", "title", null, null, "A Test Object");
-        item.addMetadata("dc", "publisher", null, null, "DSpace Test Harness");
-        item.update();
+        WorkspaceItem wsItem = workspaceItemService.create(context, collection, false);
+
+        WorkflowItem wfItem = WorkflowServiceFactory.getInstance().getWorkflowService().start(context, wsItem);
+
+        item = wfItem.getItem();
+
+        itemService.addMetadata(context, item, "dc", "contributor", "author", null, "Author, A. N.");
+        itemService.addMetadata(context, item, "dc", "title", null, null, "A Test Object");
+        itemService.addMetadata(context, item, "dc", "publisher", null, null, "DSpace Test Harness");
+
+        itemService.update(context, item);
 
         // Commit work, clean up
-        context.commit();
         context.restoreAuthSystemState();
 
         return item;
@@ -109,10 +142,9 @@ public class EZIDIdentifierProviderTest
 
     @BeforeClass
     public static void setUpClass()
-            throws Exception
-    {
-        // Find the usual kernel services
-        config = kernelImpl.getConfigurationService();
+        throws Exception {
+        // Find the configuration service
+        config = DSpaceServicesFactory.getInstance().getConfigurationService();
 
         // Configure the service under test.
         config.setProperty(EZIDIdentifierProvider.CFG_SHOULDER, TEST_SHOULDER);
@@ -121,51 +153,61 @@ public class EZIDIdentifierProviderTest
 
         // Don't try to send mail.
         config.setProperty("mail.server.disabled", "true");
+        EZIDIdentifierProvider instance = new EZIDIdentifierProvider();
+        instance.setConfigurationService(config);
+        instance.setCrosswalk(aCrosswalk);
+        instance.setCrosswalkTransform(crosswalkTransforms);
+        instance.setItemService(ContentServiceFactory.getInstance().getItemService());
+        DSpaceServicesFactory.getInstance().getServiceManager()
+                             .registerServiceNoAutowire(EZIDIdentifierProvider.class.getName(), instance);
+        assertNotNull(DSpaceServicesFactory.getInstance().getServiceManager()
+                                           .getServiceByName(EZIDIdentifierProvider.class.getName(),
+                                                             EZIDIdentifierProvider.class));
     }
 
     @AfterClass
     public static void tearDownClass()
-            throws Exception
-    {
+        throws Exception {
+        DSpaceServicesFactory.getInstance().getServiceManager()
+                             .unregisterService(EZIDIdentifierProvider.class.getName());
         System.out.print("Tearing down\n\n");
     }
 
     @Before
     public void setUp()
-            throws Exception
-    {
+        throws Exception {
         context.turnOffAuthorisationSystem();
 
         // Create an environment for our test objects to live in.
-        community = Community.create(null, context);
-        community.setMetadata("name", "A Test Community");
-        community.update();
+        community = communityService.create(community, context);
+        communityService.setMetadataSingleValue(context, community,
+                CommunityService.MD_NAME, null, "A Test Community");
+        communityService.update(context, community);
 
-        collection = community.createCollection();
-        collection.setMetadata("name", "A Test Collection");
-        collection.update();
-
-        context.commit();
+        collection = collectionService.create(context, community);
+        collectionService.setMetadataSingleValue(context, collection,
+                CollectionService.MD_NAME, null, "A Test Collection");
+        collectionService.update(context, collection);
     }
 
     @After
     public void tearDown()
-            throws SQLException
-    {
+        throws SQLException {
         context.restoreAuthSystemState();
 
-        dumpMetadata(Item.find(context, itemID));
+        dumpMetadata(item);
     }
 
     /**
      * Test of supports method, of class DataCiteIdentifierProvider.
      */
     @Test
-    public void testSupports_Class()
-    {
+    public void testSupports_Class() {
         System.out.println("supports Class");
 
-        EZIDIdentifierProvider instance = new EZIDIdentifierProvider();
+        EZIDIdentifierProvider instance = DSpaceServicesFactory.getInstance().getServiceManager()
+                                                               .getServiceByName(EZIDIdentifierProvider.class.getName(),
+                                                                                 EZIDIdentifierProvider.class);
 
         Class<? extends Identifier> identifier = DOI.class;
         boolean result = instance.supports(identifier);
@@ -176,11 +218,12 @@ public class EZIDIdentifierProviderTest
      * Test of supports method, of class DataCiteIdentifierProvider.
      */
     @Test
-    public void testSupports_String()
-    {
+    public void testSupports_String() {
         System.out.println("supports String");
 
-        EZIDIdentifierProvider instance = new EZIDIdentifierProvider();
+        EZIDIdentifierProvider instance = DSpaceServicesFactory.getInstance().getServiceManager()
+                                                               .getServiceByName(EZIDIdentifierProvider.class.getName(),
+                                                                                 EZIDIdentifierProvider.class);
 
         String identifier = "doi:" + TEST_SHOULDER;
         boolean result = instance.supports(identifier);
@@ -382,33 +425,34 @@ public class EZIDIdentifierProviderTest
 
     /**
      * Test of crosswalkMetadata method, of class EZIDIdentifierProvider.
-     * @throws Exception
+     *
+     * @throws Exception if error
      */
     @Test
     public void testCrosswalkMetadata()
-            throws Exception
-    {
+        throws Exception {
         try {
             System.out.println("crosswalkMetadata");
 
             // Set up the instance to be tested
-            EZIDIdentifierProvider instance = new EZIDIdentifierProvider();
-            instance.setConfigurationService(config);
-            instance.setCrosswalk(aCrosswalk);
-            instance.setCrosswalkTransform(crosswalkTransforms);
+            EZIDIdentifierProvider instance = DSpaceServicesFactory.getInstance().getServiceManager().getServiceByName(
+                EZIDIdentifierProvider.class.getName(), EZIDIdentifierProvider.class);
+//        instance.setConfigurationService(config);
+//        instance.setCrosswalk(aCrosswalk);
+//        instance.setCrosswalkTransform(crosswalkTransforms);
 
             // Let's have a fresh Item to work with
             DSpaceObject dso = newItem();
             String handle = dso.getHandle();
 
             // Test!
-            Map<String, String> metadata = instance.crosswalkMetadata(dso);
+            Map<String, String> metadata = instance.crosswalkMetadata(context, dso);
 
             // Evaluate
             String target = (String) metadata.get("_target");
             assertEquals("Generates correct _target metadatum",
-                    config.getProperty("dspace.url") + "/handle/" + handle,
-                    target);
+                         config.getProperty("dspace.ui.url") + "/handle/" + handle,
+                         target);
             assertTrue("Has title", metadata.containsKey("datacite.title"));
             assertTrue("Has publication year", metadata.containsKey("datacite.publicationyear"));
             assertTrue("Has publisher", metadata.containsKey("datacite.publisher"));
@@ -416,13 +460,15 @@ public class EZIDIdentifierProviderTest
 
             // Dump out the generated metadata for inspection
             System.out.println("Results:");
-            for (Entry metadatum : metadata.entrySet())
-            {
+            for (Entry metadatum : metadata.entrySet()) {
                 System.out.printf("  %s : %s\n", metadatum.getKey(), metadatum.getValue());
             }
         } catch (NullPointerException ex) {
-            ex.printStackTrace(System.err);
-            Logger.getLogger(EZIDIdentifierProviderTest.class).fatal("Caught NPE", ex);
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            ex.printStackTrace(pw);
+            System.out.println(sw.toString());
+            org.apache.logging.log4j.LogManager.getLogger(EZIDIdentifierProviderTest.class).fatal("Caught NPE", ex);
             throw ex;
         }
     }

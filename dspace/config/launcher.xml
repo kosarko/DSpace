@@ -1,6 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0"?>
 <commands>
-
+    <command>
+        <name>bitstore-migrate</name>
+        <description>Assetstore migration tool</description>
+        <step>
+            <class>org.dspace.storage.bitstore.BitStoreMigrate</class>
+        </step>
+    </command>
     <command>
         <name>healthcheck</name>
         <description>Create health check report</description>
@@ -8,15 +14,6 @@
             <class>org.dspace.health.Report</class>
         </step>
     </command>
-
-    <command>
-        <name>piwik-report-generator</name>
-        <description>Generate Piwik Statistics for Items</description>
-        <step>
-            <class>cz.cuni.mff.ufal.PiwikPDFExporter</class>
-        </step>
-    </command>
-
     <command>
         <name>checker</name>
         <description>Run the checksum checker</description>
@@ -58,13 +55,6 @@
         </step>
     </command>
     <command>
-        <name>curate</name>
-        <description>Perform curation tasks on DSpace objects</description>
-        <step>
-            <class>org.dspace.curate.CurationCli</class>
-        </step>
-    </command>
-    <command>
         <name>database</name>
         <description>Perform database tasks like test database connection, migrate/repair database, remove database</description>
         <step>
@@ -82,7 +72,7 @@
         <name>dsprop</name>
         <description>View a DSpace property from dspace.cfg</description>
         <step>
-            <class>org.dspace.core.ConfigurationManager</class>
+            <class>org.dspace.app.util.Configuration</class>
         </step>
     </command>
     <command>
@@ -96,28 +86,14 @@
         <name>embargo-lifter</name>
         <description>Embargo manager tool used to check, list and lift embargoes</description>
         <step>
-            <class>org.dspace.embargo.EmbargoManager</class>
-        </step>
-    </command>
-    <command>
-        <name>export</name>
-        <description>Export items or collections</description>
-        <step>
-            <class>org.dspace.app.itemexport.ItemExport</class>
-        </step>
-    </command>
-    <command>
-        <name>filter-media</name>
-        <description>Perform the media filtering to extract full text from documents and to create thumbnails</description>
-        <step>
-            <class>org.dspace.app.mediafilter.MediaFilterManager</class>
+            <class>org.dspace.embargo.EmbargoCLITool</class>
         </step>
     </command>
     <command>
         <name>generate-sitemaps</name>
         <description>Generate search engine and html sitemaps</description>
         <step>
-            <class>cz.cuni.mff.ufal.dspace.app.sitemap.GenerateSitemaps</class>
+            <class>org.dspace.app.sitemap.GenerateSitemaps</class>
         </step>
     </command>
     <command>
@@ -128,76 +104,10 @@
         </step>
     </command>
     <command>
-        <name>import</name>
-        <description>Import items into DSpace</description>
-        <step>
-            <class>org.dspace.app.itemimport.ItemImport</class>
-        </step>
-    </command>
-    <command>
-        <name>extendedimport</name>
-        <description>Import items with bitstream metadata into DSpace</description>
-        <step>
-            <class>cz.cuni.mff.ufal.dspace.app.itemimport.ItemImport</class>
-            <argument>-xcz.cuni.mff.ufal.dspace.app.itemimport.ItemImport</argument>
-        </step>
-    </command>
-    <command>
         <name>index-authority</name>
         <description>Indexes all metadata fields that use solr authority</description>
         <step>
             <class>org.dspace.authority.indexer.AuthorityIndexClient</class>
-        </step>
-    </command>
-    <command>
-        <name>index-db-browse</name>
-        <description>General browse index command (requires extra parameters)</description>
-        <step>
-            <class>org.dspace.browse.IndexBrowse</class>
-        </step>
-    </command>
-    <command>
-        <name>index-discovery</name>
-        <description>Update Discovery Solr Search Index</description>
-        <step>
-            <class>org.dspace.discovery.IndexClient</class>
-        </step>
-    </command>
-    <command>
-        <name>index-lucene-init</name>
-        <description>Initialise the Lucene search and browse indexes</description>
-        <step passuserargs="false">
-            <class>org.dspace.browse.IndexBrowse</class>
-            <argument>-f</argument>
-            <argument>-r</argument>
-        </step>
-        <step passuserargs="false">
-            <class>org.dspace.browse.ItemCounter</class>
-        </step>
-        <step passuserargs="false">
-            <class>org.dspace.search.DSIndexer</class>
-            <argument>-b</argument>
-        </step>
-    </command>
-    <command>
-        <name>index-lucene-update</name>
-        <description>Update the Lucene search and browse indexes</description>
-        <step passuserargs="false">
-            <class>org.dspace.browse.IndexBrowse</class>
-            <argument>-i</argument>
-        </step>
-        <step passuserargs="false">
-            <class>org.dspace.browse.ItemCounter</class>
-        </step>
-        <step passuserargs="false">
-            <class>org.dspace.search.DSIndexer</class>
-        </step>
-    </command>
-    <command>
-        <name>itemcounter</name>
-        <description>Update the item strength counts in the user interface</description>
-        <step passuserargs="false">
-            <class>org.dspace.browse.ItemCounter</class>
         </step>
     </command>
     <command>
@@ -215,24 +125,10 @@
         </step>
     </command>
     <command>
-        <name>metadata-export</name>
-        <description>Export metadata for batch editing</description>
-        <step>
-            <class>org.dspace.app.bulkedit.MetadataExport</class>
-        </step>
-    </command>
-    <command>
-        <name>metadata-import</name>
-        <description>Import metadata after batch editing</description>
-        <step>
-            <class>org.dspace.app.bulkedit.MetadataImport</class>
-        </step>
-    </command>
-    <command>
         <name>migrate-embargo</name>
         <description>Embargo manager tool used to migrate old version of Embargo to the new one included in dspace3</description>
         <step>
-            <class>org.dspace.embargo.EmbargoManager</class>
+            <class>org.dspace.embargo.EmbargoCLITool</class>
         </step>
     </command>
     <command>
@@ -240,13 +136,6 @@
         <description>OAI script manager</description>
         <step>
             <class>org.dspace.xoai.app.XOAI</class>
-        </step>
-    </command>
-    <command>
-        <name>move-items</name>
-        <description>Move items from one collection to another</description>
-        <step>
-            <class>cz.cuni.mff.ufal.dspace.app.MoveItems</class>
         </step>
     </command>
     <command>
@@ -278,6 +167,13 @@
         </step>
     </command>
     <command>
+        <name>retry-tracker</name>
+        <description>Retry all failed commits to the OpenURLTracker</description>
+        <step>
+            <class>org.dspace.statistics.export.RetryFailedOpenUrlTracker</class>
+        </step>
+    </command>
+    <command>
         <name>solr-export-statistics</name>
         <description>Export usage statistics data from Solr for back-up purposes</description>
         <step passuserargs="true">
@@ -302,6 +198,13 @@
             <class>org.dspace.util.SolrImportExport</class>
 	    <argument>-a</argument>
 	    <argument>reindex</argument>
+        </step>
+    </command>
+    <command>
+        <name>solr-upgrade-statistics-6x</name>
+        <description>Upgrade statistics (integer to UUID) to DSpace 6.x (or above) compatibility</description>
+        <step passuserargs="true">
+            <class>org.dspace.util.SolrUpgradePre6xStatistics</class>
         </step>
     </command>
     <command>
@@ -373,13 +276,6 @@
         </step>
     </command>
     <command>
-        <name>stats-log-importer-elasticsearch</name>
-        <description>Import solr-format converted log files into Elastic Search statistics</description>
-        <step>
-            <class>org.dspace.statistics.util.StatisticsImporterElasticSearch</class>
-        </step>
-    </command>
-    <command>
         <name>stats-util</name>
         <description>Statistics Client for Maintenance of Solr Statistics Indexes</description>
         <step>
@@ -391,13 +287,6 @@
         <description>Build DSpace community and collection structure</description>
         <step>
             <class>org.dspace.administer.StructBuilder</class>
-        </step>
-    </command>
-    <command>
-        <name>sub-daily</name>
-        <description>Send daily subscription notices</description>
-        <step>
-            <class>org.dspace.eperson.Subscribe</class>
         </step>
     </command>
     <command>
@@ -418,7 +307,7 @@
         <name>user</name>
         <description>Manipulate a normal user account</description>
         <step>
-            <class>org.dspace.eperson.EPerson</class>
+            <class>org.dspace.eperson.EPersonCLITool</class>
         </step>
     </command>
     <command>
@@ -433,6 +322,27 @@
         <description>Display the version of DSpace and other troubleshooting information</description>
         <step>
             <class>org.dspace.app.util.Version</class>
+        </step>
+    </command>
+    <command>
+        <name>initialize-entities</name>
+        <description>Initialize the entities with a provided xml</description>
+        <step>
+            <class>org.dspace.app.util.InitializeEntities</class>
+        </step>
+    </command>
+    <command>
+        <name>anonymize-statistics</name>
+        <description>Anonymize the ip values of the solr statistics</description>
+        <step>
+            <class>org.dspace.statistics.AnonymizeStatistics</class>
+        </step>
+    </command>
+    <command>
+        <name>iiif-canvas-dimensions</name>
+        <description>Automatically add the IIIF canvas width/height metadata to Bitstreams of IIIF enabled Items.</description>
+        <step>
+            <class>org.dspace.iiif.canvasdimension.CanvasDimensionCLI</class>
         </step>
     </command>
 </commands>

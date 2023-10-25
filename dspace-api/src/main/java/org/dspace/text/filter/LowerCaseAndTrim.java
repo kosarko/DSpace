@@ -9,19 +9,18 @@ package org.dspace.text.filter;
 
 /**
  * Lowercase and trim leading / trailing whitespace
- * 
+ *
  * @author Graham Triggs
  */
-public class LowerCaseAndTrim implements TextFilter
-{
+public class LowerCaseAndTrim implements TextFilter {
 
-    public String filter(String str)
-    {
+    @Override
+    public String filter(String str) {
         return str.toLowerCase().trim();
     }
 
-    public String filter(String str, String lang)
-    {
+    @Override
+    public String filter(String str, String lang) {
         return str.toLowerCase().trim();
     }
 

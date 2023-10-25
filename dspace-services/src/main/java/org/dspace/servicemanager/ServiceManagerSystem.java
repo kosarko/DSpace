@@ -14,7 +14,7 @@ import org.dspace.kernel.ServiceManager;
 /**
  * This interface should be implemented by any service managers that we are using in the system,
  * e.g. Spring, Guice.
- * 
+ *
  * @author Aaron Zeckoski (azeckoski @ gmail.com)
  */
 public interface ServiceManagerSystem extends ServiceManager {
@@ -32,7 +32,7 @@ public interface ServiceManagerSystem extends ServiceManager {
     /**
      * Map service names to their beans.
      *
-     * @return a map of name -> bean for all services that are currently known
+     * @return a map of name to bean for all services that are currently known
      */
     public Map<String, Object> getServices();
 

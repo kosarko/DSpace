@@ -7,13 +7,16 @@
  */
 package org.dspace.checker;
 
+import java.sql.SQLException;
+
+import org.dspace.content.Bitstream;
 
 /**
  * <p>
  * BitstreamDispatchers are strategy objects that hand bitstream ids out to
  * workers. Implementations must be threadsafe.
  * </p>
- * 
+ *
  * <p>
  * The rationale behind the use of the Sentinel pattern (rather than the more
  * traditional iterator pattern or a cursor c.f. java.sql.ResultSet): -
@@ -25,15 +28,12 @@ package org.dspace.checker;
  * <li>Shouldn't an exception as the sentinel, as reaching the end of a loop is
  * not an exceptional condition.</li>
  * </ol>
- * 
- * 
+ *
  * @author Jim Downing
  * @author Grace Carpenter
  * @author Nathan Sarr
- * 
  */
-public interface BitstreamDispatcher
-{
+public interface BitstreamDispatcher {
     /**
      * This value should be returned by <code>next()</code> to indicate that
      * there are no more values.
@@ -43,10 +43,10 @@ public interface BitstreamDispatcher
     /**
      * Returns the next id for checking, or a sentinel value if there are no
      * more to check.
-     * 
+     *
      * @return the next bitstream id, or BitstreamDispatcher.SENTINEL if there
-     *         isn't another value
-     * 
+     * isn't another value
+     * @throws SQLException if database error
      */
-    public int next();
+    public Bitstream next() throws SQLException;
 }

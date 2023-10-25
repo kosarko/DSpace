@@ -21,16 +21,15 @@ import org.dspace.core.Context;
  *
  * @author richardrodgers
  */
-public interface ScriptedTask
-{
+public interface ScriptedTask {
     /**
      * Initialize task - parameters inform the task of it's invoking curator.
      * Since the curator can provide services to the task, this represents
      * curation DI.
-     * 
+     *
      * @param curator the Curator controlling this task
-     * @param taskId identifier task should use in invoking services
-     * @throws IOException
+     * @param taskId  identifier task should use in invoking services
+     * @throws IOException if IO error
      */
     public void init(Curator curator, String taskId) throws IOException;
 
@@ -39,17 +38,17 @@ public interface ScriptedTask
      *
      * @param dso the DSpace object
      * @return status code
-     * @throws IOException
+     * @throws IOException if IO error
      */
     public int performDso(DSpaceObject dso) throws IOException;
 
     /**
      * Perform the curation task for passed id
-     * 
+     *
      * @param ctx DSpace context object
-     * @param id persistent ID for DSpace object
+     * @param id  persistent ID for DSpace object
      * @return status code
-     * @throws IOException
+     * @throws IOException if IO error
      */
     public int performId(Context ctx, String id) throws IOException;
 }

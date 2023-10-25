@@ -14,10 +14,14 @@ import java.util.List;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
+import org.dspace.content.MetadataField;
+import org.dspace.content.MetadataSchemaEnum;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.ItemService;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
-import org.jdom.Element;
-import org.jdom.Namespace;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 
 /**
  * DIM ingestion crosswalk
@@ -28,41 +32,46 @@ import org.jdom.Namespace;
  * @version $Revision: 1 $
  */
 public class OAIDCIngestionCrosswalk
-    implements IngestionCrosswalk
-{
-    private static final Namespace DC_NS = Namespace.getNamespace("http://www.dspace.org/xmlns/dspace/dim");
-    private static final Namespace OAI_DC_NS = Namespace.getNamespace("http://www.openarchives.org/OAI/2.0/oai_dc/");
-    
-	public void ingest(Context context, DSpaceObject dso, List<Element> metadata) throws CrosswalkException, IOException, SQLException, AuthorizeException {
-        Element wrapper = new Element("wrap", metadata.get(0).getNamespace());
-		wrapper.addContent(metadata);
-		
-		ingest(context,dso,wrapper);
-	}
+    implements IngestionCrosswalk {
+    protected ItemService itemService = ContentServiceFactory.getInstance().getItemService();
+    private CrosswalkMetadataValidator metadataValidator = new CrosswalkMetadataValidator();
 
-	public void ingest(Context context, DSpaceObject dso, Element root) throws CrosswalkException, IOException, SQLException, AuthorizeException {
-		
-		if (dso.getType() != Constants.ITEM)
-        {
+    @Override
+    public void ingest(Context context, DSpaceObject dso, List<Element> metadata, boolean createMissingMetadataFields)
+        throws CrosswalkException, IOException, SQLException, AuthorizeException {
+        Element wrapper = new Element("wrap", metadata.get(0).getNamespace());
+        wrapper.addContent(metadata);
+
+        ingest(context, dso, wrapper, createMissingMetadataFields);
+    }
+
+    @Override
+    public void ingest(Context context, DSpaceObject dso, Element root, boolean createMissingMetadataFields)
+        throws CrosswalkException, IOException, SQLException, AuthorizeException {
+
+        if (dso.getType() != Constants.ITEM) {
             throw new CrosswalkObjectNotSupported("DIMIngestionCrosswalk can only crosswalk an Item.");
         }
-        Item item = (Item)dso;
-        
+        Item item = (Item) dso;
+
         if (root == null) {
-        	System.err.println("The element received by ingest was null");
-        	return;
+            System.err.println("The element received by ingest was null");
+            return;
         }
-        
+
         List<Element> metadata = root.getChildren();
         for (Element element : metadata) {
-		// get language - prefer xml:lang, accept lang.
-		String lang = element.getAttributeValue("lang", Namespace.XML_NAMESPACE);
-		if (lang == null) {
-			lang = element.getAttributeValue("lang");
-		}
-		item.addMetadata("dc", element.getName(), null, lang, element.getText());
+            // get language - prefer xml:lang, accept lang.
+            String lang = element.getAttributeValue("lang", Namespace.XML_NAMESPACE);
+            if (lang == null) {
+                lang = element.getAttributeValue("lang");
+            }
+            MetadataField metadataField = metadataValidator
+                .checkMetadata(context, MetadataSchemaEnum.DC.getName(),
+                               element.getName(), null, createMissingMetadataFields);
+            itemService.addMetadata(context, item, metadataField, lang, element.getText());
         }
-        
-	}
-	
+
+    }
+
 }

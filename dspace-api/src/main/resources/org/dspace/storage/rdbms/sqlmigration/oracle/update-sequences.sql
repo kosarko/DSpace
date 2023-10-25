@@ -18,13 +18,9 @@
 -- org.dspace.content API which is safe to use concurrently and in multiple
 -- JVMs.  The SQL code below will typically only be required after a direct
 -- SQL data dump from a backup or somesuch.
- 
 
--- There should be one of these calls for every ID sequence defined in
--- database_schema.sql.
-
--- depends on being run from sqlplus with incseq.sql in the current path
--- you can find incseq.sql at: http://akadia.com/services/scripts/incseq.sql
+-- The 'updateseq' procedure was derived from incseq.sql found at:
+-- http://www.akadia.com/services/scripts/incseq.sql
 
 DECLARE
  PROCEDURE updateseq ( seq IN VARCHAR,
@@ -51,8 +47,6 @@ BEGIN
   updateseq('fileextension_seq', 'fileextension', 'file_extension_id');
   updateseq('resourcepolicy_seq', 'resourcepolicy', 'policy_id');
   updateseq('workspaceitem_seq', 'workspaceitem', 'workspace_item_id');
-  updateseq('workflowitem_seq', 'workflowitem', 'workflow_id');
-  updateseq('tasklistitem_seq', 'tasklistitem', 'tasklist_id');
   updateseq('registrationdata_seq', 'registrationdata',
             'registrationdata_id');
   updateseq('subscription_seq', 'subscription', 'subscription_id');
@@ -65,23 +59,7 @@ BEGIN
   updateseq('harvested_item_seq', 'harvested_item', 'id');
   updateseq('webapp_seq', 'webapp', 'webapp_id');
   updateseq('requestitem_seq', 'requestitem', 'requestitem_id');
-  updateseq('bitstream_seq', 'bitstream', 'bitstream_id');
-  updateseq('eperson_seq', 'eperson', 'eperson_id');
-  updateseq('epersongroup_seq', 'epersongroup', 'eperson_group_id');
-  updateseq('group2group_seq', 'group2group', 'id');
-  updateseq('group2groupcache_seq', 'group2groupcache', 'id');
-  updateseq('item_seq', 'item', 'item_id');
-  updateseq('bundle_seq', 'bundle', 'bundle_id');
-  updateseq('item2bundle_seq', 'item2bundle', 'id');
-  updateseq('bundle2bitstream_seq', 'bundle2bitstream', 'id');
-  updateseq('community_seq', 'community', 'community_id');
-  updateseq('community2community_seq', 'community2community', 'id');
-  updateseq('collection_seq', 'collection', 'collection_id');
-  updateseq('community2collection_seq', 'community2collection', 'id');
-  updateseq('collection2item_seq', 'collection2item', 'id');
-  updateseq('epersongroup2eperson_seq', 'epersongroup2eperson', 'id');
-  updateseq('communities2item_seq', 'communities2item', 'id');
-  updateseq('epersongroup2workspaceitem_seq', 'epersongroup2workspaceitem', 'id');
+  updateseq('handle_id_seq', 'handle', 'handle_id');
 
   -- Handle Sequence is a special case.  Since Handles minted by DSpace
   -- use the 'handle_seq', we need to ensure the next assigned handle

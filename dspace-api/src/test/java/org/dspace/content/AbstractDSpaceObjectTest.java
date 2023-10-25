@@ -7,14 +7,36 @@
  */
 package org.dspace.content;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.sql.SQLException;
+
 import org.dspace.AbstractUnitTest;
-import org.junit.*;
-import static org.junit.Assert.* ;
-import static org.hamcrest.CoreMatchers.*;
+import org.dspace.authorize.factory.AuthorizeServiceFactory;
+import org.dspace.authorize.service.ResourcePolicyService;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.BitstreamService;
+import org.dspace.content.service.BundleService;
+import org.dspace.content.service.CollectionService;
+import org.dspace.content.service.CommunityService;
+import org.dspace.content.service.DSpaceObjectService;
+import org.dspace.content.service.InstallItemService;
+import org.dspace.content.service.ItemService;
+import org.dspace.content.service.WorkspaceItemService;
 import org.dspace.core.Constants;
 import org.dspace.eperson.EPerson;
 import org.dspace.eperson.Group;
+import org.dspace.eperson.factory.EPersonServiceFactory;
+import org.dspace.eperson.service.EPersonService;
+import org.dspace.eperson.service.GroupService;
+import org.junit.After;
+import org.junit.Test;
 
 
 /**
@@ -24,14 +46,27 @@ import org.dspace.eperson.Group;
  *
  * @author pvillega
  */
-public abstract class AbstractDSpaceObjectTest extends AbstractUnitTest
-{
+public abstract class AbstractDSpaceObjectTest extends AbstractUnitTest {
 
     /**
      * Protected instance of the class dspaceObject, will be initialized by
      * children classes to ensure it tests all the methods
      */
     protected DSpaceObject dspaceObject;
+
+
+    protected EPersonService ePersonService = EPersonServiceFactory.getInstance().getEPersonService();
+    protected GroupService groupService = EPersonServiceFactory.getInstance().getGroupService();
+    protected CommunityService communityService = ContentServiceFactory.getInstance().getCommunityService();
+    protected CollectionService collectionService = ContentServiceFactory.getInstance().getCollectionService();
+    protected ItemService itemService = ContentServiceFactory.getInstance().getItemService();
+    protected BundleService bundleService = ContentServiceFactory.getInstance().getBundleService();
+    protected BitstreamService bitstreamService = ContentServiceFactory.getInstance().getBitstreamService();
+    protected WorkspaceItemService workspaceItemService = ContentServiceFactory.getInstance().getWorkspaceItemService();
+    protected InstallItemService installItemService = ContentServiceFactory.getInstance().getInstallItemService();
+    protected ResourcePolicyService resourcePolicyService = AuthorizeServiceFactory.getInstance()
+                                                                                   .getResourcePolicyService();
+
 
     /**
      * This method will be run after every test as per @After. It will
@@ -42,8 +77,7 @@ public abstract class AbstractDSpaceObjectTest extends AbstractUnitTest
      */
     @After
     @Override
-    public void destroy()
-    {
+    public void destroy() {
         dspaceObject = null;
         super.destroy();
     }
@@ -52,11 +86,9 @@ public abstract class AbstractDSpaceObjectTest extends AbstractUnitTest
      * Test of clearDetails method, of class DSpaceObject.
      */
     @Test
-    public void testClearDetails()
-    {
+    public void testClearDetails() {
         String[] testData = new String[] {"details 1", "details 2", "details 3"};
-        for(String s: testData)
-        {
+        for (String s : testData) {
             dspaceObject.addDetails(s);
         }
 
@@ -71,11 +103,10 @@ public abstract class AbstractDSpaceObjectTest extends AbstractUnitTest
      * Test of addDetails method, of class DSpaceObject.
      */
     @Test
-    public void testAddDetails()
-    {
+    public void testAddDetails() {
+        dspaceObject.clearDetails();
         String[] testData = new String[] {"details 1", "details 2", "details 3"};
-        for(String s: testData)
-        {
+        for (String s : testData) {
             dspaceObject.addDetails(s);
         }
         assertThat("testAddDetails 0", dspaceObject.getDetails(), is(equalTo("details 1, details 2, details 3")));
@@ -86,119 +117,118 @@ public abstract class AbstractDSpaceObjectTest extends AbstractUnitTest
      * Test of getDetails method, of class DSpaceObject.
      */
     @Test
-    public void testGetDetails()
-    {
+    public void testGetDetails() {
+        dspaceObject.clearDetails();
         assertThat("testGetDetails 0", dspaceObject.getDetails(), nullValue());
 
         String[] testData = new String[] {"details 1", "details 2", "details 3"};
-        for(String s: testData)
-        {
+        for (String s : testData) {
             dspaceObject.addDetails(s);
         }
         assertThat("testGetDetails 1", dspaceObject.getDetails(), is(equalTo("details 1, details 2, details 3")));
     }
-    
+
     /**
      * Test of find method, of class DSpaceObject.
      */
     @Test
-    public void testFind() throws SQLException
-    {
-        if(this.dspaceObject instanceof Bitstream)
-        {
-            assertThat("BITSTREAM type", DSpaceObject.find(context,
-                Constants.BITSTREAM, dspaceObject.getID()), notNullValue());
+    public void testFind() throws SQLException {
+        DSpaceObjectService dSpaceObjectService = ContentServiceFactory.getInstance()
+                                                                       .getDSpaceObjectService(dspaceObject.getType());
+        if (this.dspaceObject instanceof Bitstream) {
+            assertThat("BITSTREAM type", dSpaceObjectService.find(context,
+                                                                  dspaceObject.getID()), notNullValue());
+        } else if (this.dspaceObject instanceof Bundle) {
+            assertThat("BUNDLE type", dSpaceObjectService.find(context,
+                                                               dspaceObject.getID()), notNullValue());
+        } else if (this.dspaceObject instanceof Item) {
+            assertThat("ITEM type", dSpaceObjectService.find(context,
+                                                             dspaceObject.getID()), notNullValue());
+        } else if (this.dspaceObject instanceof Collection) {
+            assertThat("COLLECTION type", dSpaceObjectService.find(context,
+                                                                   dspaceObject.getID()), notNullValue());
+        } else if (this.dspaceObject instanceof Community) {
+            assertThat("COMMUNITY type", dSpaceObjectService.find(context,
+                                                                  dspaceObject.getID()), notNullValue());
+        } else if (this.dspaceObject instanceof Group) {
+            assertThat("GROUP type", dSpaceObjectService.find(context,
+                                                              dspaceObject.getID()), notNullValue());
+        } else if (this.dspaceObject instanceof EPerson) {
+            assertThat("EPERSON type", dSpaceObjectService.find(context,
+                                                                dspaceObject.getID()), notNullValue());
+        } else if (this.dspaceObject instanceof Site) {
+            assertThat("SITE type", dSpaceObjectService.find(context,
+                                                             dspaceObject.getID()), notNullValue());
+        } else {
+            assertThat("Unknown type", dSpaceObjectService,
+                       nullValue());
         }
-        else if(this.dspaceObject instanceof Bundle)
-        {
-            assertThat("BUNDLE type", DSpaceObject.find(context,
-                Constants.BUNDLE, dspaceObject.getID()), notNullValue());
-        }
-        else if(this.dspaceObject instanceof Item)
-        {
-            assertThat("ITEM type", DSpaceObject.find(context,
-                Constants.ITEM, dspaceObject.getID()), notNullValue());
-        }
-        else if(this.dspaceObject instanceof Collection)
-        {
-            assertThat("COLLECTION type", DSpaceObject.find(context,
-                Constants.COLLECTION, dspaceObject.getID()), notNullValue());
-        }
-        else if(this.dspaceObject instanceof Community)
-        {
-            assertThat("COMMUNITY type", DSpaceObject.find(context,
-                Constants.COMMUNITY, dspaceObject.getID()), notNullValue());
-        }
-        else if(this.dspaceObject instanceof Group)
-        {
-            assertThat("GROUP type", DSpaceObject.find(context,
-                Constants.GROUP, dspaceObject.getID()), notNullValue());
-        }
-        else if(this.dspaceObject instanceof EPerson)
-        {
-            assertThat("EPERSON type", DSpaceObject.find(context,
-                Constants.EPERSON, dspaceObject.getID()), notNullValue());
-        }
-        else if(this.dspaceObject instanceof Site)
-        {
-            assertThat("SITE type", DSpaceObject.find(context,
-                Constants.SITE, dspaceObject.getID()), notNullValue());
-        }
-        else
-        {
-            assertThat("Unknown type", DSpaceObject.find(context, -99, 1),
-                nullValue());
-        }
-    }
-    
-    /**
-     * Test of getAdminObject method, of class DSpaceObject.
-     */
-    @Test
-    public void testGetAdminObject() throws SQLException
-    {
-        assertThat("READ action", dspaceObject.getAdminObject(Constants.READ), is(equalTo(dspaceObject)));
-
-        assertThat("WRITE action", dspaceObject.getAdminObject(Constants.WRITE), is(equalTo(dspaceObject)));
-
-        assertThat("DELETE action", dspaceObject.getAdminObject(Constants.DELETE), is(equalTo(dspaceObject)));
-
-        assertThat("ADD action", dspaceObject.getAdminObject(Constants.ADD), is(equalTo(dspaceObject)));
-
-        assertThat("REMOVE action", dspaceObject.getAdminObject(Constants.REMOVE), is(equalTo(dspaceObject)));
-
-        assertThat("WORKFLOW_STEP_1 action", dspaceObject.getAdminObject(Constants.WORKFLOW_STEP_1), is(equalTo(dspaceObject)));
-
-        assertThat("WORKFLOW_STEP_2 action", dspaceObject.getAdminObject(Constants.WORKFLOW_STEP_2), is(equalTo(dspaceObject)));
-
-        assertThat("WORKFLOW_STEP_3 action", dspaceObject.getAdminObject(Constants.WORKFLOW_STEP_3), is(equalTo(dspaceObject)));
-
-        assertThat("WORKFLOW_ABORT action", dspaceObject.getAdminObject(Constants.WORKFLOW_ABORT), is(equalTo(dspaceObject)));
-
-        assertThat("DEFAULT_BITSTREAM_READ action", dspaceObject.getAdminObject(Constants.DEFAULT_BITSTREAM_READ), is(equalTo(dspaceObject)));
-
-        assertThat("DEFAULT_ITEM_READ action", dspaceObject.getAdminObject(Constants.DEFAULT_ITEM_READ), is(equalTo(dspaceObject)));
     }
 
     /**
      * Test of getAdminObject method, of class DSpaceObject.
      */
-    @Test(expected=IllegalArgumentException.class)
-    public void testGetAdminObjectwithException() throws SQLException
-    {
-        
-        if(this.dspaceObject instanceof Bundle
-                || this.dspaceObject instanceof Community
-                || this.dspaceObject instanceof Collection
-                || this.dspaceObject instanceof Item)
-        {
+    @Test
+    public void testGetAdminObject() throws SQLException {
+        DSpaceObjectService dSpaceObjectService = ContentServiceFactory.getInstance()
+                                                                       .getDSpaceObjectService(dspaceObject.getType());
+        assertThat("READ action", dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.READ),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("WRITE action", dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.WRITE),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("DELETE action", dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.DELETE),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("ADD action", dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.ADD),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("REMOVE action", dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.REMOVE),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("WORKFLOW_STEP_1 action",
+                   dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.WORKFLOW_STEP_1),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("WORKFLOW_STEP_2 action",
+                   dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.WORKFLOW_STEP_2),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("WORKFLOW_STEP_3 action",
+                   dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.WORKFLOW_STEP_3),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("WORKFLOW_ABORT action",
+                   dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.WORKFLOW_ABORT),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("DEFAULT_BITSTREAM_READ action",
+                   dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.DEFAULT_BITSTREAM_READ),
+                   is(equalTo(dspaceObject)));
+
+        assertThat("DEFAULT_ITEM_READ action",
+                   dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.DEFAULT_ITEM_READ),
+                   is(equalTo(dspaceObject)));
+    }
+
+    /**
+     * Test of getAdminObject method, of class DSpaceObject.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetAdminObjectwithException() throws SQLException {
+
+        if (this.dspaceObject instanceof Bundle
+            || this.dspaceObject instanceof Community
+            || this.dspaceObject instanceof Collection
+            || this.dspaceObject instanceof Item) {
             //the previous classes overwrite the method, we add this to pass
             //this test
             throw new IllegalArgumentException();
-        }
-        else
-        {
-            dspaceObject.getAdminObject(Constants.ADMIN);
+        } else {
+            DSpaceObjectService dSpaceObjectService = ContentServiceFactory.getInstance().getDSpaceObjectService(
+                dspaceObject.getType());
+            dSpaceObjectService.getAdminObject(context, dspaceObject, Constants.ADMIN);
             fail("Exception should have been thrown");
         }
     }
@@ -207,9 +237,10 @@ public abstract class AbstractDSpaceObjectTest extends AbstractUnitTest
      * Test of getParentObject method, of class DSpaceObject.
      */
     @Test
-    public void testGetParentObject() throws SQLException
-    {
-        assertThat("testGetParentObject 0", dspaceObject.getParentObject(), nullValue());
+    public void testGetParentObject() throws SQLException {
+        DSpaceObjectService dSpaceObjectService = ContentServiceFactory.getInstance()
+                                                                       .getDSpaceObjectService(dspaceObject.getType());
+        assertThat("testGetParentObject 0", dSpaceObjectService.getParentObject(context, dspaceObject), nullValue());
     }
 
     /**

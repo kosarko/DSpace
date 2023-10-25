@@ -16,21 +16,28 @@ import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jdom2.Document;
+
 /**
- *
  * @author mwood
  */
-public class CommandRunner
-{
+public class CommandRunner {
+
+    /**
+     * Default constructor
+     */
+    private CommandRunner() { }
+
+    /**
+     * @param args the command line arguments given
+     * @throws IOException           if IO error
+     * @throws FileNotFoundException if file doesn't exist
+     */
     public static void main(String[] args)
-            throws FileNotFoundException, IOException
-    {
-        if (args.length > 0)
-        {
+        throws FileNotFoundException, IOException {
+        if (args.length > 0) {
             runManyCommands(args[0]);
-        }
-        else
-        {
+        } else {
             runManyCommands("-");
         }
         // There is no sensible way to use the status returned by runManyCommands().
@@ -45,22 +52,17 @@ public class CommandRunner
     /**
      * Read a file of command lines and execute each in turn.
      *
-     * @param doc details of recognized commands.
      * @param script the file of command lines to be executed.
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException 
+     * @return status code
+     * @throws IOException           if IO error
+     * @throws FileNotFoundException if file doesn't exist
      */
     static int runManyCommands(String script)
-            throws FileNotFoundException, IOException
-    {
+        throws FileNotFoundException, IOException {
         Reader input;
-        if ("-".equals(script))
-        {
+        if ("-".equals(script)) {
             input = new InputStreamReader(System.in);
-        }
-        else
-        {
+        } else {
             input = new FileReader(script);
         }
 
@@ -82,22 +84,17 @@ public class CommandRunner
 
         int status = 0;
         List<String> tokens = new ArrayList<String>();
-        while (StreamTokenizer.TT_EOF != tokenizer.nextToken())
-        {
-            if (StreamTokenizer.TT_EOL == tokenizer.ttype)
-            {
-                if (tokens.size() > 0)
-                {
-                    status = ScriptLauncher.runOneCommand(tokens.toArray(new String[tokens.size()]));
-                    if (status > 0)
-                    {
+        Document commandConfigs = ScriptLauncher.getConfig();
+        while (StreamTokenizer.TT_EOF != tokenizer.nextToken()) {
+            if (StreamTokenizer.TT_EOL == tokenizer.ttype) {
+                if (tokens.size() > 0) {
+                    status = ScriptLauncher.runOneCommand(commandConfigs, tokens.toArray(new String[tokens.size()]));
+                    if (status > 0) {
                         break;
                     }
                     tokens.clear();
                 }
-            }
-            else
-            {
+            } else {
                 tokens.add(tokenizer.sval);
             }
         }

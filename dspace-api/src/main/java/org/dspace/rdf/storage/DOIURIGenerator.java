@@ -8,46 +8,49 @@
 
 package org.dspace.rdf.storage;
 
-import org.apache.log4j.Logger;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
+
+import org.apache.logging.log4j.Logger;
 import org.dspace.content.DSpaceObject;
+import org.dspace.content.factory.ContentServiceFactory;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
-import org.dspace.identifier.DOI;
 import org.dspace.identifier.IdentifierException;
-
-import java.sql.SQLException;
+import org.dspace.identifier.service.DOIService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- *
  * @author pbecker
  */
-public class DOIURIGenerator
-implements URIGenerator
-{
-    private static final Logger log = Logger.getLogger(DOIURIGenerator.class);
+public class DOIURIGenerator implements URIGenerator {
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger(DOIURIGenerator.class);
 
-    /*
-     * Currently (August 31 2014, in preparation of DSpace 5.0) DSpace supports DOIs for items only. This fallback
-     * will be used to generate an URI, whenever no DOI was found that could be used to.
-     */
-    protected final static URIGenerator fallback = new LocalURIGenerator();
-    
+    protected static URIGenerator fallback;
+
+    @Autowired(required = true)
+    public static void setFallback(URIGenerator fallback) {
+        DOIURIGenerator.fallback = fallback;
+    }
+
+    @Autowired(required = true)
+    protected DOIService doiService;
+
     @Override
-    public String generateIdentifier(Context context, int type, int id, String handle, String[] identifiers) throws SQLException {
+    public String generateIdentifier(Context context, int type, UUID id, String handle, List<String> identifiers)
+        throws SQLException {
         if (type != Constants.SITE
-                && type != Constants.COMMUNITY
-                && type != Constants.COLLECTION
-                && type != Constants.ITEM)
-        {
+            && type != Constants.COMMUNITY
+            && type != Constants.COLLECTION
+            && type != Constants.ITEM) {
             return null;
         }
 
         String doi = null;
-        for (String identifier : identifiers)
-        {
-            try
-            {
-                doi = DOI.DOIToExternalForm(identifier);
+        for (String identifier : identifiers) {
+            try {
+                doi = doiService.DOIToExternalForm(identifier);
             } catch (IdentifierException ex) {
                 // identifier is not a DOI: no problem, keep on looking.
             }
@@ -55,16 +58,23 @@ implements URIGenerator
         if (doi != null) {
             return doi;
         } else {
-            log.info("Didn't find a DOI for " + Constants.typeText[type] + ", id " + Integer.toString(id)
-                    + ", will use fallback URIGenerator.");
+            log.info("Didn't find a DOI for " + Constants.typeText[type] + ", id " + id.toString()
+                         + ", will use fallback URIGenerator.");
             return fallback.generateIdentifier(context, type, id, handle, identifiers);
         }
     }
 
+    @Override
     public String generateIdentifier(Context context, DSpaceObject dso)
-            throws SQLException
-    {
-        return generateIdentifier(context, dso.getType(), dso.getID(), dso.getHandle(), dso.getIdentifiers(context));
+        throws SQLException {
+        return generateIdentifier(
+            context,
+            dso.getType(),
+            dso.getID(),
+            dso.getHandle(),
+            ContentServiceFactory.getInstance().getDSpaceObjectService(dso)
+                                 .getIdentifiers(context, dso)
+        );
     }
-    
+
 }

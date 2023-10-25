@@ -136,13 +136,13 @@ CREATE TABLE checksum_results
 CREATE TABLE most_recent_checksum 
 (
     bitstream_id INTEGER PRIMARY KEY,
-    to_be_processed NUMBER(1) NOT NULL,
+    to_be_processed BOOLEAN NOT NULL,
     expected_checksum VARCHAR(64) NOT NULL,
     current_checksum VARCHAR(64) NOT NULL,
     last_process_start_date TIMESTAMP NOT NULL,
     last_process_end_date TIMESTAMP NOT NULL,
     checksum_algorithm VARCHAR(64) NOT NULL,
-    matched_prev_checksum NUMBER(1) NOT NULL,
+    matched_prev_checksum BOOLEAN NOT NULL,
     result VARCHAR(64) REFERENCES checksum_results(result_code)
 );
 
@@ -150,11 +150,11 @@ CREATE TABLE most_recent_checksum
 -- A row will be inserted into this table every
 -- time a checksum is re-calculated.
 
-CREATE SEQUENCE checksum_history_seq;
+CREATE SEQUENCE checksum_history_check_id_seq;
 
 CREATE TABLE checksum_history 
 (
-    check_id INTEGER PRIMARY KEY,
+    check_id BIGINT PRIMARY KEY,
     bitstream_id INTEGER,
     process_start_date TIMESTAMP,
     process_end_date TIMESTAMP,
@@ -245,13 +245,13 @@ insert into most_recent_checksum
 )
 select 
     bitstream.bitstream_id, 
-    '1', 
+    true,
     CASE WHEN bitstream.checksum IS NULL THEN '' ELSE bitstream.checksum END, 
     CASE WHEN bitstream.checksum IS NULL THEN '' ELSE bitstream.checksum END, 
     FORMATDATETIME(NOW(),'DD-MM-RRRR HH24:MI:SS'),
     FORMATDATETIME(NOW(),'DD-MM-RRRR HH24:MI:SS'),
     CASE WHEN bitstream.checksum_algorithm IS NULL THEN 'MD5' ELSE bitstream.checksum_algorithm END,
-    '1'
+    true
 from bitstream; 
 
 -- Update all the deleted checksums
@@ -263,7 +263,7 @@ update most_recent_checksum
 set to_be_processed = 0
 where most_recent_checksum.bitstream_id in (
 select bitstream_id
-from bitstream where deleted = '1' );
+from bitstream where deleted = true );
 
 -- this will insert into history table
 -- for the initial start 

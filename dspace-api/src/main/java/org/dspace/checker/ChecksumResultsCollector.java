@@ -7,21 +7,24 @@
  */
 package org.dspace.checker;
 
+import java.sql.SQLException;
+
+import org.dspace.core.Context;
+
 /**
  * Component that receives BitstreamInfo results from a checker.
- * 
+ *
  * @author Jim Downing
  * @author Grace Carpenter
  * @author Nathan Sarr
- * 
  */
-public interface ChecksumResultsCollector
-{
+public interface ChecksumResultsCollector {
     /**
      * Collects results.
-     * 
-     * @param info
-     *            BitstreamInfo representing the check results.
+     *
+     * @param context Context
+     * @param info    BitstreamInfo representing the check results.
+     * @throws SQLException if database error
      */
-    void collect(BitstreamInfo info);
+    void collect(Context context, MostRecentChecksum info) throws SQLException;
 }

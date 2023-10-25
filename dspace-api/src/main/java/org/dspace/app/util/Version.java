@@ -9,22 +9,27 @@ package org.dspace.app.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
+import org.dspace.app.util.factory.UtilServiceFactory;
 import org.dspace.services.ConfigurationService;
-import org.dspace.utils.DSpace;
+import org.dspace.services.factory.DSpaceServicesFactory;
 
 /**
  * Display information about this DSpace, its environment, and how it was built.
  *
  * @author mwood
  */
-public class Version
-{
+public class Version {
+
+    /**
+     * Default constructor
+     */
+    private Version() { }
+
     public static void main(String[] argv)
-        throws IOException
-    {
+        throws IOException {
         InputStream propStream;
 
         Properties sys = System.getProperties();
@@ -36,8 +41,7 @@ public class Version
         // SCM revision
         Properties scm = new Properties();
         propStream = Version.class.getResourceAsStream("/scm.properties");
-        if (null != propStream)
-        {
+        if (null != propStream) {
             scm.load(propStream);
         }
         System.out.printf("  SCM revision:  %s\n", scm.get("revision"));
@@ -50,28 +54,24 @@ public class Version
                           sys.get("os.version"));
 
         // UIs used
-        List<AbstractDSpaceWebapp> apps = AbstractDSpaceWebapp.getApps();
+        List<WebApp> apps = UtilServiceFactory.getInstance().getWebAppService().getApps();
         System.out.println("  Applications:");
-        for (AbstractDSpaceWebapp app : apps)
-        {
+        for (WebApp app : apps) {
             System.out.printf("                %s at %s\n",
-                    app.getKind(), app.getURL());
+                              app.getAppName(), app.getUrl());
         }
 
         // Is Discovery available?
-        ConfigurationService config = new DSpace().getConfigurationService();
-        String consumers = config.getPropertyAsType("event.dispatcher.default.consumers", ""); // Avoid null pointer
-        List<String> consumerList = Arrays.asList(consumers.split("\\s*,\\s*"));
-        if (consumerList.contains("discovery"))
-        {
-            System.out.println("     Discovery:  enabled.");
+        ConfigurationService config = DSpaceServicesFactory.getInstance().getConfigurationService();
+        String[] consumers = config.getArrayProperty("event.dispatcher.default.consumers");
+        String discoveryStatus = "not enabled.";
+        for (String consumer : consumers) {
+            if (consumer.equals("discovery")) {
+                discoveryStatus = "enabled.";
+                break;
+            }
         }
-
-        // Is Lucene search enabled?
-        if (consumerList.contains("search"))
-        {
-            System.out.println(" Lucene search:  enabled.");
-        }
+        System.out.println("     Discovery:  " + discoveryStatus);
 
         // Java version
         System.out.printf("           JRE:  %s version %s\n",
@@ -81,8 +81,7 @@ public class Version
         // ant version
         Properties ant = new Properties();
         propStream = Version.class.getResourceAsStream("/ant.properties");
-        if (null != propStream)
-        {
+        if (null != propStream) {
             ant.load(propStream);
         }
         System.out.printf("   Ant version:  %s\n",
@@ -91,8 +90,7 @@ public class Version
         // maven version
         Properties maven = new Properties();
         propStream = Version.class.getResourceAsStream("/maven.properties");
-        if (null != propStream)
-        {
+        if (null != propStream) {
             maven.load(propStream);
         }
         System.out.printf(" Maven version:  %s\n",

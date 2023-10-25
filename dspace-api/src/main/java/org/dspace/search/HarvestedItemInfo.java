@@ -9,31 +9,41 @@ package org.dspace.search;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.dspace.content.Item;
 import org.dspace.core.Context;
 
 /**
  * Simple container class containing information about a harvested DSpace item.
- * 
+ *
  * @author Robert Tansley
  * @version $Revision$
  */
-public class HarvestedItemInfo
-{
-    /** Context used when creating this object */
+public class HarvestedItemInfo {
+    /**
+     * Context used when creating this object
+     */
     public Context context;
-    
-    /** Internal item ID (as opposed to item's OAI ID, which is the Handle) */
-    public int itemID;
 
-    /** The Handle, with no prefix */
+    /**
+     * Internal item ID (as opposed to item's OAI ID, which is the Handle)
+     */
+    public UUID itemID;
+
+    /**
+     * The Handle, with no prefix
+     */
     public String handle;
 
-    /** The datestamp */
+    /**
+     * The datestamp
+     */
     public Date datestamp;
 
-    /** The item. Only filled out if requested */
+    /**
+     * The item. Only filled out if requested
+     */
     public Item item;
 
     /**
@@ -43,6 +53,8 @@ public class HarvestedItemInfo
      */
     public List<String> collectionHandles;
 
-    /** True if this item has been withdrawn */
+    /**
+     * True if this item has been withdrawn
+     */
     public boolean withdrawn;
 }

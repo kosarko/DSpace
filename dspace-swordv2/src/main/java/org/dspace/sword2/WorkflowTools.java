@@ -7,124 +7,112 @@
  */
 package org.dspace.sword2;
 
-import org.dspace.authorize.AuthorizeException;
-import org.dspace.content.InProgressSubmission;
-import org.dspace.content.Item;
-import org.dspace.content.WorkspaceItem;
-import org.dspace.core.ConfigurationManager;
-import org.dspace.core.Context;
-import org.dspace.storage.rdbms.DatabaseManager;
-import org.dspace.storage.rdbms.TableRow;
-import org.dspace.storage.rdbms.TableRowIterator;
-import org.dspace.workflow.WorkflowItem;
-import org.dspace.workflow.WorkflowManager;
-import org.dspace.xmlworkflow.WorkflowConfigurationException;
-import org.dspace.xmlworkflow.WorkflowException;
-import org.dspace.xmlworkflow.XmlWorkflowManager;
-import org.dspace.xmlworkflow.storedcomponents.XmlWorkflowItem;
-
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class WorkflowTools
-{
+import org.dspace.authorize.AuthorizeException;
+import org.dspace.content.Item;
+import org.dspace.content.WorkspaceItem;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.WorkspaceItemService;
+import org.dspace.core.Context;
+import org.dspace.services.ConfigurationService;
+import org.dspace.services.factory.DSpaceServicesFactory;
+import org.dspace.workflow.WorkflowException;
+import org.dspace.workflow.WorkflowItem;
+import org.dspace.workflow.WorkflowItemService;
+import org.dspace.workflow.WorkflowService;
+import org.dspace.workflow.factory.WorkflowServiceFactory;
+
+public class WorkflowTools {
+    protected WorkspaceItemService workspaceItemService =
+        ContentServiceFactory.getInstance().getWorkspaceItemService();
+
+    protected WorkflowItemService workflowItemService =
+        WorkflowServiceFactory.getInstance().getWorkflowItemService();
+
+    protected WorkflowService workflowService =
+        WorkflowServiceFactory.getInstance().getWorkflowService();
+
+    protected ConfigurationService configurationService
+            = DSpaceServicesFactory.getInstance().getConfigurationService();
+
     /**
      * Is the given item in the DSpace workflow?
-     *
+     * <p>
      * This method queries the database directly to determine if this is the
      * case rather than using the DSpace API (which is very slow).
      *
-     * @param context
-     * @param item
-     * @throws DSpaceSwordException
+     * @param context The relevant DSpace Context.
+     * @param item    item to check
+     * @return true if item is in workflow
+     * @throws DSpaceSwordException can be thrown by the internals of the DSpace SWORD implementation
      */
     public boolean isItemInWorkflow(Context context, Item item)
-            throws DSpaceSwordException
-    {
-        try
-        {
-            if(ConfigurationManager.getProperty("workflow","workflow.framework").equals("xmlworkflow")){
-                return XmlWorkflowItem.findByItem(context, item) != null;
-            }else{
-                return WorkflowItem.findByItem(context, item) != null;
-            }
-        }
-        catch (SQLException e)
-        {
+        throws DSpaceSwordException {
+        try {
+            return workflowItemService.findByItem(context, item) != null;
+        } catch (SQLException e) {
             throw new DSpaceSwordException(e);
         }
     }
 
     /**
      * Is the given item in a DSpace workspace?
-     *
+     * <p>
      * This method queries the database directly to determine if this is the
      * case rather than using the DSpace API (which is very slow).
      *
-     * @param context
-     * @param item
-     * @throws DSpaceSwordException
+     * @param context The relevant DSpace Context.
+     * @param item    item to check
+     * @return true if item is in workspace
+     * @throws DSpaceSwordException can be thrown by the internals of the DSpace SWORD implementation
      */
     public boolean isItemInWorkspace(Context context, Item item)
-            throws DSpaceSwordException
-    {
-        try
-        {
-            return WorkspaceItem.findByItem(context, item) != null;
-        }
-        catch (SQLException e)
-        {
+        throws DSpaceSwordException {
+        try {
+            return workspaceItemService.findByItem(context, item) != null;
+        } catch (SQLException e) {
             throw new DSpaceSwordException(e);
         }
     }
 
     /**
      * Obtain the WorkflowItem object which wraps the given Item.
-     *
+     * <p>
      * This method queries the database directly to determine if this is the
      * case rather than using the DSpace API (which is very slow).
      *
-     * @param context
-     * @param item
-     * @throws DSpaceSwordException
+     * @param context The relevant DSpace Context.
+     * @param item    item to check
+     * @return workflow item
+     * @throws DSpaceSwordException can be thrown by the internals of the DSpace SWORD implementation
      */
-    public InProgressSubmission getWorkflowItem(Context context, Item item)
-            throws DSpaceSwordException
-    {
-        try
-        {
-            if(ConfigurationManager.getProperty("workflow","workflow.framework").equals("xmlworkflow")){
-                return XmlWorkflowItem.findByItem(context, item);
-            }else{
-                return WorkflowItem.findByItem(context, item);
-            }
-        }
-        catch (SQLException e)
-        {
+    public WorkflowItem getWorkflowItem(Context context, Item item)
+        throws DSpaceSwordException {
+        try {
+            return workflowItemService.findByItem(context, item);
+        } catch (SQLException e) {
             throw new DSpaceSwordException(e);
         }
     }
 
     /**
      * Obtain the WorkspaceItem object which wraps the given Item.
-     *
+     * <p>
      * This method queries the database directly to determine if this is the
      * case rather than using the DSpace API (which is very slow).
      *
-     * @param context
-     * @param item
-     * @throws DSpaceSwordException
+     * @param context The relevant DSpace Context.
+     * @param item    item to check
+     * @return workspace item
+     * @throws DSpaceSwordException can be thrown by the internals of the DSpace SWORD implementation
      */
     public WorkspaceItem getWorkspaceItem(Context context, Item item)
-            throws DSpaceSwordException
-    {
-        try
-        {
-            return WorkspaceItem.findByItem(context, item);
-        }
-        catch (SQLException e)
-        {
+        throws DSpaceSwordException {
+        try {
+            return workspaceItemService.findByItem(context, item);
+        } catch (SQLException e) {
             throw new DSpaceSwordException(e);
         }
     }
@@ -132,49 +120,25 @@ public class WorkflowTools
     /**
      * Start the DSpace workflow on the given item
      *
-     * @param item
-     * @throws DSpaceSwordException
+     * @param context The relevant DSpace Context.
+     * @param item    item to check
+     * @throws DSpaceSwordException can be thrown by the internals of the DSpace SWORD implementation
      */
     public void startWorkflow(Context context, Item item)
-            throws DSpaceSwordException
-    {
-        try
-        {
+        throws DSpaceSwordException {
+        try {
             // obtain the workspace item which should therefore exist
             WorkspaceItem wsi = this.getWorkspaceItem(context, item);
 
             // kick off the workflow
-            boolean notify = ConfigurationManager.getBooleanProperty("swordv2-server", "workflow.notify");
-            if (ConfigurationManager.getProperty("workflow", "workflow.framework").equals("xmlworkflow")) {
-                if (notify) {
-                    XmlWorkflowManager.start(context, wsi);
-                } else {
-                    XmlWorkflowManager.startWithoutNotify(context, wsi);
-                }
+            boolean notify = configurationService
+                .getBooleanProperty("swordv2-server.workflow.notify");
+            if (notify) {
+                workflowService.start(context, wsi);
             } else {
-                if (notify) {
-                    WorkflowManager.start(context, wsi);
-                } else {
-                    WorkflowManager.startWithoutNotify(context, wsi);
-                }
+                workflowService.startWithoutNotify(context, wsi);
             }
-        }
-        catch (SQLException e)
-        {
-            throw new DSpaceSwordException(e);
-        }
-        catch (AuthorizeException e)
-        {
-            throw new DSpaceSwordException(e);
-        }
-        catch (IOException e)
-        {
-            throw new DSpaceSwordException(e);
-        } catch (WorkflowException e) {
-            throw new DSpaceSwordException(e);
-        } catch (WorkflowConfigurationException e) {
-            throw new DSpaceSwordException(e);
-        } catch (MessagingException e) {
+        } catch (SQLException | WorkflowException | IOException | AuthorizeException e) {
             throw new DSpaceSwordException(e);
         }
     }
@@ -182,38 +146,21 @@ public class WorkflowTools
     /**
      * Stop the DSpace workflow, and return the item to the user workspace
      *
-     * @param item
-     * @throws DSpaceSwordException
+     * @param context The relevant DSpace Context.
+     * @param item    item to check
+     * @throws DSpaceSwordException can be thrown by the internals of the DSpace SWORD implementation
      */
     public void stopWorkflow(Context context, Item item)
-            throws DSpaceSwordException
-    {
-        try
-        {
+        throws DSpaceSwordException {
+        try {
             // find the item in the workflow if it exists
-            InProgressSubmission wfi = this.getWorkflowItem(context, item);
+            WorkflowItem wfi = this.getWorkflowItem(context, item);
 
             // abort the workflow
-            if (wfi != null)
-            {
-                if(wfi instanceof WorkflowItem)
-                {
-                    WorkflowManager.abort(context, (WorkflowItem) wfi, context.getCurrentUser());
-                }else{
-                    XmlWorkflowManager.abort(context, (XmlWorkflowItem) wfi, context.getCurrentUser());
-                }
+            if (wfi != null) {
+                workflowService.abort(context, wfi, context.getCurrentUser());
             }
-        }
-        catch (SQLException e)
-        {
-            throw new DSpaceSwordException(e);
-        }
-        catch (AuthorizeException e)
-        {
-            throw new DSpaceSwordException(e);
-        }
-        catch (IOException e)
-        {
+        } catch (SQLException | AuthorizeException | IOException e) {
             throw new DSpaceSwordException(e);
         }
     }

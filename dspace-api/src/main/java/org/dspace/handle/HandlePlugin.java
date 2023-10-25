@@ -7,109 +7,146 @@
  */
 package org.dspace.handle;
 
-import java.sql.SQLException;
-import java.util.*;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.dspace.handle.external.ExternalHandleConstants.DEFAULT_CANONICAL_HANDLE_PREFIX;
+import static org.dspace.handle.external.ExternalHandleConstants.MAGIC_BEAN;
 
-import cz.cuni.mff.ufal.dspace.AbstractPIDService;
-import cz.cuni.mff.ufal.dspace.handle.ConfigurableHandleIdentifierProvider;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import net.cnri.util.StreamTable;
 import net.handle.hdllib.Encoder;
 import net.handle.hdllib.HandleException;
 import net.handle.hdllib.HandleStorage;
 import net.handle.hdllib.HandleValue;
 import net.handle.hdllib.ScanCallback;
 import net.handle.hdllib.Util;
-import net.handle.util.StreamTable;
-
-import org.apache.log4j.Logger;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.Logger;
 import org.dspace.content.DCDate;
 import org.dspace.content.DSpaceObject;
 import org.dspace.content.Item;
-import org.dspace.content.Metadatum;
-import org.dspace.core.ConfigurationManager;
+import org.dspace.content.MetadataValue;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.ItemService;
 import org.dspace.core.Context;
-
-import cz.cuni.mff.ufal.dspace.handle.PIDConfiguration;
-
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import org.dspace.handle.factory.HandleServiceFactory;
+import org.dspace.handle.service.HandleClarinService;
+import org.dspace.handle.service.HandleService;
+import org.dspace.servicemanager.DSpaceKernelImpl;
+import org.dspace.servicemanager.DSpaceKernelInit;
+import org.dspace.services.ConfigurationService;
+import org.dspace.services.factory.DSpaceServicesFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Extension to the CNRI Handle Server that translates requests to resolve
  * handles into DSpace API calls. The implementation simply stubs out most of
  * the methods, and delegates the rest to the
- * {@link org.dspace.handle.HandleManager}. This only provides some of the
+ * {@link HandleService}. This only provides some of the
  * functionality (namely, the resolving of handles to URLs) of the CNRI
  * HandleStorage interface.
- * 
+ *
  * <p>
  * This class is intended to be embedded in the CNRI Handle Server. It conforms
  * to the HandleStorage interface that was delivered with Handle Server version
- * 5.2.0.
+ * 6.2.0.
  * </p>
- * 
- * based on class by Peter Breton
+ *
+ * @author Peter Breton
  * modified for LINDAT/CLARIN
+ * @author Milan Majchrak (milan.majchrak at dataquest.sk)
  * @version $Revision$
  */
-public class HandlePlugin implements HandleStorage
-{
-    /** log4j category */
-    private static Logger log = Logger.getLogger(HandlePlugin.class);
-    public static final String repositoryName;
-    private static final String repositoryEmail;
-    static {
-        String name = ConfigurationManager.getProperty(
-                "dspace.name");
-        if (name != null) {
-            repositoryName = name.trim();
-        } else {
-            repositoryName = null;
-        }
-        String email= ConfigurationManager.getProperty(
-                "lr", "lr.help.mail");
-        if(email != null){
-            repositoryEmail = email.trim();
-        }else{
-            repositoryEmail = null;
-        }
-    }
-    private static final boolean resolveMetadata = ConfigurationManager.getBooleanProperty(
-            "lr", "lr.pid.resolvemetadata", true);
-
-    public static final String magicBean = "@magicLindat@";
-
+@Component
+public class HandlePlugin implements HandleStorage {
+    /**
+     * log4j category
+     */
+    private static Logger log = org.apache.logging.log4j.LogManager.getLogger(HandlePlugin.class);
 
     /**
-     * Constructor
+     * Repository name loaded from the configuration
      */
-    public HandlePlugin()
-    {
-    }
+    private static String repositoryName;
+    /**
+     * Repository email loaded from the configuration
+     */
+    private static String repositoryEmail;
+    /**
+     * Canonical handle prefix loaded from the configuration
+     */
+    private static String canonicalHandlePrefix;
+
+    /**
+     * The DSpace service manager kernel
+     **/
+    private static transient DSpaceKernelImpl kernelImpl;
+
+    /**
+     * References to DSpace Services
+     **/
+    protected static HandleService handleService;
+    protected static HandleClarinService handleClarinService;
+    protected static ConfigurationService configurationService;
+    protected static ItemService itemService;
 
     ////////////////////////////////////////
     // Non-Resolving methods -- unimplemented
     ////////////////////////////////////////
 
     /**
-     * HandleStorage interface method - not implemented.
+     * HandleStorage interface init method.
+     * <p>
+     * For DSpace, we have to startup the DSpace Kernel when HandlePlugin
+     * initializes, as the HandlePlugin relies on HandleService (and other services)
+     * which are loaded by the Kernel.
+     *
+     * @param st StreamTable
+     * @throws Exception if DSpace Kernel fails to startup
      */
-    public void init(StreamTable st) throws Exception
-    {
-        // Not implemented
-        if (log.isInfoEnabled())
-        {
-            log.info("Called init (not implemented)");
+    @Override
+    public void init(StreamTable st) throws Exception {
+        if (log.isInfoEnabled()) {
+            log.info("Called init (Starting DSpace Kernel)");
         }
+
+        // Initialise the service manager kernel
+        try {
+            kernelImpl = DSpaceKernelInit.getKernel(null);
+            if (!kernelImpl.isRunning()) {
+                kernelImpl.start();
+            }
+        } catch (Exception e) {
+            // Failed to start so destroy it and log and throw an exception
+            try {
+                kernelImpl.destroy();
+            } catch (Exception e1) {
+                // Nothing to do
+            }
+            String message = "Failed to startup DSpace Kernel: " + e.getMessage();
+            System.err.println(message);
+            e.printStackTrace();
+            throw new IllegalStateException(message, e);
+        }
+
     }
 
     /**
      * HandleStorage interface method - not implemented.
      */
+    @Override
     public void setHaveNA(byte[] theHandle, boolean haveit)
-            throws HandleException
-    {
+            throws HandleException {
         // Not implemented
-        if (log.isInfoEnabled())
-        {
+        if (log.isInfoEnabled()) {
             log.info("Called setHaveNA (not implemented)");
         }
     }
@@ -117,12 +154,11 @@ public class HandlePlugin implements HandleStorage
     /**
      * HandleStorage interface method - not implemented.
      */
+    @Override
     public void createHandle(byte[] theHandle, HandleValue[] values)
-            throws HandleException
-    {
+            throws HandleException {
         // Not implemented
-        if (log.isInfoEnabled())
-        {
+        if (log.isInfoEnabled()) {
             log.info("Called createHandle (not implemented)");
         }
     }
@@ -130,11 +166,10 @@ public class HandlePlugin implements HandleStorage
     /**
      * HandleStorage interface method - not implemented.
      */
-    public boolean deleteHandle(byte[] theHandle) throws HandleException
-    {
+    @Override
+    public boolean deleteHandle(byte[] theHandle) throws HandleException {
         // Not implemented
-        if (log.isInfoEnabled())
-        {
+        if (log.isInfoEnabled()) {
             log.info("Called deleteHandle (not implemented)");
         }
 
@@ -144,12 +179,11 @@ public class HandlePlugin implements HandleStorage
     /**
      * HandleStorage interface method - not implemented.
      */
+    @Override
     public void updateValue(byte[] theHandle, HandleValue[] values)
-            throws HandleException
-    {
+            throws HandleException {
         // Not implemented
-        if (log.isInfoEnabled())
-        {
+        if (log.isInfoEnabled()) {
             log.info("Called updateValue (not implemented)");
         }
     }
@@ -157,11 +191,10 @@ public class HandlePlugin implements HandleStorage
     /**
      * HandleStorage interface method - not implemented.
      */
-    public void deleteAllRecords() throws HandleException
-    {
+    @Override
+    public void deleteAllRecords() throws HandleException {
         // Not implemented
-        if (log.isInfoEnabled())
-        {
+        if (log.isInfoEnabled()) {
             log.info("Called deleteAllRecords (not implemented)");
         }
     }
@@ -169,35 +202,39 @@ public class HandlePlugin implements HandleStorage
     /**
      * HandleStorage interface method - not implemented.
      */
-    public void checkpointDatabase() throws HandleException
-    {
+    @Override
+    public void checkpointDatabase() throws HandleException {
         // Not implemented
-        if (log.isInfoEnabled())
-        {
+        if (log.isInfoEnabled()) {
             log.info("Called checkpointDatabase (not implemented)");
         }
     }
 
     /**
-     * HandleStorage interface method - not implemented.
+     * HandleStorage interface shutdown() method.
+     * <p>
+     * For DSpace, we need to destroy the kernel created in init().
      */
-    public void shutdown()
-    {
-        // Not implemented
-        if (log.isInfoEnabled())
-        {
-            log.info("Called shutdown (not implemented)");
+    @Override
+    public void shutdown() {
+        if (log.isInfoEnabled()) {
+            log.info("Called shutdown (Destroying DSpace Kernel)");
+        }
+
+        // Destroy the DSpace kernel if it is still alive
+        if (kernelImpl != null) {
+            kernelImpl.destroy();
+            kernelImpl = null;
         }
     }
 
     /**
      * HandleStorage interface method - not implemented.
      */
-    public void scanHandles(ScanCallback callback) throws HandleException
-    {
+    @Override
+    public void scanHandles(ScanCallback callback) throws HandleException {
         // Not implemented
-        if (log.isInfoEnabled())
-        {
+        if (log.isInfoEnabled()) {
             log.info("Called scanHandles (not implemented)");
         }
     }
@@ -205,11 +242,10 @@ public class HandlePlugin implements HandleStorage
     /**
      * HandleStorage interface method - not implemented.
      */
-    public void scanNAs(ScanCallback callback) throws HandleException
-    {
+    @Override
+    public void scanNAs(ScanCallback callback) throws HandleException {
         // Not implemented
-        if (log.isInfoEnabled())
-        {
+        if (log.isInfoEnabled()) {
             log.info("Called scanNAs (not implemented)");
         }
     }
@@ -221,112 +257,106 @@ public class HandlePlugin implements HandleStorage
     /**
      * Return the raw values for this handle. This implementation returns a
      * single URL value.
-     * 
-     * @param theHandle
-     *            byte array representation of handle
-     * @param indexList
-     *            ignored
-     * @param typeList
-     *            ignored
+     *
+     * @param theHandle byte array representation of handle
+     * @param indexList ignored
+     * @param typeList  ignored
      * @return A byte array with the raw data for this handle. Currently, this
-     *         consists of a single URL value.
-     * @exception HandleException
-     *                If an error occurs while calling the Handle API.
+     * consists of a single URL value.
+     * @throws HandleException If an error occurs while calling the Handle API.
      */
+    @Override
     public byte[][] getRawHandleValues(byte[] theHandle, int[] indexList,
-            byte[][] typeList) throws HandleException
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug("Called getRawHandleValues");
+                                       byte[][] typeList) throws HandleException {
+        if (log.isInfoEnabled()) {
+            log.info("Called getRawHandleValues");
         }
+
+        // Configuration, HandleClarin, Handle service
+        loadServices();
 
         Context context = null;
 
-        try
-        {
-            if (theHandle == null)
-            {
+        try {
+            if (theHandle == null) {
                 throw new HandleException(HandleException.INTERNAL_ERROR);
             }
 
             String handle = Util.decodeString(theHandle);
-            log.info(String.format("Resolving [%s]", handle));
 
             context = new Context();
 
             DSpaceObject dso = null;
-            String url = HandleManager.resolveToURL(context, handle);
+            String url = handleClarinService.resolveToURL(context, handle);
+
+            boolean resolveMetadata = configurationService.getBooleanProperty("lr.pid.resolvemetadata", true);
             if (resolveMetadata) {
-                dso = HandleManager.resolveToObject(context, handle);
+                dso = handleClarinService.resolveToObject(context, handle);
             }
 
-            if (url == null)
-            {
+            if (Objects.isNull(url)) {
                 // try with old prefix
-                
-                String[] handle_parts = ConfigurableHandleIdentifierProvider.splitHandle(handle);
+
+                String[] handle_parts = handleClarinService.splitHandle(handle);
 
                 String[] alternativePrefixes = PIDConfiguration.getAlternativePrefixes(handle_parts[0]);
-                
-                for ( String alternativePrefix : alternativePrefixes )
-                {
-                    String alternativeHandle = ConfigurableHandleIdentifierProvider.completeHandle(
-                        alternativePrefix, handle_parts[1]);
-                    url = HandleManager.resolveToURL(context, alternativeHandle);
-                    if ( null != url ) {
+
+                for (String alternativePrefix : alternativePrefixes) {
+                    String alternativeHandle = handleClarinService.completeHandle(
+                            alternativePrefix, handle_parts[1]);
+                    url = handleClarinService.resolveToURL(context, alternativeHandle);
+                    if (Objects.nonNull(url)) {
                         break;
                     }
                 }
-                
+
                 // still no match
-                if ( null == url ) {
+                if (Objects.isNull(url)) {
                     // <UFAL>
-                    log.warn(String.format("Unable to resolve [%s]", handle));          
+                    log.warn(String.format("Unable to resolve [%s]", handle));
                     // </UFAL>
                     return null;
                 }
             }
 
             ResolvedHandle rh = null;
-            if (url.startsWith(magicBean)) {
-                String[] splits = url.split(magicBean,10);
+            if (url.startsWith(MAGIC_BEAN)) {
+                String[] splits = url.split(MAGIC_BEAN, 10);
+                if (splits.length < 8) {
+                    throw new RuntimeException("Cannot resolve external handle with magicLindat string, " +
+                            "because the external handle do not have enough information.");
+                }
                 url = splits[splits.length - 1];
-                    // EMPTY, String title, String repository, String submitdate, String reportemail, String dataset_name, String dataset_version, String query, token is splits[8] but don't show that
-                    rh = new ResolvedHandle(url, splits[1], splits[2], splits[3], splits[4], splits[5], splits[6], splits[7]);
-            }else {
+                // EMPTY, String title, String repository, String submitdate, String reportemail,
+                // String dataset_name, String dataset_version, String query, token is splits[8] but don't show that
+                rh = new ResolvedHandle(url, splits[1], splits[2], splits[3], splits[4], splits[5], splits[6],
+                        splits[7]);
+            } else {
                 rh = new ResolvedHandle(url, dso);
             }
             log.info(String.format("Handle [%s] resolved to [%s]", handle, url));
-            if(HandleManager.isDead(context, handle)){
+            if (handleClarinService.isDead(context, handle)) {
                 //dead_since
-                String deadSince = HandleManager.getDeadSince(context, handle);
+                String deadSince = handleClarinService.getDeadSince(context, handle);
                 rh.setDead(handle, deadSince);
             }
 
             return rh.toRawValue();
-        }
-        catch (HandleException he)
-        {
+        } catch (HandleException he) {
             throw he;
-        }
-        catch (Exception e)
-        {
-            log.error("Exception in getRawHandleValues", e);
+        } catch (Exception e) {
+            if (log.isDebugEnabled()) {
+                log.debug("Exception in getRawHandleValues", e);
+            }
 
             // Stack loss as exception does not support cause
             throw new HandleException(HandleException.INTERNAL_ERROR);
-        }
-        finally
-        {
-            if (context != null)
-            {
-                try
-                {
+        } finally {
+            if (Objects.nonNull(context)) {
+                try {
                     context.complete();
-                }
-                catch (SQLException sqle)
-                {
+                } catch (SQLException sqle) {
+                    // ignore
                 }
             }
         }
@@ -334,93 +364,79 @@ public class HandlePlugin implements HandleStorage
 
     /**
      * Return true if we have this handle in storage.
-     * 
-     * @param theHandle
-     *            byte array representation of handle
+     *
+     * @param theHandle byte array representation of handle
      * @return True if we have this handle in storage
-     * @exception HandleException
-     *                If an error occurs while calling the Handle API.
+     * @throws HandleException If an error occurs while calling the Handle API.
      */
-    public boolean haveNA(byte[] theHandle) throws HandleException
-    {
-        if (log.isInfoEnabled())
-        {
-            log.debug("Called haveNA");
+    @Override
+    public boolean haveNA(byte[] theHandle) throws HandleException {
+        if (log.isInfoEnabled()) {
+            log.info("Called haveNA");
         }
+        loadServices();
 
         /*
          * Naming authority Handles are in the form: 0.NA/1721.1234
-         * 
+         *
          * 0.NA is basically the naming authority for naming authorities. For
          * this simple implementation, we will just check that the prefix
          * configured in dspace.cfg is the one in the request, returning true if
          * this is the case, false otherwise.
-         * 
+         *
          * FIXME: For more complex Handle situations, this will need enhancing.
          */
 
-        // This parameter allows the dspace handle server to be capable of having multiple 
-        // name authorities assigned to it. So long as the handle table the alternative prefixes 
-        // defined the dspace will answer for those handles prefixes. This is not ideal and only 
-        // works if the dspace instances assumes control over all the items in a prefix, but it 
-        // does allow the admin to merge together two previously separate dspace instances each 
+        // This parameter allows the dspace handle server to be capable of having multiple
+        // name authorities assigned to it. So long as the handle table the alternative prefixes
+        // defined the dspace will answer for those handles prefixes. This is not ideal and only
+        // works if the dspace instances assumes control over all the items in a prefix, but it
+        // does allow the admin to merge together two previously separate dspace instances each
         // with their own prefixes and have the one instance handle both prefixes. In this case
-        // all new handle would be given a unified prefix but all old handles would still be 
+        // all new handle would be given a unified prefix but all old handles would still be
         // resolvable.
-        try{
-	        if (ConfigurationManager.getBooleanProperty("handle.plugin.checknameauthority", true))
-	        {
-		        // First, construct a string representing the naming authority Handle
-		        // we'd expect.
-		        String expected = "0.NA/" + HandleManager.getPrefix();
+        if (configurationService.getBooleanProperty("handle.plugin.checknameauthority", true)) {
+            // First, construct a string representing the naming authority Handle
+            // we'd expect.
+            String expected = "0.NA/" + handleService.getPrefix();
 
-		        // Which authority does the request pertain to?
-		        String received = Util.decodeString(theHandle);
+            // Which authority does the request pertain to?
+            String received = Util.decodeString(theHandle);
 
-		        // Return true if they match
-		        return expected.equals(received);
-	        }
-	        else 
-	        {
-	        	return true;
-	        }
-        }catch(NullPointerException e) {
-        	return true;
+            // Return true if they match
+            return expected.equals(received);
+        } else {
+            return true;
         }
     }
 
     /**
      * Return all handles in local storage which start with the naming authority
      * handle.
-     * 
-     * @param theNAHandle
-     *            byte array representation of naming authority handle
+     *
+     * @param theNAHandle byte array representation of naming authority handle
      * @return All handles in local storage which start with the naming
-     *         authority handle.
-     * @exception HandleException
-     *                If an error occurs while calling the Handle API.
+     * authority handle.
+     * @throws HandleException If an error occurs while calling the Handle API.
      */
+    @Override
     public Enumeration getHandlesForNA(byte[] theNAHandle)
-            throws HandleException
-    {
+            throws HandleException {
         String naHandle = Util.decodeString(theNAHandle);
-
-        if (log.isInfoEnabled())
-        {
-            log.debug("Called getHandlesForNA for NA " + naHandle);
+        loadServices();
+        if (log.isInfoEnabled()) {
+            log.info("Called getHandlesForNA for NA " + naHandle);
         }
 
         Context context = null;
 
-        try
-        {
+        try {
             context = new Context();
 
-            List<String> handles = HandleManager.getHandlesForPrefix(context, naHandle);
+            List<String> handles = handleService.getHandlesForPrefix(context, naHandle);
             List<byte[]> results = new LinkedList<byte[]>();
 
-            for (Iterator<String> iterator = handles.iterator(); iterator.hasNext();)
-            {
+            for (Iterator<String> iterator = handles.iterator(); iterator.hasNext(); ) {
                 String handle = iterator.next();
 
                 // Transforms to byte array
@@ -428,43 +444,152 @@ public class HandlePlugin implements HandleStorage
             }
 
             return Collections.enumeration(results);
-        }
-        catch (SQLException sqle)
-        {
-            log.error("Exception in getHandlesForNA", sqle);
+        } catch (SQLException sqle) {
+            if (log.isDebugEnabled()) {
+                log.debug("Exception in getHandlesForNA", sqle);
+            }
 
             // Stack loss as exception does not support cause
             throw new HandleException(HandleException.INTERNAL_ERROR);
-        }
-        finally
-        {
-            if (context != null)
-            {
-                try
-                {
+        } finally {
+            if (context != null) {
+                try {
                     context.complete();
-                }
-                catch (SQLException sqle)
-                {
+                } catch (SQLException sqle) {
+                    // ignore
                 }
             }
         }
     }
 
+    /**
+     * Initialize Handle, Configuration and Item service
+     */
+    private static void loadServices() {
+        // services are loaded
+        if (Objects.isNull(handleService)) {
+            handleService = HandleServiceFactory.getInstance().getHandleService();
+        }
+
+        if (Objects.isNull(configurationService)) {
+            configurationService = DSpaceServicesFactory.getInstance().getConfigurationService();
+        }
+
+        if (Objects.isNull(itemService)) {
+            itemService = ContentServiceFactory.getInstance().getItemService();
+        }
+
+        if (Objects.isNull(handleClarinService)) {
+            handleClarinService = ContentServiceFactory.getInstance().getHandleClarinService();
+        }
+    }
+
+    /**
+     * Load the repository email from the configuration. The mail is in the property `help.mail`.
+     *
+     * @return configured repository mail as String or return null if it is not configured
+     */
+    public static String getRepositoryEmail() {
+        if (Objects.nonNull(repositoryEmail)) {
+            return repositoryEmail;
+        }
+
+        // Handle and Configuration Service
+        loadServices();
+
+        // Cannot load services
+        if (Objects.isNull(configurationService)) {
+            return null;
+        }
+
+        String email = configurationService.getProperty(
+                "help.mail");
+
+        // the email is not configured
+        if (Objects.isNull(email)) {
+            repositoryEmail = null;
+            return repositoryEmail;
+        }
+
+        repositoryEmail = email.trim();
+        return repositoryEmail;
+    }
+
+    /**
+     * Load the repository name from the configuration. The name is in the property `dspace.name`.
+     *
+     * @return configured repository name as String or return null if it is not configured
+     */
+    public static String getRepositoryName() {
+        if (Objects.nonNull(repositoryName)) {
+            return repositoryName;
+        }
+
+        // Handle and Configuration Service
+        loadServices();
+
+        // Cannot load services
+        if (Objects.isNull(configurationService)) {
+            return null;
+        }
+
+        String name = configurationService.getProperty(
+                "dspace.name");
+        if (Objects.isNull(name)) {
+            repositoryName = null;
+            return repositoryName;
+        }
+
+        repositoryName = name.trim();
+        return repositoryName;
+    }
+
+    /**
+     * Load the canonical handle prefix from the configuration. The prefix is in the property `handle.canonical.prefix`.
+     *
+     * @return canonical handle prefix as String or return DEFAULT_CANONICAL_HANDLE_PREFIX = `http://hdl.handle.net/`
+     */
+    public static String getCanonicalHandlePrefix() {
+        if (Objects.nonNull(canonicalHandlePrefix)) {
+            return canonicalHandlePrefix;
+        }
+        // Handle and Configuration Service
+        loadServices();
+
+        // Cannot load services
+        if (Objects.isNull(configurationService)) {
+            canonicalHandlePrefix = DEFAULT_CANONICAL_HANDLE_PREFIX;
+        } else {
+            canonicalHandlePrefix = configurationService.getProperty(
+                    "handle.canonical.prefix", DEFAULT_CANONICAL_HANDLE_PREFIX);
+        }
+
+        return canonicalHandlePrefix;
+    }
+
     public static Map<String, String> extractMetadata(DSpaceObject dso) {
         Map<String, String> map = new LinkedHashMap<>();
-        if (null != dso) {
-            Metadatum[] mds = dso.getMetadata("dc", "title", null, Item.ANY);
-            if (0 < mds.length) {
-                map.put(AbstractPIDService.HANDLE_FIELDS.TITLE.toString(), mds[0].value);
-            }
-            map.put(AbstractPIDService.HANDLE_FIELDS.REPOSITORY.toString(), repositoryName);
-            mds = dso.getMetadata("dc", "date", "accessioned", Item.ANY);
-            if (0 < mds.length) {
-                map.put(AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString(), mds[0].value);
-            }
-            map.put(AbstractPIDService.HANDLE_FIELDS.REPORTEMAIL.toString(), repositoryEmail);
+        if (Objects.isNull(dso)) {
+            return map;
         }
+
+        if (!(dso instanceof Item)) {
+            return map;
+        }
+        // load ItemService
+        loadServices();
+
+        // load the DSpaceObject metadata
+        List<MetadataValue> mds = itemService.getMetadataByMetadataString((Item) dso, "dc.title");
+        if (CollectionUtils.isNotEmpty(mds)) {
+            map.put(AbstractPIDService.HANDLE_FIELDS.TITLE.toString(), mds.get(0).getValue());
+        }
+        map.put(AbstractPIDService.HANDLE_FIELDS.REPOSITORY.toString(), getRepositoryName());
+        mds = itemService.getMetadataByMetadataString((Item) dso, "dc.date.accessioned");
+        if (CollectionUtils.isNotEmpty(mds)) {
+            map.put(AbstractPIDService.HANDLE_FIELDS.SUBMITDATE.toString(), mds.get(0).getValue());
+        }
+        map.put(AbstractPIDService.HANDLE_FIELDS.REPORTEMAIL.toString(), getRepositoryEmail());
         return map;
     }
 }
@@ -474,7 +599,8 @@ class ResolvedHandle {
     private int idx = -1;
     private int timestamp = 100;
 
-    public ResolvedHandle(String url, String title, String repository, String submitdate, String reportemail, String datasetName, String datasetVersion, String query) {
+    public ResolvedHandle(String url, String title, String repository, String submitdate, String reportemail,
+                          String datasetName, String datasetVersion, String query) {
         init(url, title, repository, submitdate, reportemail, datasetName, datasetVersion, query);
     }
 
@@ -502,10 +628,10 @@ class ResolvedHandle {
         init(url, title, repository, submitdate, reportemail);
     }
 
-    private <K,V> V getOrDefault(Map<K,V> map, K key, V defaultValue){
-        if(map.containsKey(key)){
+    private <K, V> V getOrDefault(Map<K, V> map, K key, V defaultValue) {
+        if (map.containsKey(key)) {
             return map.get(key);
-        }else{
+        } else {
             return defaultValue;
         }
     }
@@ -514,17 +640,18 @@ class ResolvedHandle {
         init(url, title, repository, submitdate, reportemail, null, null, null);
     }
 
-    private void init(String url, String title, String repository, String submitdate, String reportemail, String datasetName, String datasetVersion, String query) {
+    private void init(String url, String title, String repository, String submitdate, String reportemail,
+                      String datasetName, String datasetVersion, String query) {
         idx = 11800;
         values = new LinkedList<>();
         //set timestamp, use submitdate for now
-        if(submitdate != null){
+        if (submitdate != null) {
             try {
                 long stamp = new DCDate(submitdate).toDate().getTime() / 1000;
                 if (stamp < Integer.MAX_VALUE && stamp > Integer.MIN_VALUE) {
                     timestamp = (int) stamp;
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 //in case the submitdate is malformed, ie. some junk was in the url we split
                 timestamp = 100;
             }
@@ -598,8 +725,7 @@ class ResolvedHandle {
     public byte[][] toRawValue() throws HandleException {
         byte[][] rawValues = new byte[values.size()][];
 
-        for (int i = 0; i < values.size(); i++)
-        {
+        for (int i = 0; i < values.size(); i++) {
             HandleValue hvalue = values.get(i);
 
             rawValues[i] = new byte[Encoder.calcStorageSize(hvalue)];
@@ -610,8 +736,8 @@ class ResolvedHandle {
 
     public void setDead(String handle, String deadSince) {
         //find URL field
-        for(HandleValue hv : values){
-            if(hv.hasType(Util.encodeString("URL"))){
+        for (HandleValue hv : values) {
+            if (hv.hasType(Util.encodeString("URL"))) {
                 //duplicate old url as last working URL
                 HandleValue deadURL = hv.duplicate();
                 deadURL.setType(Util.encodeString("ORIG_URL"));
@@ -622,7 +748,7 @@ class ResolvedHandle {
                 break;
             }
         }
-        if(deadSince != null){
+        if (deadSince != null) {
             setValue("DEAD_SINCE", deadSince);
         }
     }

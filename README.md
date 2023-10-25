@@ -1,60 +1,131 @@
-[![Build Status](https://travis-ci.org/ufal/clarin-dspace.svg?branch=lindat)](https://travis-ci.org/ufal/clarin-dspace)
-# clarin-dspace repository
 
-* developed at: [Institute of Formal and Applied Linguistics, Charles University](http://ufal.mff.cuni.cz/)
-* primary deploy at: https://lindat.mff.cuni.cz/repository/xmlui/
-* contact: https://lindat.mff.cuni.cz/en/about-lindat-clarin or better clarin's slack https://clarineric.slack.com/messages/dspace/
-* wiki: https://github.com/ufal/lindat-dspace/wiki
-* release notes: [Release Notes](https://github.com/ufal/lindat-dspace/wiki/ReleaseNotes)
+[![codecov](https://codecov.io/gh/dataquest-dev/DSpace/branch/dtq-dev/graph/badge.svg?token=YI6CJNFI2H)](https://codecov.io/gh/dataquest-dev/DSpace)
 
-# clarin-dspace deployments
+# DSpace
 
-* LINDAT/CLARIAH-CZ: https://lindat.mff.cuni.cz/repository/xmlui/
-* CLARINO: https://repo.clarino.uib.no/xmlui/
-* CLARIN.SI: https://www.clarin.si/repository/xmlui/
-* CLARIN-PL: https://clarin-pl.eu/dspace/
-* CLARIN-IT
-    * ILC4CLARIN: https://dspace-clarin-it.ilc.cnr.it/repository/xmlui/
-    * ERCC: https://clarin.eurac.edu/repository/xmlui/
-* CLARIN-ES:
-* CLARIN-LT: https://clarin.vdu.lt/xmlui/
-* SWE-CLARIN: https://repo.spraakbanken.gu.se/xmlui/
-* CLARIN-DK: https://repository.clarin.dk/repository/xmlui/
-* Árni Magnússon Institute for Icelandic Studies (CLARIN-IS): https://repository.clarin.is/repository/xmlui/
-* University of Oxford - Oxford Text Archive: https://ota.bodleian.ox.ac.uk/repository/xmlui/
-* RDA EU – ENVRI Summer School:
-* Centrum orální historie ÚSD AV ČR:
-* Národní filmový archiv:
-* Ústav pro studium totalitních režimů:
+[DSpace Documentation](https://wiki.lyrasis.org/display/DSDOC/) |
+[DSpace Releases](https://github.com/DSpace/DSpace/releases) |
+[DSpace Wiki](https://wiki.lyrasis.org/display/DSPACE/Home) |
+[Support](https://wiki.lyrasis.org/display/DSPACE/Support)
 
-There are several instances in other institutes which will join the list shortly.
-*If you are using or plan to use clarin-dspace, please get in touch.*
+## Overview
 
+DSpace open source software is a turnkey repository application used by more than
+2,000 organizations and institutions worldwide to provide durable access to digital resources.
+For more information, visit http://www.dspace.org/
 
-# Installation instructions
+DSpace consists of both a Java-based backend and an Angular-based frontend.
 
-First, ensure that all of the [requirements](https://github.com/ufal/clarin-dspace/wiki/Installation----Prerequisites) are met.
-Afterwards, [install repository](https://github.com/ufal/clarin-dspace/wiki/Installation)
+* Backend (this codebase) provides a REST API, along with other machine-based interfaces (e.g. OAI-PMH, SWORD, etc)
+    * The REST Contract is at https://github.com/DSpace/RestContract
+* Frontend (https://github.com/DSpace/dspace-angular/) is the User Interface built on the REST API
 
-If you are familiar with vagrant and puppet then go directly to
-[shell script executed by Vagrant](https://github.com/ufal/lindat-repository-vagrant/blob/master/Projects/setup.lindat.sh).
-Optionally, you can also inspect our [travis integration](https://github.com/ufal/clarin-dspace/blob/lindat/.travis.yml).
+Prior versions of DSpace (v6.x and below) used two different UIs (XMLUI and JSPUI). Those UIs are no longer supported in v7 (and above).
+* A maintenance branch for older versions is still available, see `dspace-6_x` for 6.x maintenance.
 
-Our colleagues at the [ERCC](https://clarin.eurac.edu) have developed a dockerized version of clarin-dspace. It can be found on their [gitlab](https://gitlab.inf.unibz.it/commul/docker/clarin-dspace).
+## Downloads
 
-## Other projects used by clarin-dspace
+* Backend (REST API): https://github.com/DSpace/DSpace/releases
+* Frontend (User Interface): https://github.com/DSpace/dspace-angular/releases
 
-* https://github.com/ufal/lindat-common
-* https://github.com/ufal/lindat-aai-discovery
+## Documentation / Installation
 
-Note: You should fork these projectbecause they will very likely require changes specific to your deployment.
+Documentation for each release may be viewed online or downloaded via our [Documentation Wiki](https://wiki.lyrasis.org/display/DSDOC/).
 
+The latest DSpace Installation instructions are available at:
+https://wiki.lyrasis.org/display/DSDOC7x/Installing+DSpace
 
-## Projects somehow related to clarin-dspace repository
+Please be aware that, as a Java web application, DSpace requires a database (PostgreSQL)
+and a servlet container (usually Tomcat) in order to function.
+More information about these and all other prerequisites can be found in the Installation instructions above.
 
-* https://github.com/ufal/lindat-repository-vagrant
-* https://github.com/ufal/public-license-selector
-* https://github.com/ufal/lr-b2safe-core
-* https://github.com/ufal/lr-b2safe-dspace
-* https://github.com/ufal/lindat-aai-info
-* https://github.com/ufal/lindat-aai-shibbie
+## Running DSpace 7 in Docker
+
+NOTE: At this time, we do not have production-ready Docker images for DSpace.
+That said, we do have quick-start Docker Compose scripts for development or testing purposes.
+
+See [Running DSpace 7 with Docker Compose](dspace/src/main/docker-compose/README.md)
+
+## Contributing
+
+See [Contributing documentation](CONTRIBUTING.md)
+
+## Getting Help
+
+DSpace provides public mailing lists where you can post questions or raise topics for discussion.
+We welcome everyone to participate in these lists:
+
+* [dspace-community@googlegroups.com](https://groups.google.com/d/forum/dspace-community) : General discussion about DSpace platform, announcements, sharing of best practices
+* [dspace-tech@googlegroups.com](https://groups.google.com/d/forum/dspace-tech) : Technical support mailing list. See also our guide for [How to troubleshoot an error](https://wiki.lyrasis.org/display/DSPACE/Troubleshoot+an+error).
+* [dspace-devel@googlegroups.com](https://groups.google.com/d/forum/dspace-devel) : Developers / Development mailing list
+
+Great Q&A is also available under the [DSpace tag on Stackoverflow](http://stackoverflow.com/questions/tagged/dspace)
+
+Additional support options are at https://wiki.lyrasis.org/display/DSPACE/Support
+
+DSpace also has an active service provider network. If you'd rather hire a service provider to
+install, upgrade, customize or host DSpace, then we recommend getting in touch with one of our
+[Registered Service Providers](http://www.dspace.org/service-providers).
+
+## Issue Tracker
+
+DSpace uses GitHub to track issues:
+* Backend (REST API) issues: https://github.com/DSpace/DSpace/issues
+* Frontend (User Interface) issues: https://github.com/DSpace/dspace-angular/issues
+
+## Testing
+
+### Running Tests
+
+By default, in DSpace, Unit Tests and Integration Tests are disabled. However, they are
+run automatically by [GitHub Actions](https://github.com/DSpace/DSpace/actions?query=workflow%3ABuild) for all Pull Requests and code commits.
+
+* How to run both Unit Tests (via `maven-surefire-plugin`) and Integration Tests (via `maven-failsafe-plugin`):
+  ```
+  mvn install -DskipUnitTests=false -DskipIntegrationTests=false
+  ```
+* How to run _only_ Unit Tests:
+  ```
+  mvn test -DskipUnitTests=false
+  ```
+* How to run a *single* Unit Test
+  ```
+  # Run all tests in a specific test class
+  # NOTE: failIfNoTests=false is required to skip tests in other modules
+  mvn test -DskipUnitTests=false -Dtest=[full.package.testClassName] -DfailIfNoTests=false
+
+  # Run one test method in a specific test class
+  mvn test -DskipUnitTests=false -Dtest=[full.package.testClassName]#[testMethodName] -DfailIfNoTests=false
+  ```
+* How to run _only_ Integration Tests
+  ```
+  mvn install -DskipIntegrationTests=false
+  ```
+* How to run a *single* Integration Test
+  ```
+  # Run all integration tests in a specific test class
+  # NOTE: failIfNoTests=false is required to skip tests in other modules
+  mvn install -DskipIntegrationTests=false -Dit.test=[full.package.testClassName] -DfailIfNoTests=false
+
+  # Run one test method in a specific test class
+  mvn install -DskipIntegrationTests=false -Dit.test=[full.package.testClassName]#[testMethodName] -DfailIfNoTests=false
+  ```
+* How to run only tests of a specific DSpace module
+  ```
+  # Before you can run only one module's tests, other modules may need installing into your ~/.m2
+  cd [dspace-src]
+  mvn clean install
+
+  # Then, move into a module subdirectory, and run the test command
+  cd [dspace-src]/dspace-server-webapp
+  # Choose your test command from the lists above
+  ```
+
+## License
+
+DSpace source code is freely available under a standard [BSD 3-Clause license](https://opensource.org/licenses/BSD-3-Clause).
+The full license is available in the [LICENSE](LICENSE) file or online at http://www.dspace.org/license/
+
+DSpace uses third-party libraries which may be distributed under different licenses. Those licenses are listed
+in the [LICENSES_THIRD_PARTY](LICENSES_THIRD_PARTY) file.
+ 

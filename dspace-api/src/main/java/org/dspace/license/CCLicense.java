@@ -7,60 +7,58 @@
  */
 package org.dspace.license;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+
+import java.util.List;
 
 /**
  * @author wbossons
- *
  */
 public class CCLicense {
 
-	private String licenseName;
-	private String licenseId;
-	private int order = 0;
+    private String licenseName;
+    private String licenseId;
+    private List<CCLicenseField> ccLicenseFieldList;
 
-	public CCLicense() {
-		super();
-	}
+    public CCLicense() {
+        super();
+    }
 
-	public CCLicense(String licenseId, String licenseName, int order) {
-		super();
-		this.licenseId 		= licenseId;
-		this.licenseName = licenseName;
-		this.order 			= order;
-	}
+    public CCLicense(String licenseId, String licenseName, List<CCLicenseField> ccLicenseFieldList) {
+        super();
+        this.licenseId = licenseId;
+        this.licenseName = licenseName;
+        this.ccLicenseFieldList = ccLicenseFieldList;
+    }
 
-	public String getLicenseName() {
-		return licenseName;
-	}
+    public String getLicenseName() {
+        return licenseName;
+    }
 
-	public void setLicenseName(String licenseName) {
-		this.licenseName = licenseName;
-	}
+    public void setLicenseName(String licenseName) {
+        this.licenseName = licenseName;
+    }
 
-	public String getLicenseId() {
-		return licenseId;
-	}
+    public String getLicenseId() {
+        return licenseId;
+    }
 
-	public void setLicenseId(String licenseId) {
-		this.licenseId = licenseId;
-	}
+    public void setLicenseId(String licenseId) {
+        this.licenseId = licenseId;
+    }
 
-	public int getOrder() {
-		return this.order;
-	}
+    /**
+     * Gets the list of CC License Fields
+     * @return the list of CC License Fields
+     */
+    public List<CCLicenseField> getCcLicenseFieldList() {
+        return ccLicenseFieldList;
+    }
 
-	public void setOrder(int order) {
-		this.order = order;
-	}
-
-
+    /**
+     * Sets the list of CC License Fields
+     * @param ccLicenseFieldList
+     */
+    public void setCcLicenseFieldList(final List<CCLicenseField> ccLicenseFieldList) {
+        this.ccLicenseFieldList = ccLicenseFieldList;
+    }
 }

@@ -7,7 +7,12 @@
  */
 package org.dspace.checker;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.dspace.checker.factory.CheckerServiceFactory;
+import org.dspace.checker.service.ChecksumHistoryService;
+import org.dspace.content.Bitstream;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.BitstreamService;
 import org.dspace.core.Context;
 import org.dspace.event.Consumer;
 import org.dspace.event.Event;
@@ -17,55 +22,66 @@ import org.dspace.event.Event;
  *
  * @version $Revision$
  */
-public class CheckerConsumer implements Consumer
-{
-    /** log4j logger */
-    private static Logger log = Logger.getLogger(CheckerConsumer.class);
-    
-    private BitstreamInfoDAO bitstreamInfoDAO = new BitstreamInfoDAO();
-    
+public class CheckerConsumer implements Consumer {
+    /**
+     * log4j logger
+     */
+    private static Logger log = org.apache.logging.log4j.LogManager.getLogger(CheckerConsumer.class);
+
+    protected ChecksumHistoryService checksumHistoryService = CheckerServiceFactory.getInstance()
+                                                                                   .getChecksumHistoryService();
+    protected BitstreamService bitstreamService = ContentServiceFactory.getInstance().getBitstreamService();
+
     /**
      * Initialize - allocate any resources required to operate.
      * Called at the start of ANY sequence of event consume() calls.
+     *
+     * @throws Exception if error
      */
-    public void initialize() throws Exception
-    {
-    	// no-op
+    @Override
+    public void initialize() throws Exception {
+        // no-op
     }
-    
+
     /**
      * Consume an event
      *
-     * @param ctx       the execution context object
-     *
+     * @param ctx   the execution context object
      * @param event the content event
+     * @throws Exception if error
      */
-    public void consume(Context ctx, Event event) throws Exception
-    {
-        
-    	if (event.getEventType() == Event.DELETE)
-    	{
+    @Override
+    public void consume(Context ctx, Event event) throws Exception {
+
+        if (event.getEventType() == Event.DELETE) {
+            Bitstream bitstream = bitstreamService.find(ctx, event.getSubjectID());
             log.debug("Attempting to remove Checker Info");
-    	    bitstreamInfoDAO.deleteBitstreamInfoWithHistory(event.getSubjectID());
+            checksumHistoryService.deleteByBitstream(ctx, bitstream);
             log.debug("Completed removing Checker Info");
-    	}
+        }
     }
-   
+
     /**
      * Signal that there are no more events queued in this
      * event stream.
+     *
+     * @param ctx Context
+     * @throws Exception if error
      */
-    public void end(Context ctx) throws Exception
-    {
-    	// no-op
+    @Override
+    public void end(Context ctx) throws Exception {
+        // no-op
     }
-     
+
     /**
      * Finish - free any allocated resources.
      * Called when consumer is being released
+     *
+     * @param ctx Context
+     * @throws Exception if error
      */
-    public void finish(Context ctx) throws Exception
-    {
-    	// no-op
+    @Override
+    public void finish(Context ctx) throws Exception {
+        // no-op
     }
 }

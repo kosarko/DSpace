@@ -1,49 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-
-    The contents of this file are subject to the license and copyright
-    detailed in the LICENSE and NOTICE files at the root of the source
-    tree and available online at
-
-    http://www.dspace.org/license/
-
-	Developed by DSpace @ Lyncode <dspace@lyncode.com>
- -->
 <Configuration indented="false" maxListIdentifiersSize="100" maxListRecordsSize="100"
-               maxListSetsSize="100" stylesheet="static/style.xsl"
-               xmlns="http://www.lyncode.com/XOAIConfiguration">
+    maxListSetsSize="100" stylesheet="static/style.xsl" xmlns="http://www.lyncode.com/XOAIConfiguration">
 
     <Contexts>
         <Context baseurl="request" name="Default Context">
+            <!-- Restrict access to hidden items by default -->
             <Filter ref="defaultFilter"/>
+
             <Format ref="oaidc"/>
             <Format ref="mets"/>
+            <Format ref="cmdi" />
+            <Format ref="oai_metasharev2" />
+            <Format ref="olac" />
+            <Format ref="xoai"/>
+            <Format ref="didl"/>
             <Format ref="dim"/>
             <Format ref="ore"/>
+            <Format ref="rdf"/>
+            <Format ref="etdms"/>
             <Format ref="mods"/>
-			<!--Format ref="qdc" /-->
-			<Format ref="bibtex" />
-			<Format ref="oai_metasharev2" />
-			<Format ref="cmdi" />
-			<Format ref="olac" />
-			<Format ref="html" />
-            <Format ref="elg" />
+            <Format ref="qdc"/>
+            <Format ref="marc"/>
+            <Format ref="uketd_dc"/>
+            <Format ref="bibtex" />
+            <!--<Format ref="junii2" />-->
             <Description>
                 This is the default context of the DSpace OAI-PMH data provider.
             </Description>
         </Context>
 
-		<Context baseurl="openaire_data" name="OpenAIRE data Context">
-		  <!-- <Transformer ref="openaireDataTransformer"/> -->
-		  <Filter ref="openaireFilter"/>
-		  <Set ref="openaireDataSet"/>
-		  <Format ref="oaidc"/>
-		  <Format ref="oai_datacite"/>
-		  <Description>
-		      This context exports items following the openaire data archive rules.
-		  </Description>
-		</Context>
-	</Contexts>
+        <!--
+            Driver Guidelines:
+
+            - https://guidelines.openaire.eu/en/latest/literature/use_of_oai_pmh.html
+         -->
+        <Context baseurl="driver" name="Driver Context">
+            <!-- Date format, field prefixes, etc are ensured by the transformer -->
+            <Transformer ref="driverTransformer"/>
+            <!-- The driver filter -->
+            <Filter ref="driverFilter"/>
+            <!-- Just an alias, in fact it returns all items within the driver context -->
+            <Set ref="driverSet"/>
+            <!-- Metadata Formats -->
+            <Format ref="oaidc"/>
+            <Format ref="mets"/>
+            <Format ref="didl"/>
+            <Description>
+                This context complies with Driver rules.
+            </Description>
+        </Context>
+
+        <!--
+            OpenAIRE Guidelines 3.0:
+
+            - https://guidelines.openaire.eu/
+
+            There is a limitation over the embargoedEndDate parameter:
+
+            - Predefined DSpace fields don't allow to set this up with a default.
+         -->
+        <Context baseurl="openaire" name="OpenAIRE Context">
+            <!-- Date format, field prefixes, etc are ensured by the transformer -->
+            <Transformer ref="openaireTransformer"/>
+            <!-- OpenAIRE filter -->
+            <Filter ref="openAireFilter"/>
+            <!-- Just an alias, in fact it returns all items within the driver context -->
+            <Set ref="openaireSet"/>
+            <!-- Metadata Formats -->
+            <Format ref="oaidc"/>
+            <Format ref="mets"/>
+            <Description>
+                This contexts complies with OpenAIRE Guidelines for Literature Repositories v3.0.
+            </Description>
+        </Context>
+
+        <!--
+            OpenAIRE Guidelines 4.0:
+
+            - https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/
+
+            There is a limitation over the embargoedEndDate parameter:
+
+            - Predefined DSpace fields don't allow to set this up with a default.
+         -->
+        <Context baseurl="openaire4" name="OpenAIRE 4 Context">
+            <!-- Date format, field prefixes, etc are ensured by the transformer -->
+            <Transformer ref="openaire4Transformer"/>
+            <!-- OpenAIRE filter -->
+            <Filter ref="openAIRE4Filter"/>
+            <!-- Metadata Formats -->
+            <Format ref="oaiopenaire"/>
+            <Description>
+                This contexts complies with OpenAIRE Guidelines for Literature Repositories v4.0.
+            </Description>
+        </Context>
+
+        <Context baseurl="openaire_data" name="OpenAIRE data Context">
+            <!-- <Transformer ref="openaireDataTransformer"/> -->
+            <Filter ref="openaireFilter_clarin"/>
+            <Set ref="openaireDataSet"/>
+            <Format ref="oaidc"/>
+            <Format ref="oai_datacite"/>
+            <Description>
+                This context exports items following the openaire data archive rules.
+            </Description>
+        </Context>
+
+    </Contexts>
 
 
     <Formats>
@@ -52,6 +115,19 @@
             <XSLT>metadataFormats/oai_dc.xsl</XSLT>
             <Namespace>http://www.openarchives.org/OAI/2.0/oai_dc/</Namespace>
             <SchemaLocation>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</SchemaLocation>
+        </Format>
+        <Format id="cmdi">
+            <Prefix>cmdi</Prefix>
+            <XSLT>metadataFormats/lindat_cmdi.xsl</XSLT>
+            <Namespace>http://www.clarin.eu/cmd/</Namespace>
+            <SchemaLocation>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1349361150622/xsd</SchemaLocation>
+<!--            <Filter ref="ExcludeItemsInComOrCol"/>-->
+        </Format>
+        <Format id="oai_metasharev2">
+            <Prefix>oai_metasharev2</Prefix>
+            <XSLT>metadataFormats/metasharev2.xsl</XSLT>
+            <Namespace>http://www.ilsp.gr/META-XMLSchema</Namespace>
+            <SchemaLocation>http://metashare.ilsp.gr/META-XMLSchema/v2.0/META-SHARE-Resource.xsd</SchemaLocation>
         </Format>
         <Format id="mets">
             <Prefix>mets</Prefix>
@@ -70,7 +146,8 @@
             <Prefix>didl</Prefix>
             <XSLT>metadataFormats/didl.xsl</XSLT>
             <Namespace>urn:mpeg:mpeg21:2002:02-DIDL-NS</Namespace>
-			<SchemaLocation>http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-21_schema_files/did/didl.xsd</SchemaLocation>
+            <SchemaLocation>http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-21_schema_files/did/didl.xsd
+            </SchemaLocation>
         </Format>
         <Format id="dim">
             <Prefix>dim</Prefix>
@@ -114,6 +191,12 @@
             <Namespace>http://www.loc.gov/MARC21/slim</Namespace>
             <SchemaLocation>http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd</SchemaLocation>
         </Format>
+        <Format id="olac">
+            <Prefix>olac</Prefix>
+            <XSLT>metadataFormats/olac.xsl</XSLT>
+            <Namespace>http://www.language-archives.org/OLAC/1.1/olac.xsd</Namespace>
+            <SchemaLocation>http://www.language-archives.org/OLAC/1.1/</SchemaLocation>
+        </Format>
         <Format id="uketd_dc">
             <Prefix>uketd_dc</Prefix>
             <XSLT>metadataFormats/uketd_dc.xsl</XSLT>
@@ -121,50 +204,33 @@
             <SchemaLocation>http://naca.central.cranfield.ac.uk/ethos-oai/2.0/uketd_dc.xsd</SchemaLocation>
             <Filter ref="uketdDcFilter"/>
         </Format>
-		<Format id="bibtex">
+        <Format id="bibtex">
 		    <Prefix>bibtex</Prefix>
 		    <XSLT>metadataFormats/bibtex.xsl</XSLT>
 		    <Namespace>http://lindat.mff.cuni.cz/ns/experimental/bibtex</Namespace>
 		    <SchemaLocation>http://lindat.mff.cuni.cz/schemas/experimental/bibtex.xsd</SchemaLocation>
         </Format>
-		<Format id="oai_metasharev2">
-		    <Prefix>oai_metasharev2</Prefix>
-		    <XSLT>metadataFormats/metasharev2.xsl</XSLT>
-		    <Namespace>http://www.ilsp.gr/META-XMLSchema</Namespace>
-		    <SchemaLocation>http://metashare.ilsp.gr/META-XMLSchema/v2.0/META-SHARE-Resource.xsd</SchemaLocation>
-		</Format>
-		<Format id="cmdi">
-		    <Prefix>cmdi</Prefix>
-		    <XSLT>metadataFormats/lindat_cmdi.xsl</XSLT>
-		    <Namespace>http://www.clarin.eu/cmd/</Namespace>
-		    <SchemaLocation>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1349361150622/xsd</SchemaLocation>
-            <Filter ref="ExcludeItemsInComOrCol"/>
-		</Format>
-        <Format id="olac">
-               <Prefix>olac</Prefix>
-               <XSLT>metadataFormats/olac.xsl</XSLT>
-               <Namespace>http://www.language-archives.org/OLAC/1.1/olac.xsd</Namespace>
-               <SchemaLocation>http://www.language-archives.org/OLAC/1.1/</SchemaLocation>
-		</Format>
-		<!-- openaire data must use oai_datacite prefix & schema -->
-		<Format id="oai_datacite">
-		       <Prefix>oai_datacite</Prefix>
-		       <XSLT>metadataFormats/datacite_openaire.xsl</XSLT>
-		       <Namespace>http://schema.datacite.org/oai/oai-1.1/</Namespace>
-		       <SchemaLocation>http://schema.datacite.org/oai/oai-1.1/oai.xsd</SchemaLocation>
-		</Format>
-		<Format id="html">
-		    <Prefix>html</Prefix>
-		    <XSLT>metadataFormats/html.xsl</XSLT>
-		    <Namespace>http://lindat.mff.cuni.cz/ns/experimental/html</Namespace>
-		    <SchemaLocation>http://lindat.mff.cuni.cz/schemas/experimental/html.xsd</SchemaLocation>
-		</Format>
-        <Format id="elg">
-            <Prefix>elg</Prefix>
-            <XSLT>metadataFormats/elg.xsl</XSLT>
-            <Namespace>http://w3id.org/meta-share/meta-share/</Namespace>
-            <SchemaLocation>http://w3id.org/meta-share/meta-share/ ../Schema/ELG-SHARE.xsd</SchemaLocation>
-            <Filter ref="elgFilter"/>
+        <Format id="junii2">
+            <Prefix>junii2</Prefix>
+            <XSLT>metadataFormats/junii2.xsl</XSLT>
+            <Namespace>http://irdb.nii.ac.jp/oai</Namespace>
+            <SchemaLocation>http://irdb.nii.ac.jp/oai/junii2-3-1.xsd</SchemaLocation>
+        </Format>
+        <!-- Metadata format based on the OpenAIRE 4.0 guidelines
+             https://openaire-guidelines-for-literature-repository-managers.readthedocs.io/en/v4.0.0/use_of_oai_pmh.html
+        -->
+        <Format id="oaiopenaire">
+            <Prefix>oai_openaire</Prefix>
+            <XSLT>metadataFormats/oai_openaire.xsl</XSLT>
+            <Namespace>http://namespace.openaire.eu/schema/oaire/</Namespace>
+            <SchemaLocation>https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd</SchemaLocation>
+        </Format>
+
+        <Format id="oai_datacite">
+            <Prefix>oai_datacite</Prefix>
+            <XSLT>metadataFormats/datacite_openaire.xsl</XSLT>
+            <Namespace>http://schema.datacite.org/oai/oai-1.1/</Namespace>
+            <SchemaLocation>http://schema.datacite.org/oai/oai-1.1/oai.xsd</SchemaLocation>
         </Format>
     </Formats>
 
@@ -175,25 +241,21 @@
         <Transformer id="openaireTransformer">
             <XSLT>transformers/openaire.xsl</XSLT>
         </Transformer>
+        <Transformer id="openaire4Transformer">
+            <XSLT>transformers/openaire4.xsl</XSLT>
+        </Transformer>
     </Transformers>
 
 
     <Filters>
-        <Filter id="openaireFilter">
+        <Filter id="openaireFilter_clarin">
             <Definition>
                                 <Custom ref="openaireRelationCondition"/>
             </Definition>
         </Filter>
         <Filter id="ExcludeItemsInComOrCol">
             <Definition>
-		<And>
-		    <LeftCondition>
-                	<Custom ref="excludeDhCom"/>
-		    </LeftCondition>
-		    <RightCondition>
-			<Custom ref="excludeTeachingCom"/>
-		    </RightCondition>
-		</And>
+                <Custom ref="cmdiExcludedComsOrCols"/>
             </Definition>
         </Filter>
 
@@ -205,6 +267,11 @@
                * AND Driver "open access" condition is specified
              This filter is only used in the DRIVER context ([oai]/driver)
         -->
+        <Filter id="ExcludeItemsInComOrCol">
+            <Definition>
+                <Custom ref="cmdiExcludedComsOrCols"/>
+            </Definition>
+        </Filter>
         <Filter id="driverFilter">
             <Definition>
                 <And>
@@ -260,19 +327,23 @@
                     <LeftCondition>
                         <And>
                             <LeftCondition>
-                                <Custom ref="titleExistsCondition"/>
+                                <And>
+                                    <LeftCondition>
+                                        <Custom ref="titleExistsCondition"/>
+                                    </LeftCondition>
+                                    <RightCondition>
+                                        <Custom ref="authorExistsCondition"/>
+                                    </RightCondition>
+                                </And>
                             </LeftCondition>
                             <RightCondition>
-                                <Custom ref="authorExistsCondition"/>
+                                <Custom ref="driverDocumentTypeCondition"/>
                             </RightCondition>
                         </And>
                     </LeftCondition>
                     <RightCondition>
-                        <And>
+                        <Or>
                             <LeftCondition>
-                                <Custom ref="driverDocumentTypeCondition"/>
-                            </LeftCondition>
-                            <RightCondition>
                                 <And>
                                     <LeftCondition>
                                         <Or>
@@ -285,11 +356,14 @@
                                         </Or>
                                     </LeftCondition>
                                     <RightCondition>
-                                        <Custom ref="openaireRelationCondition"/>
+                                        <Custom ref="driverAccessCondition"/>
                                     </RightCondition>
                                 </And>
+                            </LeftCondition>
+                            <RightCondition>
+                                <Custom ref="openaireRelationCondition"/>
                             </RightCondition>
-                        </And>
+                        </Or>
                     </RightCondition>
                 </And>
             </Definition>
@@ -308,47 +382,81 @@
             </Definition>
         </Filter>
 
-        <!-- Default filter for records returned by OAI-PMH. 
+        <!-- OpenAIRE4 filter for records returned by OAI-PMH.
              By default, return an Item record:
                 * If it is publicly accessible
-                * OR it has been withdrawn (in order to display a tombstone record).
+                * * OR it has been withdrawn (in order to display a tombstone record).
+                * AND doesn't have a dspace.entity.type field
+                * * OR the dspace.entity.type is a Publication
+                * limiting the results only to Publications as expected
+             This filter is used by the default context ([oai]/request).
+        -->
+        <Filter id="openAIRE4Filter">
+            <Definition>
+                <And>
+                    <LeftCondition>
+                        <Or>
+                            <LeftCondition>
+                                <Custom ref="itemAccessCondition"/>
+                            </LeftCondition>
+                            <RightCondition>
+                                <Custom ref="itemWithdrawnCondition"/>
+                            </RightCondition>
+                        </Or>
+                    </LeftCondition>
+                    <RightCondition>
+                        <Or>
+                            <LeftCondition>
+                                <Not>
+                                    <Condition>
+                                        <Custom ref="relationshipTypeExistsCondition"/>
+                                    </Condition>
+                                </Not>
+                            </LeftCondition>
+                            <RightCondition>
+                                <Custom ref="isPublicationEntityCondition"/>
+                            </RightCondition>
+                        </Or>
+                    </RightCondition>
+                </And>
+            </Definition>
+        </Filter>
+
+        <!-- Default filter for records returned by OAI-PMH.
+             By default, return an Item record:
+                * If it is publicly accessible
+                * * OR it has been withdrawn (in order to display a tombstone record).
+                * AND doesn't have a dspace.entity.type field
+                * * OR the dspace.entity.type is a Publication
+                * limiting the results only to Publications as expected
              This filter is used by the default context ([oai]/request).
         -->
         <Filter id="defaultFilter">
             <Definition>
-                <Or>
-                    <LeftCondition>
-                        <Custom ref="itemAccessCondition"/>
-                    </LeftCondition>
-                    <RightCondition>
-                        <Custom ref="itemWithdrawnCondition"/>
-                    </RightCondition>
-                </Or>
-            </Definition>
-        </Filter>
-
-        <Filter id="elgFilter">
-            <Definition>
                 <And>
                     <LeftCondition>
-                        <Custom ref="isLanguageResourceCondition"/>
-                    </LeftCondition>
-                    <RightCondition>
-                        <And>
+                        <Or>
                             <LeftCondition>
-                                <Custom ref="hasFilesCondition"/>
+                                <Custom ref="itemAccessCondition"/>
                             </LeftCondition>
                             <RightCondition>
-                                <Or>
-                                    <LeftCondition>
-                                        <Custom ref="hasMediaTypeCondition"/>
-                                    </LeftCondition>
-                                    <RightCondition>
-                                        <Custom ref="isToolCondition"/>
-                                    </RightCondition>
-                                </Or>
+                                <Custom ref="itemWithdrawnCondition"/>
                             </RightCondition>
-                        </And>
+                        </Or>
+                    </LeftCondition>
+                    <RightCondition>
+                        <Or>
+                            <LeftCondition>
+                                <Not>
+                                    <Condition>
+                                        <Custom ref="relationshipTypeExistsCondition"/>
+                                    </Condition>
+                                </Not>
+                            </LeftCondition>
+                            <RightCondition>
+                                <Custom ref="isPublicationEntityCondition"/>
+                            </RightCondition>
+                        </Or>
                     </RightCondition>
                 </And>
             </Definition>
@@ -404,6 +512,7 @@
                     <string>annotation</string>
                     <string>contributionToPeriodical</string>
                     <string>patent</string>
+                    <string>dataset</string>
                     <string>other</string>
                 </list>
             </Configuration>
@@ -417,8 +526,7 @@
             <Configuration>
                 <string name="field">dc.rights</string>
                 <string name="operator">contains</string>
-                <list>
-                    <string>open access</string>
+                <list name="values">
                     <string>openAccess</string>
                 </list>
             </Configuration>
@@ -448,56 +556,33 @@
             </Configuration>
         </CustomCondition>
 
-        <CustomCondition id="hasFilesCondition">
-            <Class>org.dspace.xoai.filter.DSpaceAtLeastOneMetadataFilter</Class>
-            <Configuration>
-                <string name="field">local.has.files</string>
-                <string name="operator">equal</string>
-                <string name="value">yes</string>
-            </Configuration>
-        </CustomCondition>
-
-        <CustomCondition id="hasMediaTypeCondition">
+        <!-- This condition determines if an Item has a "dspace.entity.type" -->
+        <CustomCondition id="relationshipTypeExistsCondition">
             <Class>org.dspace.xoai.filter.DSpaceMetadataExistsFilter</Class>
             <Configuration>
-                <string name="field">metashare.ResourceInfo#ContentInfo.mediaType</string>
+                <string name="field">dspace.entity.type</string>
             </Configuration>
         </CustomCondition>
 
-        <CustomCondition id="isToolCondition">
+        <!-- This condition determines if an Item has a "dspace.entity.type" field
+             specifying one of the valid DRIVER document types. -->
+        <CustomCondition id="isPublicationEntityCondition">
             <Class>org.dspace.xoai.filter.DSpaceAtLeastOneMetadataFilter</Class>
             <Configuration>
-                <string name="field">dc.type</string>
-                <string name="operator">equal</string>
-                <string name="value">toolService</string>
-            </Configuration>
-        </CustomCondition>
-
-        <CustomCondition id="isLanguageResourceCondition">
-            <Class>org.dspace.xoai.filter.DSpaceAtLeastOneMetadataFilter</Class>
-            <Configuration>
-                <string name="field">dc.type</string>
+                <string name="field">dspace.entity.type</string>
                 <string name="operator">equal</string>
                 <list name="values">
-                    <string>corpus</string>
-                    <string>lexicalConceptualResource</string>
-                    <string>languageDescription</string>
-                    <string>toolService</string>
+                    <string>Publication</string>
+                    <string>publication</string>
+                    <!-- and other alternative names for publications types -->
                 </list>
             </Configuration>
         </CustomCondition>
 
-        <CustomCondition id="excludeDhCom">
-            <Class>cz.cuni.mff.ufal.dspace.xoai.filter.ColComFilter</Class>
+        <CustomCondition id="cmdiExcludedComsOrCols">
+            <Class>org.dspace.xoai.filter.ColComFilter</Class>
             <Configuration>
-                <string name="handle">20.500.12800/1</string>
-            </Configuration>
-        </CustomCondition>
-
-        <CustomCondition id="excludeTeachingCom">
-            <Class>cz.cuni.mff.ufal.dspace.xoai.filter.ColComFilter</Class>
-            <Configuration>
-                <string name="handle">11234/5011</string>
+                <string name="handle">XXX</string>
             </Configuration>
         </CustomCondition>
     </Filters>
@@ -509,8 +594,8 @@
             <!-- Just an alias -->
         </Set>
         <Set id="openaireSet">
-            <Spec>ec_fundedresources</Spec>
-            <Name>EC_fundedresources set</Name>
+            <Spec>openaire</Spec>
+            <Name>OpenAIRE</Name>
             <!-- Just an alias -->
         </Set>
         <Set id="openaireDataSet">

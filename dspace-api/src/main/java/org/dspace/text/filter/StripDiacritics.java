@@ -9,19 +9,17 @@ package org.dspace.text.filter;
 
 /**
  * Strips decomposed diacritic characters from the supplied string
- * 
- * @author Graham Triggs
  *
+ * @author Graham Triggs
  */
-public class StripDiacritics implements TextFilter
-{
-    public String filter(String str)
-    {
+public class StripDiacritics implements TextFilter {
+    @Override
+    public String filter(String str) {
         return str.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 
-    public String filter(String str, String lang)
-    {
+    @Override
+    public String filter(String str, String lang) {
         return str.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 

@@ -7,21 +7,22 @@
  */
 package org.dspace.content;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.Locale;
-import org.dspace.AbstractUnitTest;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.* ;
-import static org.hamcrest.CoreMatchers.*;
 
 
 /**
  * Tests DCLanguageTest class
+ *
  * @author pvillega
  */
-public class DCLanguageTest extends AbstractUnitTest
-{
+public class DCLanguageTest {
 
     /**
      * Object to use in the tests
@@ -37,10 +38,7 @@ public class DCLanguageTest extends AbstractUnitTest
      * but no execution order is guaranteed
      */
     @Before
-    @Override
-    public void init()
-    {
-        super.init();
+    public void init() {
         dc = new DCLanguage("");
     }
 
@@ -52,19 +50,15 @@ public class DCLanguageTest extends AbstractUnitTest
      * but no execution order is guaranteed
      */
     @After
-    @Override
-    public void destroy()
-    {
+    public void destroy() {
         dc = null;
-        super.destroy();
     }
 
     /**
      * Test of DCLanguage constructor, of class DCLanguage.
      */
     @Test
-    public void testDCLanguage()
-    {
+    public void testDCLanguage() {
         dc = new DCLanguage(null);
         assertThat("testDCLanguage 0", dc.toString(), equalTo(""));
 
@@ -91,8 +85,7 @@ public class DCLanguageTest extends AbstractUnitTest
      * Test of toString method, of class DCLanguage.
      */
     @Test
-    public void testToString()
-    {
+    public void testToString() {
         dc = new DCLanguage(null);
         assertThat("testToString 0", dc.toString(), equalTo(""));
 
@@ -119,8 +112,7 @@ public class DCLanguageTest extends AbstractUnitTest
      * Test of setLanguage method, of class DCLanguage.
      */
     @Test
-    public void testSetLanguage()
-    {
+    public void testSetLanguage() {
         dc = new DCLanguage(null);
         assertThat("testSetLanguage 0", dc.toString(), equalTo(""));
 
@@ -147,8 +139,7 @@ public class DCLanguageTest extends AbstractUnitTest
      * Test of getDisplayName method, of class DCLanguage.
      */
     @Test
-    public void testGetDisplayName()
-    {
+    public void testGetDisplayName() {
         dc = new DCLanguage(null);
         assertThat("testGetDisplayName 0", dc.getDisplayName(), equalTo("N/A"));
 
@@ -157,14 +148,14 @@ public class DCLanguageTest extends AbstractUnitTest
 
         dc = new DCLanguage("other");
         assertThat("testGetDisplayName 2", dc.getDisplayName(),
-                equalTo("(Other)"));
+                   equalTo("(Other)"));
 
         dc = new DCLanguage("en");
         assertThat("testGetDisplayName 3", dc.getDisplayName(),
-                equalTo(new Locale("en","").getDisplayName()));
+                   equalTo(new Locale("en", "").getDisplayName()));
 
         dc = new DCLanguage("en_GB");
         assertThat("testGetDisplayName 4", dc.getDisplayName(),
-                equalTo(new Locale("en","GB").getDisplayName()));
+                   equalTo(new Locale("en", "GB").getDisplayName()));
     }
 }

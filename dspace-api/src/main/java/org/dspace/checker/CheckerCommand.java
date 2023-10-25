@@ -8,16 +8,20 @@
 package org.dspace.checker;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.logging.log4j.Logger;
+import org.dspace.checker.factory.CheckerServiceFactory;
+import org.dspace.checker.service.ChecksumHistoryService;
+import org.dspace.checker.service.ChecksumResultService;
+import org.dspace.checker.service.MostRecentChecksumService;
+import org.dspace.content.Bitstream;
 import org.dspace.core.Context;
-import org.dspace.core.Utils;
+import org.dspace.storage.bitstore.factory.StorageServiceFactory;
+import org.dspace.storage.bitstore.service.BitstreamStorageService;
 
 /**
  * <p>
@@ -25,38 +29,38 @@ import org.dspace.core.Utils;
  * bitstream whose ID is in the most_recent_checksum table, and compares it
  * against the last calculated checksum for that bitstream.
  * </p>
- * 
+ *
  * @author Jim Downing
  * @author Grace Carpenter
  * @author Nathan Sarr
- * 
- * 
- * @todo the accessor methods are currently unused - are they useful?
- * @todo check for any existing resource problems
+ *
+ *
+ * TODO the accessor methods are currently unused - are they useful?
+ * TODO check for any existing resource problems
  */
-public final class CheckerCommand
-{
-    /** Usual Log4J logger. */
-    private static final Logger LOG = Logger.getLogger(CheckerCommand.class);
+public final class CheckerCommand {
+    /**
+     * Usual Log4J logger.
+     */
+    private static final Logger LOG = org.apache.logging.log4j.LogManager.getLogger(CheckerCommand.class);
 
-    /** Default digest algorithm (MD5). */
-    private static final String DEFAULT_DIGEST_ALGORITHM = "MD5";
+    private Context context;
 
-    /** 4 Meg byte array for reading file. */
-    private int BYTE_ARRAY_SIZE = 4 * 1024;
-
-    /** BitstreamInfoDAO dependency. */
-    private BitstreamInfoDAO bitstreamInfoDAO = null;
-
-    /** BitstreamDAO dependency. */
-    private BitstreamDAO bitstreamDAO = null;
+    /**
+     * BitstreamInfoDAO dependency.
+     */
+    private MostRecentChecksumService checksumService = null;
 
     /**
      * Checksum history Data access object
      */
-    private ChecksumHistoryDAO checksumHistoryDAO = null;
+    private ChecksumHistoryService checksumHistoryService = null;
+    private BitstreamStorageService bitstreamStorageService = null;
+    private ChecksumResultService checksumResultService = null;
 
-    /** start time for current process. */
+    /**
+     * start time for current process.
+     */
     private Date processStartDate = null;
 
     /**
@@ -69,17 +73,22 @@ public final class CheckerCommand
      */
     private ChecksumResultsCollector collector = null;
 
-    /** Report all processing */
+    /**
+     * Report all processing
+     */
     private boolean reportVerbose = false;
 
     /**
      * Default constructor uses DSpace plugin manager to construct dependencies.
+     *
+     * @param context Context
      */
-    public CheckerCommand()
-    {
-        bitstreamInfoDAO = new BitstreamInfoDAO();
-        bitstreamDAO = new BitstreamDAO();
-        checksumHistoryDAO = new ChecksumHistoryDAO();
+    public CheckerCommand(Context context) {
+        checksumService = CheckerServiceFactory.getInstance().getMostRecentChecksumService();
+        checksumHistoryService = CheckerServiceFactory.getInstance().getChecksumHistoryService();
+        bitstreamStorageService = StorageServiceFactory.getInstance().getBitstreamStorageService();
+        checksumResultService = CheckerServiceFactory.getInstance().getChecksumResultService();
+        this.context = context;
     }
 
     /**
@@ -88,86 +97,74 @@ public final class CheckerCommand
      * and then accepts bitstream ids from the dispatcher and checks their
      * bitstreams against the db records.
      * </p>
-     * 
+     *
      * <p>
      * N.B. a valid BitstreamDispatcher must be provided using
      * setBitstreamDispatcher before calling this method
      * </p>
+     *
+     * @throws SQLException if database error
      */
-    public void process(Context context)
-    {
+    public void process() throws SQLException {
         LOG.debug("Begin Checker Processing");
 
-        if (dispatcher == null)
-        {
+        if (dispatcher == null) {
             throw new IllegalStateException("No BitstreamDispatcher provided");
         }
 
-        if (collector == null)
-        {
+        if (collector == null) {
             collector = new ResultsLogger(processStartDate);
         }
 
         // update missing bitstreams that were entered into the
         // bitstream table - this always done.
-        bitstreamInfoDAO.updateMissingBitstreams();
+        checksumService.updateMissingBitstreams(context);
 
-        int id = dispatcher.next();
+        Bitstream bitstream = dispatcher.next();
 
-        while (id != BitstreamDispatcher.SENTINEL)
-        {
-            LOG.debug("Processing bitstream id = " + id);
-            BitstreamInfo info = checkBitstream(context, id);
+        while (bitstream != null) {
+            LOG.debug("Processing bitstream id = " + bitstream.getID());
+            MostRecentChecksum info = checkBitstream(bitstream);
 
             if (reportVerbose
-                    || !ChecksumCheckResults.CHECKSUM_MATCH.equals(info.getChecksumCheckResult()))
-            {
-                collector.collect(info);
+                || !ChecksumResultCode.CHECKSUM_MATCH.equals(info.getChecksumResult().getResultCode())) {
+                collector.collect(context, info);
             }
 
-            id = dispatcher.next();
+            context.uncacheEntity(bitstream);
+            bitstream = dispatcher.next();
         }
     }
 
     /**
      * Check a specified bitstream.
-     * 
-     * @param id
-     *            the bitstream id
-     * 
+     *
+     * @param bitstream the bitstream
      * @return the information about the bitstream and its checksum data
+     * @throws SQLException if database error
      */
-    private BitstreamInfo checkBitstream(Context context, final int id)
-    {
+    protected MostRecentChecksum checkBitstream(final Bitstream bitstream) throws SQLException {
         // get bitstream info from bitstream table
-        BitstreamInfo info = bitstreamInfoDAO.findByBitstreamId(context, id);
+        MostRecentChecksum info = checksumService.findByBitstream(context, bitstream);
 
         // requested id was not found in bitstream
         // or most_recent_checksum table
-        if (info == null)
-        {
+        if (info == null) {
             // Note: this case should only occur if id is requested at
             // command line, since ref integrity checks should
             // prevent id from appearing in most_recent_checksum
             // but not bitstream table, or vice versa
-            info = new BitstreamInfo(id);
+            info = checksumService.getNonPersistedObject();
             processNullInfoBitstream(info);
-        }
-        else if (!info.getToBeProcessed())
-        {
+        } else if (!info.isToBeProcessed()) {
             // most_recent_checksum.to_be_processed is marked
             // 'false' for this bitstream id.
             // Do not do any db updates
-            info
-                    .setChecksumCheckResult(ChecksumCheckResults.BITSTREAM_NOT_PROCESSED);
-        }
-        else if (info.getDeleted())
-        {
+            info.setChecksumResult(getChecksumResultByCode(ChecksumResultCode.BITSTREAM_NOT_PROCESSED));
+        } else if (info.getBitstream().isDeleted()) {
             // bitstream id is marked 'deleted' in bitstream table.
             processDeletedBitstream(info);
-        }
-        else
-        {
+        } else {
             processBitstream(info);
         }
 
@@ -175,60 +172,20 @@ public final class CheckerCommand
     }
 
     /**
-     * Digest the stream and get the checksum value.
-     * 
-     * @param stream
-     *            InputStream to digest.
-     * @param algorithm
-     *            the algorithm to use when digesting.
-     * @todo Document the algorithm parameter
-     * @return digest
-     * 
-     * @throws java.security.NoSuchAlgorithmException
-     *             if the requested algorithm is not provided by the system
-     *             security provider.
-     * @throws java.io.IOException
-     *             If an exception arises whilst reading the stream
-     */
-    private String digestStream(InputStream stream, String algorithm)
-            throws java.security.NoSuchAlgorithmException, java.io.IOException
-    {
-        // create the digest stream
-        DigestInputStream dStream = new DigestInputStream(stream, MessageDigest
-                .getInstance(algorithm));
-
-        byte[] bytes = new byte[BYTE_ARRAY_SIZE];
-
-        // make sure all the data is read by the digester
-        int bytesRead = -1;
-        do {
-            bytesRead = dStream.read(bytes, 0, BYTE_ARRAY_SIZE);
-        } while (bytesRead != -1);
-
-        return Utils.toHex(dStream.getMessageDigest().digest());
-    }
-
-    /**
      * Compares two checksums.
-     * 
-     * @param checksumA
-     *            the first checksum
-     * @param checksumB
-     *            the second checksum
-     * 
+     *
+     * @param checksumA the first checksum
+     * @param checksumB the second checksum
      * @return a result code (constants defined in Util)
+     * @throws SQLException if database error
      */
-    private String compareChecksums(String checksumA, String checksumB)
-    {
-        String result = ChecksumCheckResults.CHECKSUM_NO_MATCH;
+    protected ChecksumResult compareChecksums(String checksumA, String checksumB) throws SQLException {
+        ChecksumResult result = getChecksumResultByCode(ChecksumResultCode.CHECKSUM_NO_MATCH);
 
-        if ((checksumA == null) || (checksumB == null))
-        {
-            result = ChecksumCheckResults.CHECKSUM_PREV_NOT_FOUND;
-        }
-        else if (checksumA.equals(checksumB))
-        {
-            result = ChecksumCheckResults.CHECKSUM_MATCH;
+        if ((checksumA == null) || (checksumB == null)) {
+            result = getChecksumResultByCode(ChecksumResultCode.CHECKSUM_PREV_NOT_FOUND);
+        } else if (checksumA.equals(checksumB)) {
+            result = getChecksumResultByCode(ChecksumResultCode.CHECKSUM_MATCH);
         }
 
         return result;
@@ -239,199 +196,164 @@ public final class CheckerCommand
      * bitstream should only be checked once afterwards it should be marked
      * 'to_be_processed=false'. Note that to_be_processed must be manually
      * updated in db to allow for future processing.
-     * 
-     * @param info
-     *            a deleted bitstream.
+     *
+     * @param info a deleted bitstream.
+     * @throws SQLException if database error
      */
-    private void processDeletedBitstream(BitstreamInfo info)
-    {
+    protected void processDeletedBitstream(MostRecentChecksum info) throws SQLException {
         info.setProcessStartDate(new Date());
-        info
-                .setChecksumCheckResult(ChecksumCheckResults.BITSTREAM_MARKED_DELETED);
-        info.setProcessStartDate(new Date());
+        info.setChecksumResult(getChecksumResultByCode(ChecksumResultCode.BITSTREAM_MARKED_DELETED));
         info.setProcessEndDate(new Date());
         info.setToBeProcessed(false);
-        bitstreamInfoDAO.update(info);
-        checksumHistoryDAO.insertHistory(info);
+        checksumService.update(context, info);
+        checksumHistoryService.addHistory(context, info);
     }
 
     /**
      * Process bitstream whose ID was not found in most_recent_checksum or
      * bitstream table. No updates can be done. The missing bitstream is output
      * to the log file.
-     * 
-     * @param info
-     *            A not found BitStreamInfo
-     * @todo is this method required?
+     *
+     * @param info A not found BitStreamInfo
+     *             TODO is this method required?
+     * @throws SQLException if database error
      */
-    private void processNullInfoBitstream(BitstreamInfo info)
-    {
+    protected void processNullInfoBitstream(MostRecentChecksum info) throws SQLException {
         info.setInfoFound(false);
         info.setProcessStartDate(new Date());
         info.setProcessEndDate(new Date());
-        info
-                .setChecksumCheckResult(ChecksumCheckResults.BITSTREAM_INFO_NOT_FOUND);
+        info.setChecksumResult(getChecksumResultByCode(ChecksumResultCode.BITSTREAM_INFO_NOT_FOUND));
     }
 
     /**
      * <p>
      * Process general case bitstream.
      * </p>
-     * 
+     *
      * <p>
      * Note: bitstream will have timestamp indicating it was "checked", even if
      * actual checksumming never took place.
      * </p>
-     * 
-     * @todo Why does bitstream have a timestamp indicating it's checked if
-     *       checksumming doesn't occur?
-     * 
-     * @param info
-     *            BitstreamInfo to handle
+     *
+     * TODO Why does bitstream have a timestamp indicating it's checked if
+     * checksumming doesn't occur?
+     *
+     * @param info BitstreamInfo to handle
+     * @throws SQLException if database error
      */
-    private void processBitstream(BitstreamInfo info)
-    {
+    protected void processBitstream(MostRecentChecksum info) throws SQLException {
         info.setProcessStartDate(new Date());
 
-        if (info.getChecksumAlgorithm() == null)
-        {
-            info.setChecksumAlgorithm(DEFAULT_DIGEST_ALGORITHM);
-        }
+        try {
+            Map checksumMap = bitstreamStorageService.computeChecksum(context, info.getBitstream());
+            if (MapUtils.isNotEmpty(checksumMap)) {
+                info.setBitstreamFound(true);
+                if (checksumMap.containsKey("checksum")) {
+                    info.setCurrentChecksum(checksumMap.get("checksum").toString());
+                }
 
-        try
-        {
-            InputStream bitstream = bitstreamDAO.getBitstream(info
-                    .getBitstreamId());
-
-            info.setBitstreamFound(true);
-
-            String checksum = digestStream(bitstream, info
-                    .getChecksumAlgorithm());
-
-            info.setCalculatedChecksum(checksum);
+                if (checksumMap.containsKey("checksum_algorithm")) {
+                    info.setChecksumAlgorithm(checksumMap.get("checksum_algorithm").toString());
+                }
+            }
 
             // compare new checksum to previous checksum
-            info.setChecksumCheckResult(compareChecksums(info
-                    .getStoredChecksum(), info.getCalculatedChecksum()));
-        }
-        catch (IOException e)
-        {
+            info.setChecksumResult(compareChecksums(info.getExpectedChecksum(), info.getCurrentChecksum()));
+        } catch (IOException e) {
             // bitstream located, but file missing from asset store
-            info
-                    .setChecksumCheckResult(ChecksumCheckResults.BITSTREAM_NOT_FOUND);
+            info.setChecksumResult(getChecksumResultByCode(ChecksumResultCode.BITSTREAM_NOT_FOUND));
             info.setToBeProcessed(false);
-            LOG.error("Error retrieving bitstream ID " + info.getBitstreamId()
-                    + " from " + "asset store.", e);
-        }
-        catch (SQLException e)
-        {
+            LOG.error("Error retrieving bitstream ID " + info.getBitstream().getID()
+                          + " from " + "asset store.", e);
+        } catch (SQLException e) {
             // ??this code only executes if an SQL
             // exception occurs in *DSpace* code, probably
             // indicating a general db problem?
-            info
-                    .setChecksumCheckResult(ChecksumCheckResults.BITSTREAM_INFO_NOT_FOUND);
+            info.setChecksumResult(getChecksumResultByCode(ChecksumResultCode.BITSTREAM_INFO_NOT_FOUND));
             LOG.error("Error retrieving metadata for bitstream ID "
-                    + info.getBitstreamId(), e);
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            info
-                    .setChecksumCheckResult(ChecksumCheckResults.CHECKSUM_ALGORITHM_INVALID);
-            info.setToBeProcessed(false);
-            LOG.error("Invalid digest algorithm type for bitstream ID"
-                    + info.getBitstreamId(), e);
-        }
-        finally
-        {
+                          + info.getBitstream().getID(), e);
+        } finally {
             info.setProcessEndDate(new Date());
 
             // record new checksum and comparison result in db
-            bitstreamInfoDAO.update(info);
-            checksumHistoryDAO.insertHistory(info);
+            checksumService.update(context, info);
+            checksumHistoryService.addHistory(context, info);
         }
+    }
+
+    protected ChecksumResult getChecksumResultByCode(ChecksumResultCode checksumResultCode) throws SQLException {
+        return checksumResultService.findByCode(context, checksumResultCode);
     }
 
     /**
      * Get dispatcher being used by this run of the checker.
-     * 
+     *
      * @return the dispatcher being used by this run.
      */
-    public BitstreamDispatcher getDispatcher()
-    {
+    public BitstreamDispatcher getDispatcher() {
         return dispatcher;
     }
 
     /**
      * Set the dispatcher to be used by this run of the checker.
-     * 
-     * @param dispatcher
-     *            Dispatcher to use.
+     *
+     * @param dispatcher Dispatcher to use.
      */
-    public void setDispatcher(BitstreamDispatcher dispatcher)
-    {
+    public void setDispatcher(BitstreamDispatcher dispatcher) {
         this.dispatcher = dispatcher;
     }
 
     /**
      * Get the collector that holds/logs the results for this process run.
-     * 
+     *
      * @return The ChecksumResultsCollector being used.
      */
-    public ChecksumResultsCollector getCollector()
-    {
+    public ChecksumResultsCollector getCollector() {
         return collector;
     }
 
     /**
      * Set the collector that holds/logs the results for this process run.
-     * 
-     * @param collector
-     *            the collector to be used for this run
+     *
+     * @param collector the collector to be used for this run
      */
-    public void setCollector(ChecksumResultsCollector collector)
-    {
+    public void setCollector(ChecksumResultsCollector collector) {
         this.collector = collector;
     }
 
     /**
      * Get time at which checker process began.
-     * 
+     *
      * @return start time
      */
-    public Date getProcessStartDate()
-    {
+    public Date getProcessStartDate() {
         return processStartDate == null ? null : new Date(processStartDate.getTime());
     }
 
     /**
      * Set time at which checker process began.
-     * 
-     * @param startDate
-     *            start time
+     *
+     * @param startDate start time
      */
-    public void setProcessStartDate(Date startDate)
-    {
+    public void setProcessStartDate(Date startDate) {
         processStartDate = startDate == null ? null : new Date(startDate.getTime());
     }
 
     /**
      * Determine if any errors are reported
-     * 
+     *
      * @return true if only errors reported
      */
-    public boolean isReportVerbose()
-    {
+    public boolean isReportVerbose() {
         return reportVerbose;
     }
 
     /**
      * Set report errors only
-     * 
-     * @param reportVerbose
-     *            true to report only errors in the logs.
+     *
+     * @param reportVerbose true to report only errors in the logs.
      */
-    public void setReportVerbose(boolean reportVerbose)
-    {
+    public void setReportVerbose(boolean reportVerbose) {
         this.reportVerbose = reportVerbose;
     }
 }

@@ -7,19 +7,20 @@
  */
 package org.dspace.content;
 
-import org.dspace.AbstractUnitTest;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.* ;
-import static org.hamcrest.CoreMatchers.*;
 
 /**
  * Tests DCSeriesNumber class
+ *
  * @author pvillega
  */
-public class DCSeriesNumberTest extends AbstractUnitTest
-{
+public class DCSeriesNumberTest {
 
     /**
      * Object to use in the tests
@@ -35,10 +36,7 @@ public class DCSeriesNumberTest extends AbstractUnitTest
      * but no execution order is guaranteed
      */
     @Before
-    @Override
-    public void init()
-    {
-        super.init();
+    public void init() {
         dc = new DCSeriesNumber();
     }
 
@@ -50,19 +48,15 @@ public class DCSeriesNumberTest extends AbstractUnitTest
      * but no execution order is guaranteed
      */
     @After
-    @Override
-    public void destroy()
-    {
+    public void destroy() {
         dc = null;
-        super.destroy();
     }
 
     /**
      * Test of DCSeriesNumber constructor, of class DCSeriesNumber.
      */
     @Test
-    public void testDCSeriesNumber()
-    {
+    public void testDCSeriesNumber() {
         dc = new DCSeriesNumber();
         assertThat("testDCSeriesNumber 0", dc.getNumber(), equalTo(""));
         assertThat("testDCSeriesNumber 1", dc.getSeries(), equalTo(""));
@@ -72,67 +66,64 @@ public class DCSeriesNumberTest extends AbstractUnitTest
      * Test of DCSeriesNumber constructor, of class DCSeriesNumber.
      */
     @Test
-    public void testDCSeriesNumberValue()
-    {
+    public void testDCSeriesNumberValue() {
         dc = new DCSeriesNumber(null);
         assertThat("testDCSeriesNumberValue 0", dc.getNumber(), equalTo(""));
         assertThat("testDCSeriesNumberValue 1", dc.getSeries(), equalTo(""));
 
         dc = new DCSeriesNumber("series");
         assertThat("testDCSeriesNumberValue 2", dc.getNumber(),
-                equalTo(""));
+                   equalTo(""));
         assertThat("testDCSeriesNumberValue 3", dc.getSeries(),
-                equalTo("series"));
+                   equalTo("series"));
 
         dc = new DCSeriesNumber("series;number");
         assertThat("testDCSeriesNumberValue 4", dc.getNumber(),
-                equalTo("number"));
+                   equalTo("number"));
         assertThat("testDCSeriesNumberValue 5", dc.getSeries(),
-                equalTo("series"));
+                   equalTo("series"));
 
         dc = new DCSeriesNumber("series;number;number2");
         assertThat("testDCSeriesNumberValue 6", dc.getNumber(),
-                equalTo("number;number2"));
+                   equalTo("number;number2"));
         assertThat("testDCSeriesNumberValue 7", dc.getSeries(),
-                equalTo("series"));
+                   equalTo("series"));
     }
 
     /**
      * Test of DCSeriesNumber constructor, of class DCSeriesNumber.
      */
     @Test
-    public void testDCSeriesNumberValues()
-    {
+    public void testDCSeriesNumberValues() {
         dc = new DCSeriesNumber(null, null);
         assertThat("testDCSeriesNumberValues 0", dc.getNumber(), equalTo(""));
         assertThat("testDCSeriesNumberValues 1", dc.getSeries(), equalTo(""));
 
         dc = new DCSeriesNumber(null, "number");
         assertThat("testDCSeriesNumberValues 2", dc.getNumber(),
-                equalTo("number"));
+                   equalTo("number"));
         assertThat("testDCSeriesNumberValues 3", dc.getSeries(),
-                equalTo(""));
+                   equalTo(""));
 
         dc = new DCSeriesNumber("series", null);
         assertThat("testDCSeriesNumberValues 4", dc.getNumber(),
-                equalTo(""));
+                   equalTo(""));
         assertThat("testDCSeriesNumberValues 5", dc.getSeries(),
-                equalTo("series"));
+                   equalTo("series"));
 
         dc = new DCSeriesNumber("series", "number");
         assertThat("testDCSeriesNumberValues 6", dc.getNumber(),
-                equalTo("number"));
+                   equalTo("number"));
         assertThat("testDCSeriesNumberValues 7", dc.getSeries(),
-                equalTo("series"));
+                   equalTo("series"));
     }
 
     /**
      * Test of toString method, of class DCSeriesNumber.
      */
     @Test
-    public void testToString()
-    {
-         dc = new DCSeriesNumber(null, null);
+    public void testToString() {
+        dc = new DCSeriesNumber(null, null);
         assertThat("testToString 0", dc.toString(), nullValue());
 
         dc = new DCSeriesNumber(null, "number");
@@ -149,8 +140,7 @@ public class DCSeriesNumberTest extends AbstractUnitTest
      * Test of getSeries method, of class DCSeriesNumber.
      */
     @Test
-    public void testGetSeries()
-    {
+    public void testGetSeries() {
         dc = new DCSeriesNumber(null, null);
         assertThat("testGetSeries 0", dc.getSeries(), equalTo(""));
 
@@ -162,8 +152,7 @@ public class DCSeriesNumberTest extends AbstractUnitTest
      * Test of getNumber method, of class DCSeriesNumber.
      */
     @Test
-    public void testGetNumber()
-    {
+    public void testGetNumber() {
         dc = new DCSeriesNumber(null, null);
         assertThat("testGetNumber 0", dc.getNumber(), equalTo(""));
 

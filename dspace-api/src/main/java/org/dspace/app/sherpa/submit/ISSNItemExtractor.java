@@ -12,7 +12,6 @@ import java.util.List;
 import org.dspace.content.Item;
 import org.dspace.core.Context;
 
-public interface ISSNItemExtractor
-{
+public interface ISSNItemExtractor {
     public List<String> getISSNs(Context context, Item item);
 }
